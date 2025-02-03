@@ -2,67 +2,78 @@
 import { WebSocketServer } from 'ws';
 import database from '../Data/database.js';
 
-const clients = {}; // Armazena os clientes conectados
+const wss = new WebSocketServer({
+  port: 3001,
+});
 
-function onConnection(ws) {
+wss.on('connection', onConnection);
+
+console.log('')
+console.log('|-------------------------------------------|')
+console.log('| Socket Server iniciado na porta 2001      |')
+console.log('|-------------------------------------------|')
+console.log('')
+
+const clients = new Map(); // Armazena os clientes conectados
+
+function onConnection(ws, req) {
+  console.log(req.headers['id']);
+
   ws.on('message', async (message) => {
-    
     let messageString = message.toString();
-    
+
     try {
       const msg = JSON.parse(messageString);
-      
 
-      const user = (await database.query("select * from users where id = $1;",[msg.senderId])).rows;
-      console.log(user);
 
-      // Configura o ID do cliente
-      if (msg.senderId === 'sender_id') {
-        clients[msg.senderId] = ws;
-        ws.userId = msg.senderId;
-        console.log(`Cliente ${msg.senderId} conectado.`);
+      const user = (await database.query("select * from users where id = $1;", [msg.senderId])).rows;
+      if (!user) {
+        console.log('Usuário não cadastrado');
       }
+      clients.set(msg.senderId, ws);
+      ws.userId = msg.senderId;
+      if (ws.userId) {
+        console.log('Cliente conectado');
+      }
+      //
+      // msg.senderId
+      // msg.receiverId
+      // msg.text 
+      //
 
-      // Envia mensagem para o destinatário
-      if (msg.text === 'message') {
-        const recipient = clients[msg.recipientId]; // Obtém a conexão do destinatário
-        const timestamp = new Date(); // Data e hora atual
 
-        // Salva a mensagem no banco de dados
-        try {
-          const result = await database.query(
+      ws.recipientId = clients.get(msg.receiverId);
+      try {
+        if (ws.recipientId) {
+          const timestamp = new Date();
+          await database.query(
             `INSERT INTO messages (sender_id, receiver_id, text, created_at, status) 
              VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-            [msg.senderId, msg.recipientId, msg.content, timestamp, 'enviado']
+            [msg.senderId, msg.receiverId, msg.text, timestamp, 'enviado']
           );
-
-          const savedMessage = result.rows[0];
-
-          // Envia a mensagem ao destinatário se ele estiver online
-          if (recipient) {
-            recipient.send(
-              JSON.stringify({
-                type: 'message',
-                content: savedMessage.text,
-                from: savedMessage.sender_id,
-                to: savedMessage.receiver_id,
-                created_at: savedMessage.created_at,
-              })
-            );
-          } else {
-            console.log(`Destinatário ${msg.recipientId} não está conectado.`);
-          }
-        } catch (err) {
-          console.error('Erro ao salvar mensagem:', err);
+          ws.recipientId.send(
+            JSON.stringify({
+              to: msg.senderId,
+              from: msg.senderId,
+              content: msg.text,
+              created_at: timestamp,
+            })
+          )
         }
+        console.log("Mensage enviado");
+      } catch (error) {
+        console.error("Error: ", error);
       }
-    } catch (err) {
-      console.error('Erro ao processar mensagem:', err);
+
+    } catch (error) {
+      console.log("Erro ao enviar mensagem");
     }
-  });
+  },);
+
 
   // Remove o cliente ao desconectar
   ws.on('close', () => {
+
     if (ws.userId) {
       delete clients[ws.userId];
       console.log(`Cliente ${ws.userId} desconectado.`);
@@ -70,19 +81,6 @@ function onConnection(ws) {
   });
 }
 
+
 export default () => {
-    const wss = new WebSocketServer({
-        port: 3001
-    });
-    
-    wss.on('connection', onConnection);
-
-
-
-
-    console.log('')
-    console.log('|-------------------------------------------|')
-    console.log('| Socket Server iniciado na porta 2001      |')
-    console.log('|-------------------------------------------|')
-    console.log('')
 }
