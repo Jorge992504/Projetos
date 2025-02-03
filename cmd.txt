@@ -1,0 +1,21 @@
+//criar project
+flutter create --project-name coletor --android-language java --platforms ios,android,windows,web --org jorgeabp99@gmail.com Coletor
+
+//add plataforma
+flutter create --plataforms=web .
+
+//compilar
+flutter build apk
+flutter 
+
+json_rest_server run
+node server.js
+node --watch app.js => deixar o server rodando
+dart run build_runner watch -d
+
+reborn
+
+
+https://www.freecodecamp.org/portuguese/news/como-usar-o-nodemailer-para-enviar-emails-do-seu-servidor-do-node-js/
+
+20031968

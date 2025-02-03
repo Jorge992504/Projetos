@@ -1,0 +1,1 @@
+class SemAuth implements Exception {}

@@ -1,0 +1,16 @@
+TextField:
+
+-icon: Um ícone que é exibido à esquerda do campo de texto.
+-labelText: O texto que aparece como rótulo acima do campo de texto.
+-hintText: O texto que aparece dentro do campo de texto quando ele está vazio.
+-hintStyle: O estilo do texto de dica (hint).
+-labelStyle: O estilo do texto do rótulo.
+-errorText: O texto de erro que é exibido abaixo do campo de texto quando há um erro de validação.
+-prefixIcon: Um ícone que é exibido antes do texto digitado no campo de texto.
+-suffixIcon: Um ícone que é exibido após o texto digitado no campo de texto.
+-border: A borda do campo de texto.
+-enabledBorder: A borda do campo de texto quando ele está habilitado.
+-focusedBorder: A borda do campo de texto quando ele está em foco.
+-filled: Define se o campo de texto deve ser preenchido com uma cor de fundo.
+-fillColor: A cor de fundo do campo de texto quando filled é verdadeiro.
+-contentPadding: O preenchimento interno do campo de texto.
