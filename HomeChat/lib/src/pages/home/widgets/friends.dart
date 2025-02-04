@@ -21,8 +21,8 @@ class _FriendsState extends ConsumerState<Friends> {
   Widget build(BuildContext context) {
     final getRequest = ref.watch(requestVmProvider);
     final getFriend = ref.watch(friendVmProvider);
-    ref.refresh(requestVmProvider);
-    ref.refresh(friendVmProvider);
+    // ref.refresh(requestVmProvider);
+    // ref.refresh(friendVmProvider);
     ref.listen(requestVmProvider, (_, state) {
       switch (state) {
         // ignore: constant_pattern_never_matches_value_type
@@ -100,7 +100,7 @@ class _FriendsState extends ConsumerState<Friends> {
                                             .deletFriend(data.friend[index].id);
                                         setState(() {
                                           data.friend.removeAt(index);
-                                          ref.refresh(friendVmProvider);
+                                          // ref.refresh(friendVmProvider);
                                         });
                                       }
                                     },
@@ -220,7 +220,7 @@ class _FriendsState extends ConsumerState<Friends> {
                                               'Solicitação aceitada', context);
                                           setState(() {
                                             data.request.removeAt(index);
-                                            ref.refresh(requestVmProvider);
+                                            // ref.refresh(requestVmProvider);
                                           });
                                         } else if (direction ==
                                             DismissDirection.endToStart) {
@@ -232,7 +232,7 @@ class _FriendsState extends ConsumerState<Friends> {
                                               'Solicitação recusada', context);
                                           setState(() {
                                             data.request.removeAt(index);
-                                            ref.refresh(requestVmProvider);
+                                            // ref.refresh(requestVmProvider);
                                           });
                                         }
                                       },

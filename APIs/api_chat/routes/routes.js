@@ -51,9 +51,8 @@ router.route('/email')
 
       
 router.route('/messages')
-      .all(Authentication) // Garante que o usuário esteja autenticado
-      .post(Messages.sendMessage) // Enviar uma mensagem
-      .get(Messages.getMessages); // Buscar mensagens entre dois usuários
+      .all(Authentication)
+      .get(Messages.getMessages)
       
 
 

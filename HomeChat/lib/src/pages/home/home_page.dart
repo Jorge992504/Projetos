@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:homechat/src/core/providers/application_provider.dart';
 import 'package:homechat/src/core/router/rotas.dart';
 import 'package:homechat/src/pages/home/home_vm.dart';
 import 'package:homechat/src/pages/home/widgets/friends.dart';
@@ -18,6 +19,8 @@ int currentPageIndex = 0;
 class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
+    // ref.watch(repositoryMessagesProvider);
+    ref.watch(channelProvider);
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {

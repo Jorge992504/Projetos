@@ -1,11 +1,14 @@
 import 'package:homechat/src/core/client/res_client.dart';
 import 'package:homechat/src/core/fp/either.dart';
+import 'package:homechat/src/core/models/message_model.dart';
 
 import 'package:homechat/src/core/models/user_model.dart';
 import 'package:homechat/src/core/repositories/auth/auth_repository.dart';
 import 'package:homechat/src/core/repositories/auth/auth_repository_impl.dart';
 import 'package:homechat/src/core/repositories/general/repository_general.dart';
 import 'package:homechat/src/core/repositories/general/repository_general_impl.dart';
+import 'package:homechat/src/core/repositories/messages/repository_messages.dart';
+import 'package:homechat/src/core/repositories/messages/repository_messages_impl.dart';
 
 import 'package:homechat/src/core/service/login/login_service.dart';
 import 'package:homechat/src/core/service/login/login_service_impl.dart';
@@ -18,6 +21,10 @@ part 'application_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 RestClient restClient(RestClientRef ref) => RestClient();
+@Riverpod(keepAlive: true)
+WebSocketClient channel(ChannelRef ref) =>
+    // WebSocketClient(url: 'ws://172.16.251.22:3001');
+    WebSocketClient(url: 'wss://echo.websocket.org');
 
 @Riverpod(keepAlive: true)
 AuthRepository authRepository(AuthRepositoryRef ref) =>
@@ -41,6 +48,23 @@ Future<UserModel> getMe(GetMeRef ref) async {
     Failure(:final exception) => throw exception,
   };
 }
+
+@Riverpod(keepAlive: true)
+RepositoryMessages repositoryMessages(RepositoryMessagesRef ref) =>
+    RepositoryMessagesImpl(
+        channel: ref.watch(channelProvider),
+        restClient: ref.watch(restClientProvider));
+
+// @Riverpod(keepAlive: true)
+// Future<List<MessageModel>> getMessages(GetMessagesRef ref) async {
+//   final messages = await ref.watch(getMessagesProvider.future);
+//   final repository = ref.watch(repositoryMessagesProvider);
+//   final result = await repository.getMessages(messages);
+//   return switch (result) {
+//     Success(value: final messages) => messages,
+//     Failure(:final exception) => throw exception
+//   };
+// }
 
 //
 @Riverpod(keepAlive: true)
@@ -66,4 +90,13 @@ Future<void> logout(LogoutRef ref) async {
   ref.invalidate(getMeProvider);
   ref.invalidate(registerServiceProvider);
   ref.invalidate(repositoryGeneralProvider);
+}
+
+@Riverpod(keepAlive: true)
+Future<void> connected(ConnectedRef ref) async {
+  RepositoryMessagesImpl(
+      channel: ref.watch(channelProvider),
+      restClient: ref.watch(restClientProvider));
+
+  await ref.watch(connectedProvider.future);
 }

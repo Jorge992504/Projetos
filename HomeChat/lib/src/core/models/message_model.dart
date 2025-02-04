@@ -5,22 +5,25 @@ class MessageModel {
   final int senderId;
   final int receiverId;
   final String text;
-
+  final DateTime createdAt;
   MessageModel({
     required this.senderId,
     required this.receiverId,
     required this.text,
+    required this.createdAt,
   });
 
   MessageModel copyWith({
     int? senderId,
     int? receiverId,
     String? text,
+    DateTime? createdAt,
   }) {
     return MessageModel(
       senderId: senderId ?? this.senderId,
       receiverId: receiverId ?? this.receiverId,
       text: text ?? this.text,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -29,14 +32,16 @@ class MessageModel {
       'senderId': senderId,
       'receiverId': receiverId,
       'text': text,
+      'createdAt': createdAt.millisecondsSinceEpoch,
     };
   }
 
   factory MessageModel.fromMap(Map<String, dynamic> map) {
     return MessageModel(
-      senderId: map['senderId'] as int,
-      receiverId: map['receiverId'] as int,
-      text: map['text'] as String,
+      senderId: map['senderId'] ?? 0,
+      receiverId: map['receiverId'] ?? 0,
+      text: map['text'] ?? '',
+      createdAt: DateTime.parse(map['created_at']),
     );
   }
 
@@ -46,8 +51,9 @@ class MessageModel {
       MessageModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() =>
-      'MessageModel(senderId: $senderId, receiverId: $receiverId, text: $text)';
+  String toString() {
+    return 'MessageModel(senderId: $senderId, receiverId: $receiverId, text: $text, createdAt: $createdAt)';
+  }
 
   @override
   bool operator ==(covariant MessageModel other) {
@@ -55,9 +61,15 @@ class MessageModel {
 
     return other.senderId == senderId &&
         other.receiverId == receiverId &&
-        other.text == text;
+        other.text == text &&
+        other.createdAt == createdAt;
   }
 
   @override
-  int get hashCode => senderId.hashCode ^ receiverId.hashCode ^ text.hashCode;
+  int get hashCode {
+    return senderId.hashCode ^
+        receiverId.hashCode ^
+        text.hashCode ^
+        createdAt.hashCode;
+  }
 }

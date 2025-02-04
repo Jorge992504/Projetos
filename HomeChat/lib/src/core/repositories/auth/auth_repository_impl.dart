@@ -35,8 +35,7 @@ class AuthRepositoryImpl implements AuthRepository {
         }
       }
       log('Erro ao realizar login', error: e.error, stackTrace: s);
-      return Failure(
-          AuthError(message: 'Erro ao realizar login') as RepositoryException);
+      return Failure(RepositoryException(message: 'Erro ao realizar login'));
     }
   }
 

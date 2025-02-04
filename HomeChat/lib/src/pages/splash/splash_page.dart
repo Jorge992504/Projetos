@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:homechat/src/core/providers/application_provider.dart';
 import 'package:homechat/src/core/router/rotas.dart';
 import 'package:homechat/src/pages/splash/splash_vm.dart';
 import 'package:homechat/src/ui/helpers/messages.dart';
@@ -26,6 +27,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(channelProvider);
     ref.listen(splashVmProvider, (_, state) {
       state.whenOrNull(
         error: (error, stackTrace) {

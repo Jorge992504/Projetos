@@ -6,20 +6,168 @@ part of 'chat_vm.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chatVmHash() => r'df96ce2ce7b8d2e29415991dc37d3110b3436a33';
+String _$chatVmHash() => r'cd1284f88730dd375528cd3b54f23664e11f01fd';
+
+/// Copied from Dart SDK
+class _SystemHash {
+  _SystemHash._();
+
+  static int combine(int hash, int value) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + value);
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
+    return hash ^ (hash >> 6);
+  }
+
+  static int finish(int hash) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
+    // ignore: parameter_assignments
+    hash = hash ^ (hash >> 11);
+    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  }
+}
+
+abstract class _$ChatVm extends BuildlessAutoDisposeAsyncNotifier<ChatState> {
+  late final dynamic receiverId;
+
+  FutureOr<ChatState> build(
+    dynamic receiverId,
+  );
+}
 
 /// See also [ChatVm].
 @ProviderFor(ChatVm)
-final chatVmProvider =
-    AutoDisposeAsyncNotifierProvider<ChatVm, ChatState>.internal(
-  ChatVm.new,
-  name: r'chatVmProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$chatVmHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const chatVmProvider = ChatVmFamily();
 
-typedef _$ChatVm = AutoDisposeAsyncNotifier<ChatState>;
+/// See also [ChatVm].
+class ChatVmFamily extends Family<AsyncValue<ChatState>> {
+  /// See also [ChatVm].
+  const ChatVmFamily();
+
+  /// See also [ChatVm].
+  ChatVmProvider call(
+    dynamic receiverId,
+  ) {
+    return ChatVmProvider(
+      receiverId,
+    );
+  }
+
+  @override
+  ChatVmProvider getProviderOverride(
+    covariant ChatVmProvider provider,
+  ) {
+    return call(
+      provider.receiverId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'chatVmProvider';
+}
+
+/// See also [ChatVm].
+class ChatVmProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<ChatVm, ChatState> {
+  /// See also [ChatVm].
+  ChatVmProvider(
+    dynamic receiverId,
+  ) : this._internal(
+          () => ChatVm()..receiverId = receiverId,
+          from: chatVmProvider,
+          name: r'chatVmProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$chatVmHash,
+          dependencies: ChatVmFamily._dependencies,
+          allTransitiveDependencies: ChatVmFamily._allTransitiveDependencies,
+          receiverId: receiverId,
+        );
+
+  ChatVmProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.receiverId,
+  }) : super.internal();
+
+  final dynamic receiverId;
+
+  @override
+  FutureOr<ChatState> runNotifierBuild(
+    covariant ChatVm notifier,
+  ) {
+    return notifier.build(
+      receiverId,
+    );
+  }
+
+  @override
+  Override overrideWith(ChatVm Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: ChatVmProvider._internal(
+        () => create()..receiverId = receiverId,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        receiverId: receiverId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeAsyncNotifierProviderElement<ChatVm, ChatState> createElement() {
+    return _ChatVmProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ChatVmProvider && other.receiverId == receiverId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, receiverId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin ChatVmRef on AutoDisposeAsyncNotifierProviderRef<ChatState> {
+  /// The parameter `receiverId` of this provider.
+  dynamic get receiverId;
+}
+
+class _ChatVmProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<ChatVm, ChatState>
+    with ChatVmRef {
+  _ChatVmProviderElement(super.provider);
+
+  @override
+  dynamic get receiverId => (origin as ChatVmProvider).receiverId;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -1,91 +1,119 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_socket_channel/status.dart' as status;
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ChatApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ChatApp extends StatelessWidget {
+  const ChatApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'Flutter Google Maps',
-      home: MapScreen(),
+      debugShowCheckedModeBanner: false,
+      home: ChatScreen(),
     );
   }
 }
 
-class MapScreen extends StatefulWidget {
-  const MapScreen({super.key});
+class ChatScreen extends StatefulWidget {
+  const ChatScreen({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _MapScreenState createState() => _MapScreenState();
+  _ChatScreenState createState() => _ChatScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
-  late GoogleMapController mapController;
-  final LatLng _initialPosition = const LatLng(
-      -23.5505, -46.6333); // Coordenadas iniciais (São Paulo, Brasil)
-  late LatLng _currentPosition;
+class _ChatScreenState extends State<ChatScreen> {
+  late WebSocketChannel channel;
+  final TextEditingController _controller = TextEditingController();
+  final List<String> messages = [];
+  final String userId = "user1"; // Simulando um usuário logado
+  final String receiverId = "user2"; // Destinatário
 
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation();
+    // Conectar ao servidor WebSocket
+    channel = WebSocketChannel.connect(Uri.parse("ws://localhost:3000"));
+
+    // Enviar login para registrar o usuário no servidor
+    channel.sink.add(jsonEncode({
+      "type": "login",
+      "userId": userId,
+    }));
+
+    // Ouvir mensagens do WebSocket
+    channel.stream.listen((data) {
+      final message = jsonDecode(data);
+      setState(() {
+        messages.add("${message['senderId']}: ${message['text']}");
+      });
+    });
   }
 
-  Future<void> _getCurrentLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  void _sendMessage() {
+    if (_controller.text.isNotEmpty) {
+      // Enviar mensagem via WebSocket
+      channel.sink.add(jsonEncode({
+        "type": "message",
+        "senderId": userId,
+        "receiverId": receiverId,
+        "text": _controller.text,
+      }));
 
-    // Verifica se o serviço de localização está ativado
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Se não, pede para o usuário ativar
-      return Future.error('Serviço de localização desativado');
+      // Adicionar à lista de mensagens locais
+      setState(() {
+        messages.add("Você: ${_controller.text}");
+      });
+
+      _controller.clear();
     }
+  }
 
-    // Verifica se as permissões de localização estão concedidas
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Permissão de localização negada');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error('Permissões de localização permanentemente negadas');
-    }
-
-    // Obtém a localização atual do usuário
-    Position position = await Geolocator.getCurrentPosition();
-    setState(() {
-      _currentPosition = LatLng(position.latitude, position.longitude);
-      mapController.animateCamera(CameraUpdate.newLatLng(_currentPosition));
-    });
+  @override
+  void dispose() {
+    channel.sink.close(status.goingAway);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Google Maps com Flutter'),
-      ),
-      body: GoogleMap(
-        onMapCreated: (GoogleMapController controller) {
-          mapController = controller;
-        },
-        initialCameraPosition: CameraPosition(
-          target: _initialPosition,
-          zoom: 14.0,
-        ),
-        myLocationEnabled: true,
-        myLocationButtonEnabled: true,
+      appBar: AppBar(title: const Text("Chat WebSocket")),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: messages.length,
+              itemBuilder: (context, index) => ListTile(
+                title: Text(messages[index]),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      hintText: "Digite uma mensagem...",
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: _sendMessage,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

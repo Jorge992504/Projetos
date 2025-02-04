@@ -22,6 +22,22 @@ final restClientProvider = Provider<RestClient>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef RestClientRef = ProviderRef<RestClient>;
+String _$channelHash() => r'715544005c0a995ecee1d79ba4d926f58252cdb6';
+
+/// See also [channel].
+@ProviderFor(channel)
+final channelProvider = Provider<WebSocketClient>.internal(
+  channel,
+  name: r'channelProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$channelHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ChannelRef = ProviderRef<WebSocketClient>;
 String _$authRepositoryHash() => r'7ee9a373e43c51bf91445e0d99e35444b221f6ec';
 
 /// See also [authRepository].
@@ -88,6 +104,24 @@ final getMeProvider = FutureProvider<UserModel>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef GetMeRef = FutureProviderRef<UserModel>;
+String _$repositoryMessagesHash() =>
+    r'0f8cd14cbb7c231e70235ebeff0adf7480d1aeb5';
+
+/// See also [repositoryMessages].
+@ProviderFor(repositoryMessages)
+final repositoryMessagesProvider = Provider<RepositoryMessages>.internal(
+  repositoryMessages,
+  name: r'repositoryMessagesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$repositoryMessagesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef RepositoryMessagesRef = ProviderRef<RepositoryMessages>;
 String _$repositoryGeneralHash() => r'3da1a16034213addd2efb02f39b3ce86fda214e6';
 
 /// See also [repositoryGeneral].
@@ -137,5 +171,21 @@ final logoutProvider = FutureProvider<void>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef LogoutRef = FutureProviderRef<void>;
+String _$connectedHash() => r'e4a26ff0deb155b555341183367f51fda64a3175';
+
+/// See also [connected].
+@ProviderFor(connected)
+final connectedProvider = FutureProvider<void>.internal(
+  connected,
+  name: r'connectedProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$connectedHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ConnectedRef = FutureProviderRef<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

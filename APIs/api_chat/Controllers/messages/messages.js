@@ -1,49 +1,24 @@
-import database from "../../Data/database.js"; // Modelo do MongoDB ou banco de dados usado.
+import database from "../../Data/database.js"; 
+import express from "express";
+const router = express.Router();
 
-const Messages = {
-  sendMessage: async (req, res) => {
+
+
+
+async function getMessages(req, res) {
     try {
-      const { senderId, receiverId, text } = req.body;
-
-      if (!senderId || !receiverId || !text) {
-        return res.status(400).json({ error: "Dados inválidos" });
-      }
-
-      const message = await database.create({
-        senderId,
-        receiverId,
-        text,
-        timestamp: new Date(),
-      });
-
-      return res.status(200).json({ success: true, message });
+        const id = req.id;
+        const {receiverId} = req.body;
+        let messages = (await database.query(`select * from Messages where sender_id = $1 and receiver_id = $2;`,[id, receiverId])).rows;
+        if (!messages) {
+            return res.status(403).send({error:' Messagens não encontrados'});
+        }else{
+            res.send(messages);
+        }
     } catch (error) {
-      console.error("Erro ao enviar mensagem:", error);
-      return res.status(500).json({ success: false, error: "Erro interno do servidor" });
+        console.error('Messagens não encontrado', 'erro: ', error);
+        console.log('Message do erro: ', error.message);
     }
-  },
+}
 
-  getMessages: async (req, res) => {
-    try {
-      const { senderId, receiverId } = req.query;
-
-      if (!senderId || !receiverId) {
-        return res.status(400).json({ error: "Dados inválidos" });
-      }
-
-      const messages = await database.find({
-        $or: [
-          { senderId, receiverId },
-          { senderId: receiverId, receiverId: senderId },
-        ],
-      }).sort({ timestamp: 1 });
-
-      return res.status(200).json({ success: true, messages });
-    } catch (error) {
-      console.error("Erro ao buscar mensagens:", error);
-      return res.status(500).json({ success: false, error: "Erro interno do servidor" });
-    }
-  },
-};
-
-export default Messages;
+export default {getMessages};
