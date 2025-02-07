@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:homechat/src/core/client/ws_client.dart';
+import 'package:homechat/src/core/providers/application_provider.dart';
 import 'package:homechat/src/core/router/rotas.dart';
 import 'package:homechat/src/pages/login/login_state.dart';
 import 'package:homechat/src/pages/login/login_vm.dart';
@@ -40,6 +42,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         case LoginState(status: LoginStateStatus.error):
           Messages.showError('Erro ao realizar login', context);
         case LoginState(status: LoginStateStatus.login):
+          final socket = ref.watch(socketProvider);
+          socket.connect();
           Navigator.of(context)
               .pushNamedAndRemoveUntil(Rotas.home, (router) => false);
           break;
@@ -93,6 +97,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           Messages.showError('Campos inválidos', context);
                         case true:
                           login(emailEC.text, passwordEC.text);
+                        // SocketClient().connect();
                       }
                     },
                   ),

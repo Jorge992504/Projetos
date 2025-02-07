@@ -18,6 +18,7 @@ class ChatState {
     required this.messages,
     this.errorMessage,
   });
+  ChatState.initial() : this(status: ChatStateStatus.initial, messages: []);
 
   ChatState copyWith({
     ChatStateStatus? status,

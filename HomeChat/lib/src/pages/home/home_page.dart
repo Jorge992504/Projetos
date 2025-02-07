@@ -1,11 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:homechat/src/core/providers/application_provider.dart';
 import 'package:homechat/src/core/router/rotas.dart';
 import 'package:homechat/src/pages/home/home_vm.dart';
 import 'package:homechat/src/pages/home/widgets/friends.dart';
 
 import 'package:homechat/src/pages/home/widgets/search.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -19,8 +21,6 @@ int currentPageIndex = 0;
 class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
-    // ref.watch(repositoryMessagesProvider);
-    ref.watch(channelProvider);
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
@@ -74,10 +74,16 @@ class _HomePageState extends ConsumerState<HomePage> {
           alignment: Alignment.topLeft,
           margin: const EdgeInsets.only(left: 15, top: 28),
           child: IconButton(
-            onPressed: () {
-              ref.read(homeVmProvider.notifier).logout();
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(Rotas.login, (router) => false);
+            onPressed: () async {
+              try {
+                await ref.read(homeVmProvider.notifier).logout();
+
+                // ignore: use_build_context_synchronously
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil(Rotas.login, (router) => false);
+              } on Exception catch (e, s) {
+                log('Error: ', error: e, stackTrace: s);
+              }
             },
             icon: const Icon(
               Icons.logout_sharp,

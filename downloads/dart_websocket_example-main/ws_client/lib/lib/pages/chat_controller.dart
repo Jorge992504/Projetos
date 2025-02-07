@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ChatController {
-  final wsUrl = Uri.parse('ws://localhost:8080/ws');
+  final wsUrl = Uri.parse('ws://172.16.251.22:3001');
   late final channel = WebSocketChannel.connect(wsUrl);
 
   final msg = ValueNotifier<List<MessageEntity>>([]);

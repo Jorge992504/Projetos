@@ -22,9 +22,7 @@ class RepositoryGeneralImpl implements RepositoryGeneral {
   Future<Either<RepositoryException, List<UserModel>>> getUsers(
       List<UserModel> name) async {
     try {
-      final Response<List> response = await restClient.auth.get('/user', data: {
-        'id': '#userAuthRef',
-      });
+      final Response<List> response = await restClient.auth.get('/user');
       List<UserModel> users =
           response.data?.map((e) => UserModel.fromMap(e)).toList() ?? [];
       return Success(users);

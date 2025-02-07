@@ -38,8 +38,8 @@ class MessageModel {
 
   factory MessageModel.fromMap(Map<String, dynamic> map) {
     return MessageModel(
-      senderId: map['senderId'] ?? 0,
-      receiverId: map['receiverId'] ?? 0,
+      senderId: map['sender_id'] ?? 0,
+      receiverId: map['receiver_id'] ?? 0,
       text: map['text'] ?? '',
       createdAt: DateTime.parse(map['created_at']),
     );

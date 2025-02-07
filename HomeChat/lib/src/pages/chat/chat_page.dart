@@ -2,15 +2,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:homechat/src/core/fp/either.dart';
-import 'package:homechat/src/core/keys/local_storage_keys.dart';
+import 'package:homechat/src/core/models/message_model.dart';
 import 'package:homechat/src/core/models/user_model.dart';
+import 'package:homechat/src/core/providers/application_provider.dart';
 import 'package:homechat/src/pages/chat/chat_state.dart';
 import 'package:homechat/src/pages/chat/chat_vm.dart';
 import 'package:homechat/src/pages/chat/widgets/message_text_field.dart';
 import 'package:homechat/src/ui/helpers/messages.dart';
-import 'package:jwt_decode/jwt_decode.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   const ChatPage({super.key});
@@ -22,11 +20,17 @@ class ChatPage extends ConsumerStatefulWidget {
 class _ChatPageState extends ConsumerState<ChatPage> {
   final channel = ChatVm();
   final messageEC = TextEditingController();
+  List<MessageModel> messages = [];
 
   @override
   void initState() {
-    // channel.init();
     super.initState();
+    // print("--------------------msg> ");
+    ref.read(socketProvider).socket?.on("mensagem", (msg) {
+      setState(() {
+        messages.add(MessageModel.fromMap(msg));
+      });
+    });
   }
 
   @override
@@ -42,8 +46,24 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         <String, dynamic>{}) as Map;
     UserModel user = arguments['user'];
     final int receiverId = user.id;
+    // final chatVm = ref.watch(chatVmProvider(senderId).notifier);
     final chatState = ref.watch(chatVmProvider(receiverId));
-    final chatVm = ref.read(chatVmProvider(receiverId).notifier);
+    ref.listen(chatVmProvider(receiverId), (_, state) {
+      switch (state) {
+        // ignore: constant_pattern_never_matches_value_type
+        case ChatStateStatus.initial:
+          break;
+        // ignore: constant_pattern_never_matches_value_type
+        case ChatStateStatus.sending:
+          Messages.showError('Mensagem enviado', context);
+        // ignore: constant_pattern_never_matches_value_type
+        case ChatStateStatus.error:
+          Messages.showError("Erro ao enivar mennsagem", context);
+        // ignore: constant_pattern_never_matches_value_type
+        case ChatStateStatus.loaded:
+          break;
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -59,30 +79,36 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           ),
           chatState.when(
             data: (ChatState data) {
-              final sortMessages = List.of(data.messages)
-                ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+              // final socket = ref.watch(socketProvider);
+              // socket.listenMessageReceiver(
+              //   (msg) {},
+              // );
+              final sortMessages =
+                  (List.of(data.messages)..sort((a, b) => a.createdAt.compareTo(b.createdAt)))
+                    ..addAll(messages);
+
               return Expanded(
                 child: ListView.builder(
                   itemCount: sortMessages.length,
                   itemBuilder: (context, index) {
                     final message = data.messages[index];
-                    final isMe = message.senderId;
                     return Align(
-                      alignment: user.id == isMe
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
+                      alignment: user.id == message.senderId
+                          ? Alignment.centerLeft
+                          : Alignment.centerRight,
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         margin: const EdgeInsets.symmetric(
                             vertical: 5, horizontal: 10),
                         decoration: BoxDecoration(
-                          color:
-                              user.id == isMe ? Colors.blue : Colors.grey[300],
+                          color: user.id == message.senderId
+                              ? Colors.blue
+                              : Colors.grey[300],
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(message.text,
                             style: TextStyle(
-                                color: user.id == isMe
+                                color: user.id == message.senderId
                                     ? Colors.white
                                     : Colors.black)),
                       ),
@@ -102,21 +128,18 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           ),
           MessageTextField(
             messageEC: messageEC,
-            onPressed: () async {
-              final sp = await SharedPreferences.getInstance();
-              final accessToken = sp.getString(LocalStorageKeys.token);
-              Map<String, dynamic> payload = Jwt.parseJwt(accessToken!);
-              int id = payload['id'];
-              final result = chatVm.sendMessages(
-                user.id,
-                id,
-                messageEC.text,
-              );
+            onPressed: () {
+              final msg = {
+                'receiverId': receiverId,
+                'text': messageEC.text,
+              };
+              final socket = ref.watch(socketProvider);
+              final result = socket.sendMessage(msg);
               switch (result) {
-                case Success():
+                case false:
+                  Messages.showError('Mensagem não enviada', context);
+                case true:
                   messageEC.clear();
-                case Failure():
-                  Messages.showError('Mensagem não enviado', context);
               }
             },
           ),
@@ -125,60 +148,3 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     );
   }
 }
-
-
-// child: ValueListenableBuilder(
-            //   valueListenable: channel.msg,
-            //   builder: (context, messages, _) {
-            //     return chatState.when(
-            //       data: (ChatState messages) {
-            //         return ListView.builder(
-            //           itemCount: messages.messages.length,
-            //           itemBuilder: (context, index) {
-            //             final message = messages.messages[index];
-
-            //             if (message.receiverId == user.id) {
-            //               return MessageReceiver(message: message.text);
-            //             }
-            //             return MessageSender(
-            //               message: message.text,
-            //             );
-            //           },
-            //         );
-            //       },
-            //       error: (error, stackTrace) =>
-            //           Center(child: Text('Erro: $error')),
-            //       loading: () =>
-            //           const Center(child: CircularProgressIndicator()),
-            //     );
-            //   },
-            // ),
-
-
-
-          //   Expanded(
-            
-          //   child: ListView.builder(
-          //     itemCount: ,
-          //     itemBuilder: (context, index) {
-          //       final message = chatState.messages[index];
-          //       final isMe = message.isMe;
-          //       return Align(
-          //         alignment:
-          //             isMe ? Alignment.centerRight : Alignment.centerLeft,
-          //         child: Container(
-          //           padding: const EdgeInsets.all(10),
-          //           margin:
-          //               const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-          //           decoration: BoxDecoration(
-          //             color: isMe ? Colors.blue : Colors.grey[300],
-          //             borderRadius: BorderRadius.circular(10),
-          //           ),
-          //           child: Text(message.text,
-          //               style: TextStyle(
-          //                   color: isMe ? Colors.white : Colors.black)),
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // ),

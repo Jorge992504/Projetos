@@ -3,10 +3,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:homechat/src/core/providers/application_provider.dart';
 import 'package:homechat/src/core/router/rotas.dart';
 import 'package:homechat/src/pages/splash/splash_vm.dart';
 import 'package:homechat/src/ui/helpers/messages.dart';
+
+import '../../core/providers/application_provider.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
@@ -27,7 +28,6 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(channelProvider);
     ref.listen(splashVmProvider, (_, state) {
       state.whenOrNull(
         error: (error, stackTrace) {
@@ -39,6 +39,8 @@ class _SplashPageState extends ConsumerState<SplashPage> {
         data: (data) {
           switch (data) {
             case SplashStateStatus.login:
+              final socket = ref.watch(socketProvider);
+              socket.connect();
               Navigator.of(context)
                   .pushNamedAndRemoveUntil(Rotas.home, (routes) => false);
             case _:
