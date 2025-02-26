@@ -1,5 +1,7 @@
 import 'package:asyncstate/asyncstate.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:homechat/src/core/providers/socket_provider.dart';
 import 'package:homechat/src/pages/chat/chat_page.dart';
 import 'package:homechat/src/pages/confirm/confirm_page.dart';
 import 'package:homechat/src/pages/home/home_page.dart';
@@ -10,6 +12,7 @@ import 'package:homechat/src/pages/splash/splash_page.dart';
 import 'package:homechat/src/core/router/rotas.dart';
 import 'package:homechat/src/ui/theme/homechat_theme.dart';
 import 'package:homechat/src/ui/widgets/homechat_nav_global_key.dart';
+import 'package:provider/provider.dart' as p;
 
 class HomechatApp extends StatelessWidget {
   const HomechatApp({super.key});
@@ -18,20 +21,23 @@ class HomechatApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return AsyncStateBuilder(
       builder: (asyncNavigatorObserver) {
-        return MaterialApp(
-          title: 'Home Chat',
-          theme: HomechatTheme.themeData,
-          navigatorObservers: [asyncNavigatorObserver],
-          navigatorKey: HomechatNavGlobalKey.instance.navKey,
-          routes: {
-            Rotas.splash: (context) => const SplashPage(),
-            Rotas.home: (context) => const HomePage(),
-            Rotas.login: (context) => const LoginPage(),
-            Rotas.register: (context) => const RegisterPage(),
-            Rotas.chat: (context) => const ChatPage(),
-            Rotas.convite: (context) => const InvitationPage(),
-            Rotas.confirm: (context) => const ConfirmPage(),
-          },
+        return p.ChangeNotifierProvider(
+          create: (_) => SocketProvider.create(),
+          child: MaterialApp(
+            title: 'Home Chat',
+            theme: HomechatTheme.themeData,
+            navigatorObservers: [asyncNavigatorObserver],
+            navigatorKey: HomechatNavGlobalKey.instance.navKey,
+            routes: {
+              Rotas.splash: (context) => const SplashPage(),
+              Rotas.home: (context) => const HomePage(),
+              Rotas.login: (context) => const LoginPage(),
+              Rotas.register: (context) => const RegisterPage(),
+              Rotas.chat: (context) => const ChatPage(),
+              Rotas.convite: (context) => const InvitationPage(),
+              Rotas.confirm: (context) => const ConfirmPage(),
+            },
+          ),
         );
       },
     );
