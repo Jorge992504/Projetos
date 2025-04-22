@@ -1,0 +1,131 @@
+dependencia web_socket_channel
+*****************************************************************************************************************
+Provider com WebSocket
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+
+class SocketProvider with ChangeNotifier {
+  final String _url = 'ws://seu-servidor:porta'; // Altere para o endereço do seu WebSocket
+  WebSocketChannel? _channel;
+  StreamSubscription? _subscription;
+  String _message = '';
+
+  String get message => _message;
+
+  SocketProvider() {
+    _connect();
+  }
+
+  void _connect() {
+    _channel = IOWebSocketChannel.connect(_url);
+    _subscription = _channel!.stream.listen(
+      (data) {
+        _message = data;
+        notifyListeners(); // Notifica os widgets quando receber um novo dado
+      },
+      onError: (error) {
+        print("Erro no WebSocket: $error");
+      },
+      onDone: () {
+        print("WebSocket desconectado.");
+      },
+    );
+  }
+
+  void sendMessage(String msg) {
+    _channel?.sink.add(msg);
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    _channel?.sink.close();
+    super.dispose();
+  }
+}
+*******************************************************************************************************************
+Provider no main
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'socket_provider.dart'; // Importe o arquivo do provider
+
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SocketProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter WebSocket',
+      theme: ThemeData.dark(),
+      home: ChatPage(),
+    );
+  }
+}
+**********************************************************************************************************************
+Tela
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'socket_provider.dart';
+
+class ChatPage extends StatefulWidget {
+  @override
+  _ChatPageState createState() => _ChatPageState();
+}
+
+class _ChatPageState extends State<ChatPage> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final socketProvider = Provider.of<SocketProvider>(context);
+
+    return Scaffold(
+      appBar: AppBar(title: Text("WebSocket Chat")),
+      body: Column(
+        children: [
+          Expanded(
+            child: Center(
+              child: Text(
+                "Mensagem recebida: ${socketProvider.message}",
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: InputDecoration(labelText: "Digite uma mensagem"),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () {
+                    if (_controller.text.isNotEmpty) {
+                      socketProvider.sendMessage(_controller.text);
+                      _controller.clear();
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -9,7 +9,7 @@ final class RestClient extends DioForNative {
       : super(
           BaseOptions(
             // baseUrl: 'http://192.168.3.20:3000',
-            baseUrl: 'http://192.168.26.94:3000',
+            baseUrl: 'http://172.16.251.22:4000',
             connectTimeout: const Duration(seconds: 10),
             receiveTimeout: const Duration(seconds: 60),
             contentType: ContentType.json.value,
