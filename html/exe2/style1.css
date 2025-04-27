@@ -1,0 +1,147 @@
+.container {
+	margin: 0 auto;
+	width: 67.5%; /* +/- 960 */
+}
+
+/* Antes */
+h1 {
+	font-size: 32px;
+}
+/* Depois */
+h1 {
+	font-size: 2em; /* 32 / 16 */
+}
+
+/* Antes */
+.content {
+	margin: 15px 0;
+}
+/* Depois */
+.content {
+	margin: 1.5625% 0; /* 15 / 960 */
+}
+
+/* Antes */
+.content-main {
+	float: left;
+	width: 593px; /* Medida maior da Proporção Áurea aplicada ;-) */
+}
+
+/* Depois */
+.content-main {
+	float: left;
+	width: 61.7708%; /* 593 (.content-main) / 960 (.container) */
+}
+
+/* Antes */
+.hero {
+	margin: 25px 0;
+}
+.brief {
+	margin: 5px 0;
+}
+/* Depois */
+.hero {
+	margin: 4.2158% 0; /* 25 / 593 */
+}
+.brief {
+	margin: 1% 0; /* 5 / 593 */
+	/* = 0.8431%, que, opcionalmente, pode ser arredondado para 1% */
+}
+
+/* Antes */
+.last-contents {
+	font-size: 12px;
+}
+
+.last-content-call {
+	float: left;
+	margin: 15px 15px 15px 0;
+	width: 280px;
+}
+.last-content-call .brief {
+	margin: 5px;
+}
+/* Depois */
+.last-contents {
+	font-size: .75em; /* 12 / 16 */
+}
+.last-content-call {
+	float: left;
+	margin: 2.5295% 2.5295% 2.5295% 0; /* 15 / 593 (.content-main) */
+	width: 47.2175%; /* 280 / 593 */
+}
+.last-content-call .brief {
+	margin: 1.7857% 0; /* 5 / 280 */
+}
+
+/* Antes */
+.content-sidebar {
+	background-color: #F0F0F0;
+	float: right;
+	padding: 10px;
+	width: 322px;
+}
+.main-nav ul {
+	list-style-type: none;
+}
+.main-nav li {
+
+	background-color: #F9F9F9;
+	float: left;
+	margin: 15px;
+	outline: 1px solid #DEDEDE;
+	text-align: center;
+	width: 130px;
+}
+.main-nav a {
+	display: block;
+	padding: 10px;
+	text-decoration: none;
+}
+
+/* Depois */
+.content-sidebar {
+	background-color: #F0F0F0;
+	float: right;
+	padding: 1.0416%; /* 10 / 960 */
+	width: 33.5416%; /* 322 / 960 */
+}
+.main-nav ul {
+	list-style-type: none;
+}
+.main-nav li {
+	background-color: #F9F9F9;
+	float: left;
+	margin: 4.6583%; /* 15 / 322 (.content-sidebar) */
+	outline: 1px solid #DEDEDE;
+	text-align: center;
+	width: 40.3726%; /* 130 / 322 */
+}
+.main-nav a {
+	display: block;
+	padding: 7.6923%; /* 10 / 130 */
+	text-decoration: none;
+}
+
+/* Antes */
+.main-footer {
+	background-color: #F0F0F0;
+	clear: both;
+	float:left;
+	font-size: 12px;
+	margin: 15px 0;
+	padding: 15px;
+	text-align: center;
+	width: 100%;
+}
+/* Depois */
+.main-footer {
+	background-color: #F0F0F0;
+	float:left;
+	font-size: .75em; /* 12 / 16 */
+	margin: 1.5625% 0; /* 15 / 960 */
+	padding: 1.5625%; /* 15 / 960 */
+	text-align: center;
+	width: 100%;
+}

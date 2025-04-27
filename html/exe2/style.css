@@ -1,0 +1,95 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr;
+    min-height: 100vh;
+    width: 90%;
+    margin: 0 auto;
+}
+
+.header {
+    background: #0077cc;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+.content-main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.last-contents {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.last-content-call {
+    background: #f4f4f4;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.last-content-call a {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 5px 10px;
+    background: #0077cc;
+    color: white;
+    text-decoration: none;
+    border-radius: 3px;
+}
+
+.content-sidebar {
+    background: #e0e0e0;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.main-nav li {
+    background: #d9d9d9;
+    padding: 10px;
+    text-align: center;
+    border-radius: 3px;
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: black;
+    display: block;
+}
+
+.main-footer {
+    background: #0077cc;
+    color: white;
+    text-align: center;
+    padding: 15px;
+}

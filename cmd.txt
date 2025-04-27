@@ -1,5 +1,5 @@
 //criar project
-flutter create --project-name coletor --android-language java --platforms ios,android,windows,web --org jorgeabp99@gmail.com Coletor
+flutter create --project-name aumigo --android-language java --platforms ios,android,windows,web --org jorgeabp99@gmail.com Aumigo
 
 //add plataforma
 flutter create --plataforms=web .
