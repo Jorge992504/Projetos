@@ -1,4 +1,7 @@
 package com.api.api.Dto;
 
-public record RegistroDto(String email, String password, String name) {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record RegistroDto(@Email(message = "E-mail obrigatorio") String email, @NotBlank(message = "Senha obrigatoria") String password, String name) {
 }
