@@ -9,6 +9,7 @@ import com.api.api.exception.ObjectFoundException;
 import com.api.api.models.Users;
 import com.api.api.repositories.UserRepository;
 import com.api.api.services.UserRegisterService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +32,7 @@ public class UserRegister {
     }
 
     @PostMapping
-    public ResponseEntity<?> register(@RequestBody RegistroDto body) {
+    public ResponseEntity<?> register( @Valid @RequestBody RegistroDto body) {
 
         if (body.email().isEmpty() || body.password().isEmpty()) {
             throw new EmptyObjectException("Campos vazios");
@@ -54,6 +55,7 @@ public class UserRegister {
             }
         }
     }
+
 
 
 }

@@ -1,8 +1,8 @@
 package com.api.api.controller.authorization;
 
-
 import com.api.api.services.authorization.AuthorizationService;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,23 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws  SecurityException, IOException {
-        
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
+        String path = request.getServletPath();
+
+        // Ignora rotas públicas
+        if (path.equals("/register") || path.equals("/login") || path.equals("/controller/verificar")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // Verifica autorização JWT
+        if (!authorizationService.isAuthorized(request)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+            return;
+        }
+
+        filterChain.doFilter(request, response);
     }
 }
