@@ -22,4 +22,9 @@ public class Users {
     private String password;
 
     private String name;
+
+    @Column(nullable = false)
+    private boolean verificado;
+
+    private int codVerif;
 }
