@@ -7,6 +7,9 @@ import com.api.api.exception.ErroException;
 import com.api.api.exception.ObjectNotFoundException;
 import com.api.api.models.Users;
 import com.api.api.repositories.UserRepository;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import com.api.api.services.UserEmailVerificadoService;
 import org.springframework.web.bind.annotation.*;
 

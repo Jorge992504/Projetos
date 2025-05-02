@@ -42,7 +42,7 @@ public class UserRegisterService {
     }
 
     @Transactional
-    public Users saveUser(RegistroDto body) {
+    public Users saveUser(RegistroDto body){
         String password = passwordEncoder.encode(body.password());
         Random random = new Random();
         int codigo = 1000 + random.nextInt(9000);
