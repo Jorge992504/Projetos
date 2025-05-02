@@ -18,13 +18,7 @@ public class AuthorizationService {
     @Value("${jwt.secret}")
     private String secreKey;
 
-<<<<<<< HEAD
-    public boolean isToken(String token) {
-        Claims claims = parseToken(token);
-        if (claims.getSubject() != null && !claims.getSubject().isEmpty()) {
-            return true;
-        } else {
-=======
+
     // Verifica se o token é válido
     public boolean isAuthorized(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
@@ -40,24 +34,11 @@ public class AuthorizationService {
             String user = claims.getSubject();
             return user != null && !user.isEmpty();
         } catch (Exception e) {
->>>>>>> 7f526ffc1b88b7fab140e11c7dc8f1684afa4027
             return false;
         }
     }
 
-<<<<<<< HEAD
 
-    private Claims parseToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(secreKey.getBytes())
-                .parseClaimsJws(token.replace("Bearer ", ""))
-                .getBody();
-    }
-
-    public String getUsernameFromToken(String token){
-        Claims claims = parseToken(token);
-        return claims.getSubject();
-=======
     // Extrai os claims do token
     public Claims getClaimsFromToken(String token) throws SignatureException {
         return Jwts.parser()
@@ -112,6 +93,5 @@ public class AuthorizationService {
             }
         } catch (Exception ignored) {}
         return null;
->>>>>>> 7f526ffc1b88b7fab140e11c7dc8f1684afa4027
     }
 }
