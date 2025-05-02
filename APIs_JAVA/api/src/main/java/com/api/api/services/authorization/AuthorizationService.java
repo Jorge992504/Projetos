@@ -1,12 +1,9 @@
 package com.api.api.services.authorization;
 
-<<<<<<< HEAD
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-=======
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
@@ -14,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
->>>>>>> 7f526ffc1b88b7fab140e11c7dc8f1684afa4027
 
 @Service
 public class AuthorizationService {
