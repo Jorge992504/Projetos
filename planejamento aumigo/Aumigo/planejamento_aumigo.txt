@@ -1,0 +1,62 @@
+
+Projeto: Aumigo - Aplicativo para Pet Shop
+
+1. DEFINIÇÃO DO FOCO E OBJETIVOS
+---------------------------------
+- Nome do projeto: Aumigo
+- Objetivo geral: Criar dois apps (clientes e funcionários) para melhorar a experiência em pet shops.
+- Públicos-alvo:
+  - Clientes (usuários finais): donos de pets (Android/iOS)
+  - Funcionários (admin): equipe do pet shop
+
+2. FUNCIONALIDADES
+-------------------
+
+App do Cliente:
+- Cadastro/login (com social)
+- Cadastro de pets
+- Agendamento de serviços
+- Histórico de serviços
+- Lembretes de vacinação
+- Notificações
+- Chat/comunicação
+
+App do Funcionário:
+- Login
+- Visualização de agendamentos
+- Lista de pets/clientes
+- Atualização de status
+- Controle de vacinas
+
+3. ARQUITETURA E TECNOLOGIAS
+-----------------------------
+- Frontend: Flutter
+- Backend: Spring Boot (ou Node.js)
+- Banco de Dados: PostgreSQL/MongoDB + SQLite
+- Notificações: Firebase Cloud Messaging
+- Autenticação: JWT ou Firebase Auth
+- Hospedagem: Render/Railway
+- Git: GitHub/Sourcetree
+
+4. ETAPAS DO DESENVOLVIMENTO
+-----------------------------
+- Etapa 1: Planejamento e wireframes
+- Etapa 2: Backend e modelagem de dados
+- Etapa 3: Frontend cliente (Flutter)
+- Etapa 4: Frontend funcionário (Flutter)
+- Etapa 5: Integração com backend
+- Etapa 6: Testes e ajustes
+- Etapa 7: Publicação
+
+5. CRONOGRAMA (3 MESES)
+------------------------
+| Semana | Atividade                              |
+|--------|-----------------------------------------|
+| 1-2    | Wireframes e modelagem de dados         |
+| 3-4    | Backend: autenticação, cadastro, pets   |
+| 5-6    | Flutter app cliente                     |
+| 7-8    | Flutter app admin                       |
+| 9      | Integração backend + frontend           |
+| 10     | Testes                                  |
+| 11     | Ajustes finais                          |
+| 12     | Publicação                              |
