@@ -1,6 +1,5 @@
 package com.api.api.services;
 
-
 import com.api.api.Dto.TokenResponseDto;
 import com.api.api.exception.ErroException;
 import com.api.api.models.Users;
@@ -46,7 +45,6 @@ public class UserEmailVerificadoService {
             throw new ErroException("Email não informado");
         }
 
-
         Optional<Users> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
             Users response = user.get();
@@ -58,7 +56,6 @@ public class UserEmailVerificadoService {
         }
 
     }
-
 
     public String geraToken(String email) {
         String token;
@@ -80,20 +77,19 @@ public class UserEmailVerificadoService {
             return null;
         }
 
-
     }
 
-//    //A cada 5 minutos enviar um e-mail
-//    @Scheduled(fixedDelay = 300000)
-//    public void enviaCodigosParaUsuarios() {
-//        List<Users> users = userRepository.findByVerificado(false);
-//
-//        for (Users user : users) {
-//            if (!user.isVerificado()) {
-//                enviarEmail(user.getEmail(), user.getCodVerif());
-//            }
-//        }
-//
-//    }
+    // //A cada 5 minutos enviar um e-mail
+    // @Scheduled(fixedDelay = 300000)
+    // public void enviaCodigosParaUsuarios() {
+    // List<Users> users = userRepository.findByVerificado(false);
+
+    // for (Users user : users) {
+    // if (!user.isVerificado()) {
+    // enviarEmail(user.getEmail(), user.getCodVerif());
+    // }
+    // }
+
+    // }
 
 }

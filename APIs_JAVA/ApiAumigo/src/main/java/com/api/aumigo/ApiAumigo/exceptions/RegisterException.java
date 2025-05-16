@@ -6,14 +6,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class InvalidObjectException extends RuntimeException {
-    private int status = 400;
+public class RegisterException extends RuntimeException {
+    private int status = 404;
     private String error;
-
-    public InvalidObjectException(String message) {
-        super("NOT_FOUND");
+    public RegisterException(String message) {
+        super("USER_NOT_REGISTER");
         this.error = message;
-
 
     }
 }

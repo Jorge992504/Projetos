@@ -10,7 +10,7 @@ public class ObjectFoundException extends RuntimeException {
     private int status = 302;
     private String error;
     public ObjectFoundException(String message) {
-        super(message);
+        super("FOUND");
         this.error = message;
     }
 }

@@ -1,7 +1,7 @@
-package com.api.aumigo.ApiAumigo.service;
+package com.api.aumigo.ApiAumigo.service.user;
 
 
-import com.api.aumigo.ApiAumigo.dto.RegisterDto;
+import com.api.aumigo.ApiAumigo.dto.register.RegisterDto;
 import com.api.aumigo.ApiAumigo.models.Users;
 import com.api.aumigo.ApiAumigo.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Random;
 
@@ -32,15 +33,15 @@ public class UserRegisterService {
     public Users saveUser(RegisterDto body){
         String password = passwordEncoder.encode(body.password());
         Random random = new Random();
-        int codigo = 1000 + random.nextInt(9000);
+        int codigo = 1000 + random.nextInt(4000);
         Users user = Users.builder()
                 .name(body.name())
                 .email(body.email())
                 .password(password)
                 .telefone(body.telefone())
-                .tipo(body.tipo())
+                .tipo("user")
                 .codigo(codigo)
-                .data(body.date())
+                .data(LocalDate.now())
                 .verificado(false)
                 .build();
        return userRepository.save(user);

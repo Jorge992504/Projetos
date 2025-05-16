@@ -4,6 +4,7 @@ package com.api.aumigo.ApiAumigo.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -32,7 +33,7 @@ public class Users {
     @Column(nullable = false)
     private String tipo;
 
-    private String data;
+    private LocalDate data;
 
     @Column(nullable = false)
     private int codigo;

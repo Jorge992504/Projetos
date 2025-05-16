@@ -6,14 +6,11 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class InvalidObjectException extends RuntimeException {
+public class ObjectEmptyException extends RuntimeException {
     private int status = 400;
     private String error;
-
-    public InvalidObjectException(String message) {
-        super("NOT_FOUND");
+    public ObjectEmptyException(String message) {
+        super("PARAMETRO_VAZIO");
         this.error = message;
-
-
     }
 }
