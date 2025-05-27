@@ -43,7 +43,7 @@ public class AuthorizationService {
             Date expiration = claims.getExpiration();
             return expiration.after(new Date());
         } catch (Exception e) {
-            return false;
+            return false; //capturar a exception
         }
     }
 
