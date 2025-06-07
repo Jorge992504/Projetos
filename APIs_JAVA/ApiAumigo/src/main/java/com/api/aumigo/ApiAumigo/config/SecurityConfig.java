@@ -25,12 +25,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PublicRoutes.path).permitAll()
-                        .anyRequest().authenticated());
-        httpSecurity.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
+                        .anyRequest().authenticated())
+        .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
 
-    public class PublicRoutes {
+    public static class PublicRoutes {
         public static final String[] path = { "/registeruser", "/loginuser", "/verificaEmail","/chatPv" };
     }
 }

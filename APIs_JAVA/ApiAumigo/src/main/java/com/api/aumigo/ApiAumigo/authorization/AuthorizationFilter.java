@@ -2,6 +2,7 @@ package com.api.aumigo.ApiAumigo.authorization;
 
 
 import com.api.aumigo.ApiAumigo.service.authorization.AuthorizationService;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +36,21 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         if (!authorizationService.isAuthorized(request)){
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
+        }
+
+        String header = request.getHeader("Authorization");
+
+        if (header != null && header.startsWith("Bearer ")) {
+            String token = header.substring(7);
+            try {
+                Claims claims =authorizationService.validarToken(token);
+                String email = claims.get("email", String.class);
+                // Crie a autenticação aqui se quiser continuar com Spring Security
+            } catch (RuntimeException e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token inválido ou expirado: " + e.getMessage());
+                return;
+            }
         }
 
         filterChain.doFilter(request,response);
