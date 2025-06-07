@@ -46,8 +46,12 @@ public class AuthorizationService {
             return true;
 
         } catch (Exception e) {
+<<<<<<< HEAD
             e.printStackTrace();
             return false;
+=======
+            return false; //capturar a exception
+>>>>>>> fbdedf1350f0c9c83374f9da4f92c75a72465ba2
         }
     }
 
