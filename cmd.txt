@@ -1,5 +1,5 @@
 //criar project
-flutter create --project-name fluSql --android-language java --platforms ios,android,windows,web --org jorgeabp99@gmail.com FluSql
+flutter create --project-name micro --android-language java --platforms ios,android,windows,web --org jorgeabp99@gmail.com Micro
 
 //add plataforma
 flutter create --plataforms=web .
