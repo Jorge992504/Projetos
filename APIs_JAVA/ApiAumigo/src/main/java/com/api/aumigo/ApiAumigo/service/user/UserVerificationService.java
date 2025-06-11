@@ -47,26 +47,29 @@ public class UserVerificationService {
     }
 
     public String geraToken(String email, Long id, String name, String tipo) {
-        String token;
         Optional<Users> user = userRepository.findByEmail(email);
-        if (user.get().getVerificado() == true) {
+
+        if (user.isPresent() && Boolean.TRUE.equals(user.get().getVerificado())) {
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", id);
             claims.put("email", email);
             claims.put("name", name);
-            token = Jwts.builder()
-                    .setClaims(claims)
-                    .setIssuedAt(new Date(System.currentTimeMillis()))
-                    .setExpiration(Date.from(LocalDateTime.now()
+
+            Date expirationDate = Date.from(
+                    LocalDateTime.now()
                             .plusDays(expirationTime)
                             .atZone(ZoneId.systemDefault())
-                            .toInstant()))
+                            .toInstant()
+            );
+
+            return Jwts.builder()
+                    .setClaims(claims)
+                    .setIssuedAt(new Date())
+                    .setExpiration(expirationDate)
                     .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
                     .compact();
-            return token;
         } else {
             return null;
         }
-
     }
 }
