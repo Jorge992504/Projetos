@@ -3,7 +3,7 @@ package com.compras.api.services.auth;
 
 import com.compras.api.api.dto.response.ResponseLoginUserDto;
 import com.compras.api.api.models.Users;
-import com.compras.api.api.repository.UserRepository;
+import com.compras.api.api.repository.user.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -43,7 +43,9 @@ public class ServiceLoginUser {
                 Map<String, Object> claims = new HashMap<>();
                 claims.put("id", user.get().getId());
                 claims.put("email", user.get().getEmail());
-                token = Jwts.builder().setClaims(claims)
+                token = Jwts.builder()
+                        .setClaims(claims)
+                        .setSubject(user.get().getEmail())
                         .setIssuedAt(new Date(System.currentTimeMillis()))
                         .setExpiration(Date.from(LocalDateTime.now().plusDays(expirationTokenTime).atZone(ZoneId.systemDefault()).toInstant()))
                         .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)

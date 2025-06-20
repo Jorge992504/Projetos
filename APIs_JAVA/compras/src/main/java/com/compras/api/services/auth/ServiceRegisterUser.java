@@ -2,7 +2,7 @@ package com.compras.api.services.auth;
 
 import com.compras.api.api.dto.request.RequestRegisterUserDto;
 import com.compras.api.api.models.Users;
-import com.compras.api.api.repository.UserRepository;
+import com.compras.api.api.repository.user.UserRepository;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;

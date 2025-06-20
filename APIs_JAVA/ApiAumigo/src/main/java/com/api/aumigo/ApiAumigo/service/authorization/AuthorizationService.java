@@ -1,21 +1,20 @@
 package com.api.aumigo.ApiAumigo.service.authorization;
 
-import com.api.aumigo.ApiAumigo.exceptions.ErrorExeception;
-import com.api.aumigo.ApiAumigo.exceptions.InvalidObjectException;
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
-import java.security.Key;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Optional;
+import com.api.aumigo.ApiAumigo.exceptions.InvalidObjectException;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class AuthorizationService {
@@ -46,12 +45,10 @@ public class AuthorizationService {
             return true;
 
         } catch (Exception e) {
-<<<<<<< HEAD
+
             e.printStackTrace();
             return false;
-=======
-            return false; //capturar a exception
->>>>>>> fbdedf1350f0c9c83374f9da4f92c75a72465ba2
+
         }
     }
 

@@ -1,4 +1,4 @@
-package com.compras.api.api.repository;
+package com.compras.api.api.repository.user;
 
 
 import com.compras.api.api.models.Users;

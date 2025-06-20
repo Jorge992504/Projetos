@@ -1,5 +1,5 @@
 //criar project
-flutter create --project-name micro --android-language java --platforms ios,android,windows,web --org jorgeabp99@gmail.com Micro
+flutter create --project-name camera --android-language java --platforms ios,android,windows,web --org jorgeabp99@gmail.com Camera
 
 //add plataforma
 flutter create --plataforms=web .
@@ -21,7 +21,7 @@ https://www.freecodecamp.org/portuguese/news/como-usar-o-nodemailer-para-enviar-
 20031968
 
 conectar device pela wifi
-1- adb cill-server
+1- adb kill-server
 2- adb devices
 3- adb connect ip+porta
 
