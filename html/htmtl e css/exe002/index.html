@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-br",lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon"><!--adicionar icono na janela-->
+    <title>HTML</title>
+    <style>
+        mark {
+            background-color: yellow; /* Cor de fundo padrão */
+            color: white; /* Cor do texto */
+        }
+        body {
+            font-family: Arial, sans-serif; /* Fonte padrão para o corpo do texto */
+            line-height: 1.6; /* Espaçamento entre linhas */
+            margin: 20px; /* Margem ao redor do corpo */
+        }
+        h3 {
+            color: black; /* Cor do texto dos títulos */
+            
+        }
+        p {
+            margin: 10px 0; /* Margem entre parágrafos */
+            color: darkgoldenrod;
+        }
+    </style>
+
+</head>
+<body>
+    <h1>HTML</h1>
+    <hr>
+    <p>Tag para criar Paragrafos "p e /p"</p>
+    <hr>
+    <p>|----------------------------------|</p>
+    <p>|quebra de linhas<br></p><!--tag para fazer uma quebra de linha--> 
+    <p>|----------------------------------|</p>
+    <hr>
+    <p>Testando a quebra <br> de linha com br</p>
+    <hr>
+    <p>Simbolos especias: <br> &reg; <br>&copy;&trade;<br>&euro;</p>
+    <hr>
+    <p>Emojis: <br><!--pegar o codigo do site emojipidia--> &#x1F91A</p>
+    <hr>
+    <!--baixar o gimp-->
+    <p>Colocar imagem</p>
+    <img src="paisagem-600.jpg" alt="Paissagem" width="400" height="250">
+    <p>Cargar imagem em outra pasta</p>
+    <img src="../../images/id-400.png" alt="Logo">
+    <hr>
+    <p>Titulos: <br> <!--os titulos vao desde h1 ate h6-->
+        <h1>Titulo nivel 1</h1>
+        <p>Teste para divider os titulos</p>
+        <h2>Titulo nivel 2</h2>
+        <p>Teste para divider os titulos</p>
+        <h2>Titulo nivel 2</h2>
+        <h3>Titulo de nivel 3</h3>
+        <p>Teste para divider os titulos</p>
+    <hr>
+    <h2>Formatação de textos</h2>
+    <h3>Negrito: </h3>
+    <p>Texto em <strong>negrito</strong></p>
+    <p>Texto em <b>negrito</b></p>
+    <h3>Italico: </h3>    
+    <p>Texto em <em>itálico</em></p>
+    <p>Texto em <i>itálico</i></p>
+    <h3>Texto subraido</h3>
+    <p>Texto em <u>subraido</u></p>
+    <h3>Texto tachado</h3>
+    <p>Texto em <s>tachado</s></p>
+    <h3>Texto com destaque</h3>
+    <p>Texto em <mark style="background-color: blue;">destaque</mark></p>
+    <h3>Texto com cor</h3>
+    <p>Texto em <span style="color: red;">vermelho</span></p>
+    <hr>
+    <h2>Outras Formatações</h2>
+    <p>Para deixar as letras do mesmo tamanho</p>
+    <p>Este é um comando de js <code>get.ElementById('teste')</code></p>
+    <p>Mostra o texto como mesmo esta no codigo</p>
+    <p><code style="color:  red; background-color: aqua;font-size: x-large;">JS</code>
+        <pre>
+            <code>
+    if(i< 01{
+        i++;
+    }else{
+        i--;
+    });
+        </code>
+        </pre>
+    </p>
+    <h2>Sitações</h2>
+    <p>Para citar uma frase de alguem</p>
+    <blockquote>
+        <p>"A vida é o que acontece enquanto você está ocupado fazendo outros planos." - John Lennon</p>
+    </blockquote>    
+    <h2>Referências</h2>
+    <p>Para referenciar uma fonte ou autor</p>
+    <p>Este é um exemplo de referência ao <cite>W3C</cite>, que é o consórcio responsável por definir os padrões da web.</p>
+    <h2>Notas de rodapé</h2>
+    <p>Para adicionar uma nota de rodapé</p>
+    <p>Este é um exemplo de nota de rodapé<sup>1</sup>.</p>
+    <p>Para mais informações, consulte o <a href="https://www.w3.org/" target="_blank">W3C</a>.</p>
+    <h2>Links</h2>
+    <p>Para criar um link</p>
+    <p>Visite o <a href="https://www.google.com" target="_blank">Google</a> para pesquisar.</p>
+    <h2>Abreviações</h2>
+    <p>Para abreviar uma palavra</p>
+    <p>HTML é a sigla para <abbr title="HyperText Markup Language">Linguagem de Marcação de Hipertexto</abbr>.</p>
+    <H2>Texto invertido</H2>
+    <p>Para inverter o texto</p>
+    <p>Texto em <span style="direction: rtl; unicode-bidi: bidi-override;">direção inversa</span></p>
+    <hr>
+    <h2>Lista</h2>
+    <p>Para criar uma lista</p>
+    <ul> <!--lista não ordenada-->
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+    </ul>
+    <p>Para criar uma lista ordenada</p>
+    <ol type="a" start="5" > <!--lista ordenada-->
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+    </ol>
+    <hr>
+    <h2>Juntando listas</h2>
+    <ol><!--lista ordenada-->
+        <li>Antigas</li> <!--coloca o tipo de lista-->
+        <ol type="a"><!--sub lista ordenada-->
+            <li>teste1</li>
+            <li>teste2</li>
+            <li>teste3</li>
+        </ol>
+        <li>Novas</li><!--coloca o tipo de lista-->
+        <ol type="a", start="4"><!--sub lista ordenada-->
+            <li>Teste4</li>
+            <li>Teste5</li>
+            <li>Teste6</li>
+        </ol>
+        <li>Lista com ciruclos</li>
+        <ul type="square"><!--sub lista não ordenada-->
+            <li>Teste7</li>
+            <li>Teste8</li>
+            <li>Teste9</li>
+        </ul>
+    </ol>
+    <hr>
+    <h2>Lista de definições</h2><!--lista de definições-->
+    <dl><!--lista de definições-->
+        <dt>HTML</dt><!--termo-->
+        <dd>Linguagem de Marcação de Hipertexto</dd><!--definição-->
+        <dt>CSS</dt>
+        <dd>Cascading Style Sheets (Folhas de Estilo em Cascata)</dd>
+        <dt>JavaScript</dt>
+        <dd>Linguagem de Programação para Web</dd>
+    </dl>
+    <hr>
+    <h2>Link externos</h2><!--link para outro site-->
+    <p>Para criar um link externo</p>
+    <p>Visite o <a href="https://www.wikipedia.org" target="_blank">Wikipedia</a> para mais informações.</p>
+    <hr>
+    <h2>Link internos</h2><!--link para outra pagina do site-->
+    <p>Para criar um link interno</p>
+    <p>Volte para a <a href="index.html">página inicial</a>.</p>
+    <p>Site exe001 <a href="http://127.0.0.1:5500/htmtl%20e%20css/exe001/index.html" target="_blank">visitar</a></p><!--link para outro site dentro do projeto-->
+    <hr>
+    <h2>Link para abrir uma pagina do site encima da outra </h2><!--link para abrir uma pagina do site encima da outra-->
+    <p>Para abrir uma página do site encima da outra</p>
+    <p>Site exe001 <a href="../exe001/index.html" target="_self" rel="next">visitar</a></p>
+    <hr>
+    <h2>Link para fazer download</h2><!--link para fazer download de um arquivo-->
+    <p>Para fazer download de um arquivo</p>
+    <p>Baixe o arquivo <a href="../../images/favicon.ico" download="favicon.ico">favicon.ico</a>.</p>
+    <hr>
+
+    
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
