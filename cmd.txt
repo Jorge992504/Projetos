@@ -1,5 +1,5 @@
 //criar project
-flutter create --project-name camera --android-language java --platforms ios,android,windows,web --org jorgeabp99@gmail.com Camera
+flutter create --project-name faltou_nada --android-language java --platforms ios,android,windows,web --org jorgeabp99@gmail.com Faltou_Nada
 
 //add plataforma
 flutter create --plataforms=web .

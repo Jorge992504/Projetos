@@ -1,4 +1,4 @@
-import 'package:aumigo/core/ui/style/custom_colors.dart';
+import 'package:faltou_nada/app/core/ui/style/custom_colors.dart';
 import 'package:flutter/material.dart';
 
 class ConfigTheme {
@@ -6,28 +6,28 @@ class ConfigTheme {
   static final _defaultInputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(8.0),
     borderSide: const BorderSide(
-      color: ColorsConstants.letraBordas, // Default border color
+      color: ColorsConstants.buttonBordas, // Default border color
       width: 1.0,
     ),
   );
   static final theme = ThemeData(
-    primaryColor: ColorsConstants.quadro,
-    scaffoldBackgroundColor: ColorsConstants.fundoTela,
+    primaryColor: ColorsConstants.buttonBordas,
+    scaffoldBackgroundColor: ColorsConstants.fundo,
     appBarTheme: const AppBarTheme(
       backgroundColor: ColorsConstants.appBar,
       titleTextStyle: TextStyle(
-        color: ColorsConstants.letraBordas,
+        color: ColorsConstants.textos,
         fontSize: 20.0,
       ),
       iconTheme: IconThemeData(
-        color: ColorsConstants.letraBordas,
+        color: ColorsConstants.textos,
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       border: _defaultInputBorder,
       focusedBorder: _defaultInputBorder.copyWith(
         borderSide: const BorderSide(
-          color: ColorsConstants.letraBordas, // Focused border color
+          color: ColorsConstants.buttonBordas, // Focused border color
           width: 2.0,
         ),
       ),
