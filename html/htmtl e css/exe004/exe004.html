@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon">
+    <title>HTML</title>
+</head>
+<body>
+    <h1>Midias com imagens para diferentes dispositivos</h1>
+    <picture>
+        <!--colocar a imagem pequena como primeira e ir aumentando os tamnhamos e como padrão a imagem grande-->
+        <source media="(max-width:750px )" srcset="../../images/foto-p.png" type="image/png">
+        <source media="(max-width: 1050px)" srcset="../../images/foto-m.png" type="image/png">
+        <img src="../../images/foto-g.png" alt="Imagen felixivel ">
+    </picture>
+    <hr>
+    <h1>Reproduzir audio</h1>
+    <audio src="" controls autoplay id="audio-1">     
+    </audio>
+    <audio>
+        <!--ele vai intentar cargar os audios ate conseguir carregar um-->
+        <source src="nome-do-audio.pm3" type="audio/mpeg">
+        <source src="nome-do-audio.pm3" type="audio/mpeg">
+    </audio>
+<hr>
+    <h1>Reproduzir videos</h1>
+    <!--baixar o aplicativo handbrake-->
+    <video src="../../midia/video.mp4" width="200" height="200" controls poster="../../images/id-400.png" loop></video>
+    <!--quando tem varios-->
+    <video controls width="200" poster="alguma imagem antes">
+        <source src="nome-video.pm4" type="video/mp4">
+        <p>Video indisponivel</p>
+    </video>
+    <hr>
+    <h1></h1>
+</body>
+</html>
