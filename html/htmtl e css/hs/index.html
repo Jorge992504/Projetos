@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>HTML</title>
+
+    <link rel="stylesheet" href="body.css">
+    <style>
+        
+        
+    </style>
+</head>
+<body class="body-1">
+    <h1>Estilos internos de CSS</h1>
+    <p>Você pode integrar com o n8n para:
+
+Enviar e-mail ou WhatsApp ao paciente e ao dentista ao criar a consulta.
+
+Criar eventos no Google Calendar.
+
+Enviar lembretes automáticos no dia anterior.
+
+🚀 Tecnologias recomendadas
+Backend:
+Spring Boot (com Spring Security + JWT)
+
+Banco: PostgreSQL ou MySQL
+
+API REST
+
+Frontend:
+Flutter Web (se quiser usar Flutter)
+
+Ou React.js com Tailwind (caso queira mais leveza e SEO)
+
+Próximos passos:
+Quer que eu desenhe um diagrama do banco de dados?
+
+Quer uma maquete visual (UI Wireframe) com layout das telas?
+
+Quer que eu gere um modelo básico da API (com endpoints)?
+
+Me diga qual dessas partes você quer que eu faça primeiro. Posso ir montando o sistema contigo etapa por etapa.</p>
+
+<form id="forme1" >
+<input type="text" name="valor" id="valor">
+<input type="submit">  ok  </input>
+</form>
+
+<br>
+
+<div id="resultado">
+
+</div>
+
+<script src="https://cdn-script.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    function getProd() {
+       var valor1 = document.getElementById("valor").value
+       var valor2 = $("#valor").val();
+       console.log(valor1,valor2)
+
+       $("#resultado").text(`O valor digitado é ${valor2}`)
+
+        
+    }
+
+    $("Document").ready(()=>{
+        $("forme1").submit((data)=>{
+            console.log(data)
+        })
+    });
+</script>
+</body>
+</html>
