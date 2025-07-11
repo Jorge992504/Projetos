@@ -39,6 +39,10 @@ body {
     font-family: var(--fonte-padrao);
 }
 
+a.externos::after {
+    content: '\00A0\1F517';
+}
+
 header {
     background-color: var(--cor4);
     font-family: var(--fonte-destaque);
@@ -60,7 +64,7 @@ header>h1 {
 
 header>p {
     color: white;
-
+    margin-bottom: 20px;
     font-size: 1.2em;
     padding-right: 10px;
     padding-left: 10px;
@@ -76,7 +80,7 @@ nav {
 }
 
 nav>a {
-    color: white;
+    color: var(--cor1);
     padding: 5px;
     text-decoration: none;
     font-weight: bold;
@@ -181,6 +185,7 @@ aside>h3 {
     padding: 5px;
     margin: -10px -10px 0px -10px;
     border-radius: 10px 10px 0px 0px;
+    box-shadow: 3px 3px 8px black;
 }
 
 footer {
@@ -200,4 +205,21 @@ footer>a {
 footer a:hover {
     text-decoration: underline;
     color: var(--cor1);
+}
+
+div.video {
+    background-color: var(--cor5);
+    margin-bottom: 30px;
+    margin: 0px -20px 30px -20px;
+    padding: 20px;
+    position: relative;
+    padding-bottom: 50%;
+}
+
+div.video>iframe {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    height: 90%;
+    width: 90%;
 }

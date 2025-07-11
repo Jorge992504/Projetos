@@ -7,20 +7,7 @@ async function get(req, res) {
     
     const { name } = req.query;
     try {
-        // let products = (await database.query("select * from products where name like $1;", [`${name ?? ''}%`])).rows;
-        // if (!products) {
-        //     return res.status(403).send('Nenhum produto encontrado');
-        // } else {
-        //     products = products.map(product => {
-        //         if (product.foto) {
-        //             product.foto = "http://localhost:3000/public/" + product.foto;
-        //         } else {
-        //             product.foto = "http://localhost:3000/public/food.png";
-        //         }
-        //         return product;
-        //     });
-        //     res.send(products);
-        // }
+        
         let products = (await database.query("select * from products;")).rows;
         products = products.map(product => {
             if (product.foto) {
