@@ -1,0 +1,117 @@
+import 'package:flutter/material.dart';
+
+class TabelaComScroll extends StatelessWidget {
+  const TabelaComScroll({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Lista de dados fictícios para teste
+    final List<List<String>> dados = List.generate(
+      30,
+      (i) => [
+        '10/${i + 1}',
+        '${i + 1}',
+        'Loc $i',
+        'Set $i',
+        '01/07/25',
+        '12:${(i % 60).toString().padLeft(2, '0')}',
+        'User$i',
+      ],
+    );
+
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE3E6E9),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade400),
+      ),
+      child: Scrollbar(
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            width: 700,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Cabeçalho
+                Row(
+                  children: const [
+                    _CelulaCabecalho('Venc'),
+                    _CelulaCabecalho('Qt'),
+                    _CelulaCabecalho('Loc prod'),
+                    _CelulaCabecalho('Set prod'),
+                    _CelulaCabecalho('Dt reg'),
+                    _CelulaCabecalho('Hr reg'),
+                    _CelulaCabecalho('User'),
+                  ],
+                ),
+                const Divider(thickness: 1, color: Colors.blueGrey),
+                // Lista com scroll vertical
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: dados.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      final item = dados[index];
+                      return Row(
+                        children: item.map((valor) {
+                          return _CelulaConteudo(valor);
+                        }).toList(),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CelulaCabecalho extends StatelessWidget {
+  final String texto;
+
+  const _CelulaCabecalho(this.texto);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 100,
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+      child: Text(
+        texto,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 13,
+          color: Color(0xFF464C57),
+        ),
+      ),
+    );
+  }
+}
+
+class _CelulaConteudo extends StatelessWidget {
+  final String texto;
+
+  const _CelulaConteudo(this.texto);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 100,
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+      child: Text(
+        texto,
+        style: const TextStyle(
+          fontSize: 13,
+          color: Color(0xFF464C57),
+        ),
+      ),
+    );
+  }
+}
