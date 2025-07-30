@@ -1,6 +1,6 @@
 import 'package:faltou_nada/app/core/router/rotas.dart';
+import 'package:faltou_nada/app/core/ui/style/custom_colors.dart';
 import 'package:faltou_nada/app/core/ui/style/custom_images.dart';
-import 'package:faltou_nada/app/core/ui/style/size_extension.dart';
 import 'package:faltou_nada/app/src/app_providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +17,8 @@ class _SplashPageState extends State<SplashPage> {
     final isLoading =
         Provider.of<AuthProvider>(context, listen: false).isLoading;
     if (!isLoading) {
-      final isAuth = Provider.of(context, listen: false).isAuthenticated;
+      final isAuth =
+          Provider.of<AuthProvider>(context, listen: false).isAuthenticated;
       if (isAuth) {
         Navigator.of(context).popAndPushNamed(Rotas.home);
       } else {
@@ -30,24 +31,35 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      loading();
+      Future.delayed(const Duration(seconds: 3), () {
+        loading();
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(
-            width: context.screenWidth,
-            height: context.screenHeight,
+      body: Center(
+        child: Container(
+          width: 90,
+          height: 90,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: ColorsConstants.buttonBordas, // 👈 cor da borda
+              width: 0.5, // 👈 espessura da borda
+            ),
+            borderRadius: BorderRadius.circular(20.0), // opcional
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(
+                14.0), // se quiser canto arredondado igual à borda
             child: Image.asset(
               ImageConstants.logo32,
               fit: BoxFit.cover,
             ),
           ),
-        ],
+        ),
       ),
     );
   }

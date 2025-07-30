@@ -11,8 +11,10 @@ class ConfigTheme {
     ),
   );
   static final theme = ThemeData(
+    useMaterial3: true,
     primaryColor: ColorsConstants.buttonBordas,
     scaffoldBackgroundColor: ColorsConstants.fundo,
+    canvasColor: ColorsConstants.fundo,
     appBarTheme: const AppBarTheme(
       backgroundColor: ColorsConstants.appBar,
       titleTextStyle: TextStyle(

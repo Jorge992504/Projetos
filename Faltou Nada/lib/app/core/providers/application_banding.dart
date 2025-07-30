@@ -18,26 +18,25 @@ class ApplicationBanding extends StatelessWidget {
           return const Center(
             child: CircularProgressIndicator(),
           );
-        } else {
-          final prefs = snapshot.data!;
-          return MultiProvider(
-            providers: [
-              Provider<SharedPreferences>.value(value: prefs),
-              Provider<AuthRepository>(
-                create: (context) => AuthRepository(
-                  restClient: RestClient(),
-                ),
-              ),
-              ChangeNotifierProvider<AuthProvider>(
-                create: (context) => AuthProvider(
-                  loginRepository: context.read<AuthRepository>(),
-                  prefs: prefs,
-                ),
-              ),
-            ],
-            child: child,
-          );
         }
+        return MultiProvider(
+          providers: [
+            Provider<SharedPreferences>(create: (context) => snapshot.data!),
+            Provider(create: (context) => RestClient()),
+            Provider<AuthRepository>(
+              create: (context) => AuthRepository(
+                restClient: RestClient(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (context) => AuthProvider(
+                prefs: snapshot.data!,
+                loginRepository: context.read<AuthRepository>(),
+              ),
+            ),
+          ],
+          child: child,
+        );
       },
     );
   }
