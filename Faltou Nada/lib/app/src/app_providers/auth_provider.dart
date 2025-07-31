@@ -32,7 +32,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> login(String email, String password) async {
+  Future<AuthModel> login(String email, String password) async {
     isLoading = true;
     notifyListeners();
 
@@ -44,6 +44,7 @@ class AuthProvider extends ChangeNotifier {
     await _prefs.setString(Keys.usuarioLogado, _usuario);
     await _prefs.setString(Keys.email, _email);
     await _prefs.setString(Keys.token, _token);
+    return authModel;
   }
 
   String get usuario => _usuario;
@@ -52,10 +53,10 @@ class AuthProvider extends ChangeNotifier {
   String get token => _token;
   UserModel get userModel => _userModel;
 
-  void autualizarUsearioSP(String user, String token) async {
-    await _prefs.setString(Keys.usuarioLogado, user);
+  void autualizarUsearioSP() async {
+    await _prefs.setString(Keys.usuarioLogado, _userModel.toJson());
     await _prefs.setString(Keys.token, token);
-    _usuario = user;
+    _usuario = _userModel.email;
     _token = token;
     notifyListeners();
   }
