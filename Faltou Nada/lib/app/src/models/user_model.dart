@@ -5,25 +5,21 @@ class UserModel {
   int idUser;
   String name;
   String email;
-  String password;
   UserModel({
     this.idUser = 0,
     this.name = '',
     this.email = '',
-    this.password = '',
   });
 
   UserModel copyWith({
     int? idUser,
     String? name,
     String? email,
-    String? password,
   }) {
     return UserModel(
       idUser: idUser ?? this.idUser,
       name: name ?? this.name,
       email: email ?? this.email,
-      password: password ?? this.password,
     );
   }
 
@@ -32,7 +28,6 @@ class UserModel {
       'idUser': idUser,
       'name': name,
       'email': email,
-      'password': password,
     };
   }
 
@@ -41,7 +36,6 @@ class UserModel {
       idUser: map['idUser'] ?? 0,
       name: map['name'] ?? '',
       email: map['email'] ?? '',
-      password: map['password'] ?? '',
     );
   }
 
@@ -52,21 +46,18 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(idUser: $idUser, name: $name, email: $email, password: $password)';
+    return 'UserModel(idUser: $idUser, name: $name, email: $email,)';
   }
 
   @override
   bool operator ==(covariant UserModel other) {
     if (identical(this, other)) return true;
 
-    return other.idUser == idUser &&
-        other.name == name &&
-        other.email == email &&
-        other.password == password;
+    return other.idUser == idUser && other.name == name && other.email == email;
   }
 
   @override
   int get hashCode {
-    return idUser.hashCode ^ name.hashCode ^ email.hashCode ^ password.hashCode;
+    return idUser.hashCode ^ name.hashCode ^ email.hashCode;
   }
 }

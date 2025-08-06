@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/controller")
+@RequestMapping("/products")
+
 public class ControllerProdutct {
 
     private final ServiceProducts serviceProducts;
@@ -20,7 +21,7 @@ public class ControllerProdutct {
         this.serviceProducts = serviceProducts;
     }
 
-    @GetMapping("/products")
+//    @GetMapping("/products")
     public ResponseEntity<List<ResponseProductsDto>> getAllProducts() {
         List<ResponseProductsDto> products = serviceProducts.getAllProducts();
         return ResponseEntity.ok(products);

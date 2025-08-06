@@ -15,15 +15,8 @@ class LoginController extends Cubit<LoginState> {
       String email, String password, BuildContext context) async {
     try {
       emit(state.copyWith(status: LoginStatus.loading));
-      final authModel = await _authRepository.login(email, password);
-      if (authModel.token.isNotEmpty) {
-        emit(state.copyWith(
-          status: LoginStatus.sucess,
-        ));
-      }
-      // emit(state.copyWith(
-      //   status: LoginStatus.sucess,
-      // ));
+      await _authRepository.login(email, password);
+      emit(state.copyWith(status: LoginStatus.sucess));
     } on RepositoryException catch (e, s) {
       log('$s');
       emit(
