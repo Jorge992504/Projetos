@@ -7,4 +7,5 @@ sealed class ColorsConstants {
   static const fundo = Color(0xffe7dfd4);
   static const fundoCampos = Color(0xfff5f5f5);
   static const fundoCard = Color(0xffe4d2b9);
+  static const black = Color.fromARGB(255, 0, 0, 0);
 }

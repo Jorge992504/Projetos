@@ -10,10 +10,10 @@ class AuthInterceptor extends Interceptor {
     final RequestOptions(:headers, :extra) = options;
     const authHeaderKey = "Authorization";
     headers.remove(authHeaderKey);
-    if (extra case {'DIO_AUTH_KEY': true}) {
-      final sp = await SharedPreferences.getInstance();
-      headers.addAll({authHeaderKey: 'Bearer ${sp.getString(Keys.token)}'});
-    }
+    final sp = await SharedPreferences.getInstance();
+    print(
+        '-------------------print-----------------${sp.getString(Keys.token)}');
+    headers.addAll({authHeaderKey: 'Bearer ${sp.getString(Keys.token)}'});
     handler.next(options);
   }
 

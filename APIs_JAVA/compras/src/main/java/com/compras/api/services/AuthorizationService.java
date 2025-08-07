@@ -27,7 +27,7 @@ public class AuthorizationService {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("Authorization header ausente ou mal formatado");
+            System.out.println("Authorization header ausente ou mal formatado" + authHeader);
             return false;
         }
 

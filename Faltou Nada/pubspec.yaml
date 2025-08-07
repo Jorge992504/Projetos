@@ -20,6 +20,9 @@ dependencies:
   bloc: ^9.0.0
   loading_animation_widget: ^1.3.0
   top_snackbar_flutter: ^3.3.0
+  match: ^0.4.1
+  validatorless: ^1.2.4
+  flutter_bloc: ^9.1.1
 
 dev_dependencies:
   flutter_test:

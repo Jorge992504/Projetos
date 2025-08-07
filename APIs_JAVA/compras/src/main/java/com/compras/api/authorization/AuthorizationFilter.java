@@ -2,11 +2,16 @@ package com.compras.api.authorization;
 
 
 import com.compras.api.services.AuthorizationService;
+import com.compras.api.services.user.ServiceUser;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -15,9 +20,11 @@ import java.io.IOException;
 @Component
 public class AuthorizationFilter extends OncePerRequestFilter {
     private final AuthorizationService authorizationService;
+    private final ServiceUser serviceUser;
 
-    public AuthorizationFilter(AuthorizationService authorizationService){
-        this.authorizationService =authorizationService;
+    public AuthorizationFilter(AuthorizationService authorizationService, ServiceUser serviceUser) {
+        this.authorizationService = authorizationService;
+        this.serviceUser = serviceUser;
     }
 
     @Override
@@ -38,9 +45,22 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             try {
-                Claims claims =authorizationService.validarToken(token);
+                Claims claims = authorizationService.validarToken(token);
                 String email = claims.get("email", String.class);
-                // Crie a autenticação aqui se quiser continuar com Spring Security
+
+                UserDetails userDetail = serviceUser.getUser(email).orElse(null);
+
+                assert userDetail != null;
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetail,
+                                null,
+                                userDetail.getAuthorities()
+                        );
+
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             } catch (RuntimeException e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Token inválido ou expirado: " + e.getMessage());

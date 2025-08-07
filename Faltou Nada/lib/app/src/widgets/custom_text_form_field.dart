@@ -1,4 +1,5 @@
 import 'package:faltou_nada/app/core/ui/style/custom_colors.dart';
+import 'package:faltou_nada/app/core/ui/style/fontes_letras.dart';
 import 'package:faltou_nada/app/core/ui/style/size_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -35,6 +36,8 @@ class CustomTextFormField extends StatelessWidget {
   final bool? autoFocus;
   final InputDecoration? decoration;
   final TextStyle? hintStyle;
+  final TextStyle? floatingLabelStyle;
+  final TextStyle? labelStyle;
   const CustomTextFormField({
     super.key,
     this.height,
@@ -69,6 +72,8 @@ class CustomTextFormField extends StatelessWidget {
     this.autoFocus,
     this.decoration,
     this.hintStyle,
+    this.floatingLabelStyle,
+    this.labelStyle,
   });
 
   @override
@@ -85,10 +90,11 @@ class CustomTextFormField extends StatelessWidget {
         textCapitalization: textCapitalization ?? TextCapitalization.none,
         obscureText: obscureText ?? false,
         enabled: enabled ?? true,
-        style: style,
+        style: style ??
+            context.fontesLetras.textLight
+                .copyWith(fontSize: 14, color: ColorsConstants.black),
         textAlign: textAlign ?? TextAlign.start,
         textAlignVertical: textAlignVertical,
-        maxLines: maxLines ?? 1,
         maxLength: maxLength,
         initialValue: initialValue,
         validator: validator,
@@ -98,12 +104,17 @@ class CustomTextFormField extends StatelessWidget {
         decoration: decoration ??
             InputDecoration(
               labelText: labelText,
+              labelStyle: labelStyle ??
+                  context.fontesLetras.textLight
+                      .copyWith(fontSize: 14, color: ColorsConstants.black),
               hintText: hintText,
+              counterText: "",
               hintStyle: hintStyle,
               prefixIcon: prefixIcon,
               suffixIcon: suffixIcon,
-              contentPadding:
-                  const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+              floatingLabelStyle: floatingLabelStyle,
+              contentPadding: const EdgeInsets.only(
+                  top: 10, bottom: 10, left: 10, right: 10),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: const BorderSide(

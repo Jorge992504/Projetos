@@ -2,7 +2,7 @@ import 'package:faltou_nada/app/core/providers/application_banding.dart';
 import 'package:faltou_nada/app/core/router/rotas.dart';
 import 'package:faltou_nada/app/core/ui/theme/config_theme.dart';
 import 'package:faltou_nada/app/src/pages/home/home_page.dart';
-import 'package:faltou_nada/app/src/pages/login/login_page.dart';
+import 'package:faltou_nada/app/src/pages/login/login_router.dart';
 import 'package:faltou_nada/app/src/pages/splash/splash_page.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +18,7 @@ class FaltouNadaApp extends StatelessWidget {
         routes: {
           Rotas.splash: (context) => const SplashPage(),
           Rotas.home: (context) => const HomePage(),
-          Rotas.login: (context) => const LoginPage(),
+          Rotas.login: (context) => LoginRouter.page(),
         },
       ),
     );

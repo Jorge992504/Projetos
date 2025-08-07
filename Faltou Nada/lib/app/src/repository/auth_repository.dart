@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:faltou_nada/app/core/exceptions/create_exception.dart';
 import 'package:faltou_nada/app/core/exceptions/repository_exception.dart';
 import 'package:faltou_nada/app/core/exceptions/unauthorized_exceptiom.dart';
 import 'package:faltou_nada/app/core/rest_client/rest_client.dart';
 import 'package:faltou_nada/app/src/models/auth_model.dart';
+import 'package:faltou_nada/app/src/models/user_model.dart';
 
 class AuthRepository {
   final RestClient restClient;
@@ -12,8 +14,7 @@ class AuthRepository {
 
   Future<AuthModel> login(String email, String password) async {
     try {
-      final authModel =
-          await restClient.unauth.post('/login', queryParameters: {
+      final authModel = await restClient.unauth.get('/login', queryParameters: {
         'email': email,
         'password': password,
       });
@@ -26,6 +27,17 @@ class AuthRepository {
               ),
             }
           : {throw RepositoryException(message: 'Erro ao realizar login')};
+    }
+  }
+
+  Future<UserModel> buscarUsuario() async {
+    try {
+      final userModel = await restClient.auth.get(
+        '/user',
+      );
+      return UserModel.fromMap(userModel.data);
+    } catch (e) {
+      throw CreateException.dioException(e, 'Erro ao buscar usurio');
     }
   }
 }

@@ -3,4 +3,6 @@ sealed class ImageConstants {
   static const logo32 = 'assets/images/32.png';
   static const favicon = 'assets/images/favicon.ico';
   static const loginMascote = 'assets/images/loginMascote.png';
+  static const piscada16 = 'assets/images/piscada16.png';
+  static const piscada20 = 'assets/images/piscada20.png';
 }
