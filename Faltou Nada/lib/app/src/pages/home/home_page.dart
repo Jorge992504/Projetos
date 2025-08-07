@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
     String nome =
         Provider.of<AuthProvider>(context, listen: false).userModel.name;
     String token = Provider.of<AuthProvider>(context, listen: false).token;
-
+    log('------------token----------page--------------$token');
     String getNome() {
       if (nome.isEmpty) {
         return "";
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                       style: context.fontesLetras.textLight
                           .copyWith(fontSize: 14, color: ColorsConstants.black),
                     ),
-                    accountEmail: Text(
+                    accountEmail: const Text(
                       'email',
                     ),
                     decoration: const BoxDecoration(
@@ -101,7 +101,8 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(fontSize: 18),
                     ),
                     onTap: () {
-                      log("---------------token-----------------$token");
+                      Provider.of<AuthProvider>(context, listen: false)
+                          .logout();
                     },
                   ),
                 ],

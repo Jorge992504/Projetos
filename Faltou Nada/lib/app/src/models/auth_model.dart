@@ -3,39 +3,33 @@ import 'dart:convert';
 
 class AuthModel {
   String token;
-  String email;
-  String name;
+  String msg;
   AuthModel({
     this.token = '',
-    this.email = '',
-    this.name = '',
+    this.msg = '',
   });
 
   AuthModel copyWith({
     String? token,
-    String? email,
-    String? name,
+    String? msg,
   }) {
     return AuthModel(
       token: token ?? this.token,
-      email: email ?? this.email,
-      name: name ?? this.name,
+      msg: msg ?? this.msg,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'token': token,
-      'email': email,
-      'name': name,
+      'msg': msg,
     };
   }
 
   factory AuthModel.fromMap(Map<String, dynamic> map) {
     return AuthModel(
       token: map['token'] ?? '',
-      email: map['email'] ?? '',
-      name: map['name'] ?? '',
+      msg: map['msg'] ?? '',
     );
   }
 
@@ -45,15 +39,15 @@ class AuthModel {
       AuthModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'AuthModel(token: $token, email: $email, name: $name)';
+  String toString() => 'AuthModel(token: $token, msg: $msg,)';
 
   @override
   bool operator ==(covariant AuthModel other) {
     if (identical(this, other)) return true;
 
-    return other.token == token && other.email == email && other.name == name;
+    return other.token == token && other.msg == msg;
   }
 
   @override
-  int get hashCode => token.hashCode ^ email.hashCode ^ name.hashCode;
+  int get hashCode => token.hashCode ^ msg.hashCode;
 }
