@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:faltou_nada/app/core/exceptions/create_exception.dart';
 import 'package:faltou_nada/app/core/exceptions/repository_exception.dart';
@@ -35,6 +37,7 @@ class AuthRepository {
       final userModel = await restClient.auth.get(
         '/user',
       );
+      log('-------------repo-------${userModel.data}');
       return UserModel.fromMap(userModel.data);
     } catch (e) {
       throw CreateException.dioException(e, 'Erro ao buscar usurio');

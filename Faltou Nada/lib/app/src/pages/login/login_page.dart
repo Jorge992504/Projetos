@@ -60,10 +60,10 @@ class _LoginPageState extends BaseState<LoginPage, LoginController> {
           showError(state.errorMessage ?? 'Login ou senha inválidos');
           hideLoader();
         },
-        sucess: () {
+        sucess: () async {
           hideLoader(); // <- Primeiro esconde o loading
           showSuccess('Sucesso ao realizar login');
-          Provider.of<AuthProvider>(context, listen: false)
+          await Provider.of<AuthProvider>(context, listen: false)
               .autualizarUsearioSP();
           Navigator.of(context).pushNamedAndRemoveUntil(
             Rotas.home,

@@ -28,7 +28,7 @@ public class ControllerUser {
         Users u = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); //contexto para pegar o email do token
         Optional<Users> user = serviceUser.getUser(u.getEmail());
         if (user.isPresent()) {
-            return new ResponseUserDto(user);
+            return new ResponseUserDto(user.get().getId(),user.get().getEmail(),user.get().getName());
         } else {
             throw new ErrorException("Usuário não encontrado", 401, "OBJECT_NOT_FOUND");
         }

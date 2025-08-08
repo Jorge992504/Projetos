@@ -14,16 +14,12 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   Future<void> loading() async {
-    final isLoading =
-        Provider.of<AuthProvider>(context, listen: false).isLoading;
-    if (!isLoading) {
-      final isAuth =
-          Provider.of<AuthProvider>(context, listen: false).isAuthenticated;
-      if (isAuth) {
-        Navigator.of(context).popAndPushNamed(Rotas.home);
-      } else {
-        Navigator.of(context).popAndPushNamed(Rotas.login);
-      }
+    final isAuth =
+        Provider.of<AuthProvider>(context, listen: false).isAuthenticated;
+    if (isAuth) {
+      Navigator.of(context).popAndPushNamed(Rotas.home);
+    } else {
+      Navigator.of(context).popAndPushNamed(Rotas.login);
     }
   }
 

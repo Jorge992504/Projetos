@@ -2,9 +2,12 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:faltou_nada/app/core/exceptions/repository_exception.dart';
+import 'package:faltou_nada/app/src/app_providers/auth_provider.dart';
+import 'package:faltou_nada/app/src/models/auth_model.dart';
 import 'package:faltou_nada/app/src/pages/login/login_state.dart';
 import 'package:faltou_nada/app/src/repository/auth_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginController extends Cubit<LoginState> {
   final AuthRepository _authRepository;
@@ -15,7 +18,8 @@ class LoginController extends Cubit<LoginState> {
       String email, String password, BuildContext context) async {
     try {
       emit(state.copyWith(status: LoginStatus.loading));
-      await _authRepository.login(email, password);
+      AuthModel authModel = await _authRepository.login(email, password);
+      Provider.of<AuthProvider>(context, listen: false).login(authModel);
       emit(state.copyWith(status: LoginStatus.sucess));
     } on RepositoryException catch (e, s) {
       log('$s');

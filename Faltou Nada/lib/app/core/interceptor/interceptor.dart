@@ -11,8 +11,6 @@ class AuthInterceptor extends Interceptor {
     const authHeaderKey = "Authorization";
     headers.remove(authHeaderKey);
     final sp = await SharedPreferences.getInstance();
-    print(
-        '-------------------print-----------------${sp.getString(Keys.token)}');
     headers.addAll({authHeaderKey: 'Bearer ${sp.getString(Keys.token)}'});
     handler.next(options);
   }

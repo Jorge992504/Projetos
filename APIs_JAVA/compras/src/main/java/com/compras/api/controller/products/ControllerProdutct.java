@@ -21,7 +21,7 @@ public class ControllerProdutct {
         this.serviceProducts = serviceProducts;
     }
 
-//    @GetMapping("/products")
+    @GetMapping
     public ResponseEntity<List<ResponseProductsDto>> getAllProducts() {
         List<ResponseProductsDto> products = serviceProducts.getAllProducts();
         return ResponseEntity.ok(products);
