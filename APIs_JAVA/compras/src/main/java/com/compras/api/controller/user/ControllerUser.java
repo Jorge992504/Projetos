@@ -1,17 +1,17 @@
 package com.compras.api.controller.user;
 
 
-import com.compras.api.api.dto.response.ResponseUserDto;
-import com.compras.api.api.exception.ErrorException;
-import com.compras.api.api.models.Users;
-import com.compras.api.services.user.ServiceUser;
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.Optional;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
+import com.compras.api.api.dto.response.ResponseUserDto;
+import com.compras.api.api.exception.ErrorException;
+import com.compras.api.api.models.Users;
+import com.compras.api.services.user.ServiceUser;
 
 @RestController
 @RequestMapping("/user")
