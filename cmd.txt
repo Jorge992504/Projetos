@@ -1,5 +1,5 @@
 //criar project
-flutter create --project-name consudent --android-language java --platforms ios,android,windows,web --org jorgeabp99@gmail.com ConsuDent
+flutter create --project-name consucep --android-language java --platforms ios,android,windows,web --org jorgeabp99@gmail.com ConsuCEP
 
 //add plataforma
 flutter create --plataforms=web .
