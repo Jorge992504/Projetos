@@ -3,39 +3,39 @@ import 'dart:convert';
 
 class ProductModel {
   int id;
-  String name;
-  String photo;
+  String nome;
+  String foto;
   ProductModel({
     this.id = 0,
-    this.name = '',
-    this.photo = '',
+    this.nome = '',
+    this.foto = '',
   });
 
   ProductModel copyWith({
     int? id,
-    String? name,
-    String? photo,
+    String? nome,
+    String? foto,
   }) {
     return ProductModel(
       id: id ?? this.id,
-      name: name ?? this.name,
-      photo: photo ?? this.photo,
+      nome: nome ?? this.nome,
+      foto: foto ?? this.foto,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'name': name,
-      'photo': photo,
+      'nome': nome,
+      'foto': foto,
     };
   }
 
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
       id: map['id'] ?? 0,
-      name: map['name'] ?? '',
-      photo: map['photo'] ?? '',
+      nome: map['nome'] ?? '',
+      foto: map['foto'] ?? '',
     );
   }
 
@@ -45,15 +45,15 @@ class ProductModel {
       ProductModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'ProductModel(id: $id, name: $name, photo: $photo)';
+  String toString() => 'ProductModel(id: $id, nome: $nome, foto: $foto)';
 
   @override
   bool operator ==(covariant ProductModel other) {
     if (identical(this, other)) return true;
 
-    return other.id == id && other.name == name && other.photo == photo;
+    return other.id == id && other.nome == nome && other.foto == foto;
   }
 
   @override
-  int get hashCode => id.hashCode ^ name.hashCode ^ photo.hashCode;
+  int get hashCode => id.hashCode ^ nome.hashCode ^ foto.hashCode;
 }

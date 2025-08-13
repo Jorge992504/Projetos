@@ -31,7 +31,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getServletPath();
 
-        if (path.equals("/register") || path.equals("/login") || path.startsWith("/public/")) {
+        if (path.equals("/register") || path.equals("/login") || path.startsWith("/public")) {
             filterChain.doFilter(request, response);
             return;
         }

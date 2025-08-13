@@ -27,5 +27,11 @@ public class ControllerProdutct {
         return ResponseEntity.ok(products);
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<List<ResponseProductsDto>> getProductsFromUser(){
+        List<ResponseProductsDto> productsFromUser = serviceProducts.getProductsFromUser();
+        return ResponseEntity.ok(productsFromUser);
+    }
+
 
 }

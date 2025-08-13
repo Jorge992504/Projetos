@@ -1,0 +1,8 @@
+*nome do pacote android no google cloud*
+ -> com.example.login_google_teste
+*como obter minha chave de impressão digital para produção*
+ -> keytool -keystore path-to-debug-or-production-keystore -list -v
+*como obter minha chave de impressão digital para etapa de desenvolvimento*
+ -> keytool -list -v -keystore "$env:USERPROFILE\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
+**
+

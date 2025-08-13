@@ -5,20 +5,22 @@ import 'package:faltou_nada/app/src/models/product_model.dart';
 import 'package:flutter/material.dart';
 
 class HomeTextField extends StatelessWidget {
-  final TextEditingController? controller;
+  final TextEditingController controller;
   final List<ProductModel> sugestoes;
   final FocusNode? focusNode;
   final Function()? onPressed;
   final Function(String)? onChanged;
   final Function()? onTap;
+  final bool empty;
   const HomeTextField({
     super.key,
-    this.controller,
+    required this.controller,
     this.focusNode,
     required this.sugestoes,
     this.onPressed,
     this.onChanged,
     this.onTap,
+    this.empty = false,
   });
 
   @override
@@ -40,7 +42,7 @@ class HomeTextField extends StatelessWidget {
               labelText: 'Pesquisar produtos',
               labelStyle: context.fontesLetras.textLight.copyWith(
                 fontSize: 16,
-                color: ColorsConstants.appBar,
+                color: ColorsConstants.black,
               ),
               suffixIcon: IconButton(
                 onPressed: onPressed,
@@ -55,31 +57,35 @@ class HomeTextField extends StatelessWidget {
               ),
             ),
             onChanged: onChanged,
+            onTap: onTap,
           ),
         ),
-        SizedBox(
-          height: 200,
-          child: ListView.builder(
-            itemCount: sugestoes.length,
-            itemBuilder: (context, index) {
-              final product = sugestoes[index];
-              return ListTile(
-                leading: Image.network(
-                  product.photo,
-                  width: 30,
-                  height: 30,
-                  fit: BoxFit.cover,
-                ),
-                title: Text(
-                  product.name,
-                  style: context.fontesLetras.textRegular.copyWith(
-                    fontSize: 14,
-                    color: ColorsConstants.appBar,
+        Visibility(
+          visible: empty ? true : false,
+          child: SizedBox(
+            height: 200,
+            child: ListView.builder(
+              itemCount: sugestoes.length,
+              itemBuilder: (context, index) {
+                final product = sugestoes[index];
+                return ListTile(
+                  leading: Image.network(
+                    product.foto,
+                    width: 30,
+                    height: 30,
+                    fit: BoxFit.cover,
                   ),
-                ),
-                onTap: onTap,
-              );
-            },
+                  title: Text(
+                    product.nome,
+                    style: context.fontesLetras.textRegular.copyWith(
+                      fontSize: 14,
+                      color: ColorsConstants.appBar,
+                    ),
+                  ),
+                  onTap: onTap,
+                );
+              },
+            ),
           ),
         ),
       ],

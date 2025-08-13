@@ -15,7 +15,6 @@ class HomeController extends Cubit<HomeState> {
       emit(state.copyWith(status: HomeStatus.loading));
 
       List<ProductModel> productsModel = await _homeRepository.findProduct();
-
       emit(state.copyWith(
           status: HomeStatus.loaded, productModel: productsModel));
     } on RepositoryException catch (e, s) {

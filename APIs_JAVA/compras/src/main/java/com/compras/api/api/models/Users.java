@@ -9,6 +9,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,6 +32,10 @@ public class Users implements UserDetails {
     private String password;
 
     private String name;
+
+    // Relacionamento com Select_Products
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Select_Products> selectedProducts = new ArrayList<>();
 
 
     @Override

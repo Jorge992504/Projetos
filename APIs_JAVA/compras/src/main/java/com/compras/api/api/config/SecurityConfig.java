@@ -22,7 +22,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)  // Desabilita CSRF
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/login", "/register").permitAll()  // Permite as rotas públicas
+                        .requestMatchers("/login", "/register", "/public/**").permitAll()  // Permite as rotas públicas
                         .anyRequest().authenticated());  // Desabilita o login padrão (formulário)
 
         // Adiciona o filtro de autorização antes do filtro de autenticação padrão

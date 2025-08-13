@@ -1,4 +1,5 @@
 import 'package:faltou_nada/app/core/ui/style/custom_colors.dart';
+import 'package:faltou_nada/app/core/ui/style/fontes_letras.dart';
 import 'package:faltou_nada/app/src/models/product_model.dart';
 import 'package:flutter/material.dart';
 
@@ -11,8 +12,8 @@ class HomeItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width ?? 65,
-      height: height ?? 59,
+      width: width ?? 80,
+      height: height ?? 80,
       decoration: ShapeDecoration(
         color: const Color(0xFFE7DFD4),
         shape: RoundedRectangleBorder(
@@ -35,15 +36,27 @@ class HomeItem extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(product.name),
+          Container(
+            padding: const EdgeInsets.only(left: 10, right: 10),
+            child: Text(
+              product.nome,
+              style: context.fontesLetras.textExtraLight.copyWith(
+                fontSize: 12,
+                color: ColorsConstants.black,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
           const SizedBox(
             height: 5,
           ),
-          Image.network(
-            product.photo,
-            fit: BoxFit.cover,
-            width: 50,
-            height: 50,
+          Flexible(
+            child: Image.network(
+              product.foto,
+              fit: BoxFit.cover,
+              // width: 30,
+              // height: 30,
+            ),
           ),
         ],
       ),

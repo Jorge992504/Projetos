@@ -3,8 +3,8 @@ import 'package:faltou_nada/app/core/ui/base/base_state.dart';
 import 'package:faltou_nada/app/core/ui/style/custom_colors.dart';
 import 'package:faltou_nada/app/core/ui/style/custom_images.dart';
 import 'package:faltou_nada/app/core/ui/style/fontes_letras.dart';
-import 'package:faltou_nada/app/core/ui/style/size_extension.dart';
 import 'package:faltou_nada/app/src/app_providers/auth_provider.dart';
+import 'package:faltou_nada/app/src/models/product_model.dart';
 import 'package:faltou_nada/app/src/pages/home/home_controller.dart';
 import 'package:faltou_nada/app/src/pages/home/home_state.dart';
 import 'package:faltou_nada/app/src/pages/home/widgets/home_item.dart';
@@ -21,6 +21,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends BaseState<HomePage, HomeController> {
+  bool empty = false;
+  List<ProductModel> sugestoes = [];
+  late TextEditingController pesquisaController;
+  late FocusNode pesquisaFocus;
+
+  @override
+  void initState() {
+    super.initState();
+    pesquisaController = TextEditingController();
+    pesquisaFocus = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    pesquisaController.dispose();
+    pesquisaFocus.dispose();
+  }
+
   @override
   void onReady() async {
     super.onReady();
@@ -57,7 +76,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
         loading: showLoader,
         loaded: hideLoader,
         failure: () {
-          showError(state.errorMessage ?? 'Login ou senha inválidos');
+          showError(state.errorMessage ?? 'Erro ao buscar produtos');
           hideLoader();
         },
         success: hideLoader,
@@ -166,16 +185,28 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
           mainAxisSize: MainAxisSize.min,
           children: [
             HomeTextField(
-              sugestoes: state.productModel ?? [],
+              sugestoes: sugestoes,
+              controller: pesquisaController,
+              focusNode: pesquisaFocus,
+              onTap: () {
+                setState(() {
+                  empty = !empty;
+                });
+              },
+              empty: empty,
+              onChanged: (value) => buscarSuggestoes(value),
             ),
             Flexible(
               child: SingleChildScrollView(
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: (state.productModel ?? [])
-                      .map((product) => HomeItem(product: product))
-                      .toList(),
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Wrap(
+                    spacing: 14,
+                    runSpacing: 16,
+                    children: (state.productModel ?? [])
+                        .map((product) => HomeItem(product: product))
+                        .toList(),
+                  ),
                 ),
               ),
             ),
@@ -183,5 +214,19 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
         ),
       );
     });
+  }
+
+  void buscarSuggestoes(String value) {
+    if (value.isEmpty) {
+      setState(() {
+        sugestoes = [];
+      });
+    } else {
+      setState(() {
+        sugestoes = controller.state.productModel!
+            .where((p) => p.nome.toLowerCase().contains(value.toLowerCase()))
+            .toList();
+      });
+    }
   }
 }
