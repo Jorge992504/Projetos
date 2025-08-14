@@ -22,10 +22,14 @@ class AuthProvider extends ChangeNotifier {
     if (_prefs.containsKey(Keys.token)) {
       _email = _prefs.getString(Keys.usuarioLogado) ?? '';
       _token = _prefs.getString(Keys.token) ?? '';
+      final userJson = _prefs.getString(Keys.userModel);
+      _userModel =
+          userJson != null ? UserModel.fromJson(userJson) : UserModel();
       notifyListeners();
     } else {
       _email = '';
       _token = '';
+      _userModel = UserModel();
     }
   }
 

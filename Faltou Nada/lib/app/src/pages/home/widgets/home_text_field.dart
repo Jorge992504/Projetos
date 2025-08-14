@@ -2,6 +2,7 @@ import 'package:faltou_nada/app/core/ui/style/custom_colors.dart';
 import 'package:faltou_nada/app/core/ui/style/fontes_letras.dart';
 import 'package:faltou_nada/app/core/ui/style/size_extension.dart';
 import 'package:faltou_nada/app/src/models/product_model.dart';
+import 'package:faltou_nada/app/src/pages/home/home_controller.dart';
 import 'package:flutter/material.dart';
 
 class HomeTextField extends StatelessWidget {
@@ -12,6 +13,7 @@ class HomeTextField extends StatelessWidget {
   final Function(String)? onChanged;
   final Function()? onTap;
   final bool empty;
+  final HomeController homeController;
   const HomeTextField({
     super.key,
     required this.controller,
@@ -21,6 +23,7 @@ class HomeTextField extends StatelessWidget {
     this.onChanged,
     this.onTap,
     this.empty = false,
+    required this.homeController,
   });
 
   @override
@@ -58,6 +61,9 @@ class HomeTextField extends StatelessWidget {
             ),
             onChanged: onChanged,
             onTap: onTap,
+            onSubmitted: (_) {
+              FocusScope.of(context).unfocus();
+            },
           ),
         ),
         Visibility(
@@ -82,7 +88,9 @@ class HomeTextField extends StatelessWidget {
                       color: ColorsConstants.appBar,
                     ),
                   ),
-                  onTap: onTap,
+                  onTap: () {
+                    onTapList(product.id);
+                  },
                 );
               },
             ),
@@ -90,5 +98,12 @@ class HomeTextField extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void onTapList(int productId) async {
+    bool result = await homeController.saveProductToUser(productId);
+    if (result) {
+      await homeController.refresh();
+    }
   }
 }

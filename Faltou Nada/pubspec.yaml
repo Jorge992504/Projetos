@@ -23,6 +23,7 @@ dependencies:
   match: ^0.4.1
   validatorless: ^1.2.4
   flutter_bloc: ^9.1.1
+  package_info_plus: ^8.3.1
 
 dev_dependencies:
   flutter_test:
@@ -30,7 +31,12 @@ dev_dependencies:
 
   flutter_lints: ^4.0.0
   match_generator: ^0.4.2
+  flutter_launcher_icons: ^0.14.4
 
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/512.png"
 
 flutter:
 

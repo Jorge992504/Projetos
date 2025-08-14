@@ -2,11 +2,10 @@ package com.compras.api.controller.products;
 
 
 import com.compras.api.api.dto.response.ResponseProductsDto;
+import com.compras.api.api.exception.ErrorException;
 import com.compras.api.services.products.ServiceProducts;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,6 +30,33 @@ public class ControllerProdutct {
     public ResponseEntity<List<ResponseProductsDto>> getProductsFromUser(){
         List<ResponseProductsDto> productsFromUser = serviceProducts.getProductsFromUser();
         return ResponseEntity.ok(productsFromUser);
+    }
+
+    @DeleteMapping
+    public void deleteProductFromUser(@RequestParam Long productId){
+        if(productId != 0){
+          serviceProducts.deleteProductFromUser(productId);
+        }else{
+            throw new ErrorException("Selecione o produto", 403, "OBJECT_NOT_FOUND");
+        }
+    }
+
+    @PostMapping
+    public void saveProductToUser(@RequestParam Long productId){
+        if(productId != 0){
+            serviceProducts.saveProductToUser(productId);
+        }else{
+            throw new ErrorException("Selecione o produto", 403, "OBJECT_NOT_FOUND");
+        }
+    }
+
+    @PostMapping("/name")
+    public void saveProductToUserForName(@RequestParam String productName){
+        if(productName.isEmpty()){
+            throw new ErrorException("Selecione o produto", 403, "OBJECT_NOT_FOUND");
+        }else{
+            serviceProducts.saveProductToUserForName(productName);
+        }
     }
 
 
