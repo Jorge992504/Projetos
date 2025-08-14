@@ -11,6 +11,7 @@ import com.compras.api.services.user.ServiceUser;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -54,22 +55,20 @@ public class ServiceProducts {
     public List<ResponseProductsDto> getProductsFromUser(){
         Users u = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); //contexto para pegar o email do token
         Optional<Users> user = serviceUser.getUser(u.getEmail());
-        if (user.isPresent()){
-            return user.getSelectedProducts()
-                    .stream()
-                    .map(Select_Products::getProduct) // pega o objeto Products
-                    .map(product -> {
-                        String fotoUrl = (product.getFoto() != null && !product.getFoto().isEmpty())
-                                ? url + product.getFoto()
-                                : url + "food.png"; // fallback
-                        return new ResponseProductsDto(
-                                product.getId(),
-                                product.getName(),
-                                fotoUrl
-                        );
-                    })
-                    .collect(Collectors.toList());
-        }
+        return user.map(users -> users.getSelectedProducts()
+                .stream()
+                .map(Select_Products::getProduct) // pega o objeto Products
+                .map(product -> {
+                    String fotoUrl = (product.getFoto() != null && !product.getFoto().isEmpty())
+                            ? url + product.getFoto()
+                            : url + "food.png"; // fallback
+                    return new ResponseProductsDto(
+                            product.getId(),
+                            product.getName(),
+                            fotoUrl
+                    );
+                })
+                .collect(Collectors.toList())).orElseGet(ArrayList::new);
 
     }
 }
