@@ -21,7 +21,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf(AbstractHttpConfigurer::disable)  // Desabilita CSRF
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/login", "/register", "/public/**").permitAll()  // Permite as rotas públicas
+                        .requestMatchers("/login", "/register", "/public/**", "/nfe").permitAll()  // Permite as rotas públicas
                         .anyRequest().authenticated());  // Desabilita o login padrão (formulário)
 
         // Adiciona o filtro de autorização antes do filtro de autenticação padrão

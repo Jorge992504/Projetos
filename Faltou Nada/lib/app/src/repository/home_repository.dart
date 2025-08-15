@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
 import 'package:faltou_nada/app/core/exceptions/create_exception.dart';
 import 'package:faltou_nada/app/core/rest_client/rest_client.dart';
 import 'package:faltou_nada/app/src/models/product_model.dart';
@@ -70,6 +71,17 @@ class HomeRepository {
     } catch (e, s) {
       log('Erro ao salvar produto na lista', error: e, stackTrace: s);
       throw CreateException.dioException(e, 'Erro ao salvar produto na lista');
+    }
+  }
+
+  Future<void> enviarPdf(FormData formData) async {
+    try {
+      await restClient.auth.post("/nfe", queryParameters: {
+        'arquivo': formData,
+      });
+    } catch (e, s) {
+      log('Erro ao enviar PDF', error: e, stackTrace: s);
+      throw CreateException.dioException(e, 'Erro ao enviar PDF');
     }
   }
 }

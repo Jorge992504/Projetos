@@ -157,6 +157,23 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                       ),
                       ListTile(
                         leading: const Icon(
+                          Icons.attach_money_outlined,
+                          size: 20,
+                          color: ColorsConstants.appBar,
+                        ),
+                        title: Text(
+                          "Registrar valores",
+                          style: context.fontesLetras.textThin.copyWith(
+                            fontSize: 14,
+                            color: ColorsConstants.appBar,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pushNamed(Rotas.values);
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(
                           Icons.logout_sharp,
                           size: 20,
                           color: ColorsConstants.appBar,
