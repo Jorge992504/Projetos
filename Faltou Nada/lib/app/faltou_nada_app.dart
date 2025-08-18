@@ -4,7 +4,6 @@ import 'package:faltou_nada/app/core/ui/theme/config_theme.dart';
 import 'package:faltou_nada/app/src/pages/home/home_router.dart';
 import 'package:faltou_nada/app/src/pages/login/login_router.dart';
 import 'package:faltou_nada/app/src/pages/splash/splash_page.dart';
-import 'package:faltou_nada/app/src/pages/values/values_page.dart';
 import 'package:flutter/material.dart';
 
 class FaltouNadaApp extends StatelessWidget {
@@ -20,7 +19,6 @@ class FaltouNadaApp extends StatelessWidget {
           Rotas.splash: (context) => const SplashPage(),
           Rotas.home: (context) => HomeRouter.page(),
           Rotas.login: (context) => LoginRouter.page(),
-          Rotas.values: (context) => const ValuesPage(),
         },
       ),
     );

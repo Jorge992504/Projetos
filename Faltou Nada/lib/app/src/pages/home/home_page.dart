@@ -10,6 +10,7 @@ import 'package:faltou_nada/app/src/pages/home/home_controller.dart';
 import 'package:faltou_nada/app/src/pages/home/home_state.dart';
 import 'package:faltou_nada/app/src/pages/home/widgets/home_item.dart';
 import 'package:faltou_nada/app/src/pages/home/widgets/home_text_field.dart';
+import 'package:faltou_nada/app/src/widgets/custom_bar_code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -29,6 +30,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
   late FocusNode pesquisaFocus;
   Timer? timer;
   String version = '';
+  String url = '';
 
   @override
   void initState() {
@@ -60,10 +62,14 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    String nome =
-        Provider.of<AuthProvider>(context, listen: false).userModel.name;
-    String email =
-        Provider.of<AuthProvider>(context, listen: false).userModel.email;
+    String nome = Provider.of<AuthProvider>(
+      context,
+      listen: false,
+    ).userModel.name;
+    String email = Provider.of<AuthProvider>(
+      context,
+      listen: false,
+    ).userModel.email;
     String getNome() {
       if (nome.isEmpty) {
         return "";
@@ -131,7 +137,9 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                         accountName: Text(
                           nome.toUpperCase(),
                           style: context.fontesLetras.textRegular.copyWith(
-                              fontSize: 14, color: ColorsConstants.fundo),
+                            fontSize: 14,
+                            color: ColorsConstants.fundo,
+                          ),
                         ),
                         accountEmail: Text(
                           email,
@@ -168,8 +176,11 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                             color: ColorsConstants.appBar,
                           ),
                         ),
-                        onTap: () {
-                          Navigator.of(context).pushNamed(Rotas.values);
+                        onTap: () async {
+                          bool result = await openCamera();
+                          if (result) {
+                            await controller.enviarUrl(url);
+                          }
                         },
                       ),
                       ListTile(
@@ -186,8 +197,10 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                           ),
                         ),
                         onTap: () async {
-                          Provider.of<AuthProvider>(context, listen: false)
-                              .logout();
+                          Provider.of<AuthProvider>(
+                            context,
+                            listen: false,
+                          ).logout();
                           Navigator.of(context).pushNamedAndRemoveUntil(
                             Rotas.login,
                             (route) => false,
@@ -201,10 +214,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                     right: 12,
                     child: Text(
                       version,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12,
-                      ),
+                      style: const TextStyle(color: Colors.grey, fontSize: 12),
                     ),
                   ),
                 ],
@@ -229,6 +239,35 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                 empty: empty,
                 onChanged: (value) => buscarSuggestoes(value),
               ),
+              // Container(
+              //   padding: const EdgeInsets.all(20),
+              //   margin: const EdgeInsets.only(top: 15, left: 10, right: 10),
+              //   decoration: BoxDecoration(
+              //     color: Colors.red.withValues(alpha: 0.1),
+              //     borderRadius: BorderRadius.circular(12),
+              //     border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+              //   ),
+              //   child: Row(
+              //     children: [
+              //       const Icon(
+              //         Icons.error_outline_rounded,
+              //         color: Colors.red,
+              //         size: 24,
+              //       ),
+              //       const SizedBox(width: 12),
+              //       Flexible(
+              //         child: Text(
+              //           url,
+              //           style: context.fontesLetras.textRegular.copyWith(
+              //             color: Colors.red,
+              //             fontWeight: FontWeight.w500,
+              //             overflow: TextOverflow.visible,
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               Flexible(
                 child: SingleChildScrollView(
                   child: Padding(
@@ -237,12 +276,14 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                       spacing: 14,
                       runSpacing: 16,
                       children: (state.productUser ?? [])
-                          .map((product) => HomeItem(
-                                product: product,
-                                onTap: () {
-                                  deleteProductFromUser(product.id);
-                                },
-                              ))
+                          .map(
+                            (product) => HomeItem(
+                              product: product,
+                              onTap: () {
+                                deleteProductFromUser(product.id);
+                              },
+                            ),
+                          )
                           .toList(),
                     ),
                   ),
@@ -295,5 +336,19 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
     setState(() {
       version = info.version;
     });
+  }
+
+  Future<bool> openCamera() async {
+    var codeBar = await Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const BarcodeScannerSimple()),
+    );
+    if (codeBar != null) {
+      setState(() {
+        url = codeBar;
+      });
+      return true;
+    } else {
+      return false;
+    }
   }
 }
