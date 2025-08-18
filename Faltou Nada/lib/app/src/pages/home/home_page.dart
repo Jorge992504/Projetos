@@ -185,6 +185,23 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                       ),
                       ListTile(
                         leading: const Icon(
+                          Icons.dashboard_customize_rounded,
+                          size: 20,
+                          color: ColorsConstants.appBar,
+                        ),
+                        title: Text(
+                          "Dashboard",
+                          style: context.fontesLetras.textThin.copyWith(
+                            fontSize: 14,
+                            color: ColorsConstants.appBar,
+                          ),
+                        ),
+                        onTap: () async {
+                          Navigator.of(context).pushNamed(Rotas.dashboard);
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(
                           Icons.logout_sharp,
                           size: 20,
                           color: ColorsConstants.appBar,
