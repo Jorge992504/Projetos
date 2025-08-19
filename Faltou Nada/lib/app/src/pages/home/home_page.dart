@@ -10,7 +10,6 @@ import 'package:faltou_nada/app/src/pages/home/home_controller.dart';
 import 'package:faltou_nada/app/src/pages/home/home_state.dart';
 import 'package:faltou_nada/app/src/pages/home/widgets/home_item.dart';
 import 'package:faltou_nada/app/src/pages/home/widgets/home_text_field.dart';
-import 'package:faltou_nada/app/src/widgets/custom_bar_code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -30,7 +29,6 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
   late FocusNode pesquisaFocus;
   Timer? timer;
   String version = '';
-  String url = '';
 
   @override
   void initState() {
@@ -163,26 +161,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                         ),
                         currentAccountPictureSize: const Size.square(60),
                       ),
-                      ListTile(
-                        leading: const Icon(
-                          Icons.attach_money_outlined,
-                          size: 20,
-                          color: ColorsConstants.appBar,
-                        ),
-                        title: Text(
-                          "Registrar valores",
-                          style: context.fontesLetras.textThin.copyWith(
-                            fontSize: 14,
-                            color: ColorsConstants.appBar,
-                          ),
-                        ),
-                        onTap: () async {
-                          bool result = await openCamera();
-                          if (result) {
-                            await controller.enviarUrl(url);
-                          }
-                        },
-                      ),
+
                       ListTile(
                         leading: const Icon(
                           Icons.dashboard_customize_rounded,
@@ -190,7 +169,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                           color: ColorsConstants.appBar,
                         ),
                         title: Text(
-                          "Dashboard",
+                          "Dashboard mercado",
                           style: context.fontesLetras.textThin.copyWith(
                             fontSize: 14,
                             color: ColorsConstants.appBar,
@@ -256,35 +235,6 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                 empty: empty,
                 onChanged: (value) => buscarSuggestoes(value),
               ),
-              // Container(
-              //   padding: const EdgeInsets.all(20),
-              //   margin: const EdgeInsets.only(top: 15, left: 10, right: 10),
-              //   decoration: BoxDecoration(
-              //     color: Colors.red.withValues(alpha: 0.1),
-              //     borderRadius: BorderRadius.circular(12),
-              //     border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
-              //   ),
-              //   child: Row(
-              //     children: [
-              //       const Icon(
-              //         Icons.error_outline_rounded,
-              //         color: Colors.red,
-              //         size: 24,
-              //       ),
-              //       const SizedBox(width: 12),
-              //       Flexible(
-              //         child: Text(
-              //           url,
-              //           style: context.fontesLetras.textRegular.copyWith(
-              //             color: Colors.red,
-              //             fontWeight: FontWeight.w500,
-              //             overflow: TextOverflow.visible,
-              //           ),
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
               Flexible(
                 child: SingleChildScrollView(
                   child: Padding(
@@ -353,19 +303,5 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
     setState(() {
       version = info.version;
     });
-  }
-
-  Future<bool> openCamera() async {
-    var codeBar = await Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const BarcodeScannerSimple()),
-    );
-    if (codeBar != null) {
-      setState(() {
-        url = codeBar;
-      });
-      return true;
-    } else {
-      return false;
-    }
   }
 }
