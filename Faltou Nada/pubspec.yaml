@@ -44,7 +44,7 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/gif/
+    # - assets/gif/
     - .env
 
   
