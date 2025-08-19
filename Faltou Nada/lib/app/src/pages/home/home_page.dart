@@ -60,10 +60,14 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    String nome =
-        Provider.of<AuthProvider>(context, listen: false).userModel.name;
-    String email =
-        Provider.of<AuthProvider>(context, listen: false).userModel.email;
+    String nome = Provider.of<AuthProvider>(
+      context,
+      listen: false,
+    ).userModel.name;
+    String email = Provider.of<AuthProvider>(
+      context,
+      listen: false,
+    ).userModel.email;
     String getNome() {
       if (nome.isEmpty) {
         return "";
@@ -131,7 +135,9 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                         accountName: Text(
                           nome.toUpperCase(),
                           style: context.fontesLetras.textRegular.copyWith(
-                              fontSize: 14, color: ColorsConstants.fundo),
+                            fontSize: 14,
+                            color: ColorsConstants.fundo,
+                          ),
                         ),
                         accountEmail: Text(
                           email,
@@ -155,6 +161,24 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                         ),
                         currentAccountPictureSize: const Size.square(60),
                       ),
+
+                      ListTile(
+                        leading: const Icon(
+                          Icons.dashboard_customize_rounded,
+                          size: 20,
+                          color: ColorsConstants.appBar,
+                        ),
+                        title: Text(
+                          "Dashboard mercado",
+                          style: context.fontesLetras.textThin.copyWith(
+                            fontSize: 14,
+                            color: ColorsConstants.appBar,
+                          ),
+                        ),
+                        onTap: () async {
+                          Navigator.of(context).pushNamed(Rotas.dashboard);
+                        },
+                      ),
                       ListTile(
                         leading: const Icon(
                           Icons.logout_sharp,
@@ -169,8 +193,10 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                           ),
                         ),
                         onTap: () async {
-                          Provider.of<AuthProvider>(context, listen: false)
-                              .logout();
+                          Provider.of<AuthProvider>(
+                            context,
+                            listen: false,
+                          ).logout();
                           Navigator.of(context).pushNamedAndRemoveUntil(
                             Rotas.login,
                             (route) => false,
@@ -184,10 +210,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                     right: 12,
                     child: Text(
                       version,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12,
-                      ),
+                      style: const TextStyle(color: Colors.grey, fontSize: 12),
                     ),
                   ),
                 ],
@@ -220,12 +243,14 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                       spacing: 14,
                       runSpacing: 16,
                       children: (state.productUser ?? [])
-                          .map((product) => HomeItem(
-                                product: product,
-                                onTap: () {
-                                  deleteProductFromUser(product.id);
-                                },
-                              ))
+                          .map(
+                            (product) => HomeItem(
+                              product: product,
+                              onTap: () {
+                                deleteProductFromUser(product.id);
+                              },
+                            ),
+                          )
                           .toList(),
                     ),
                   ),

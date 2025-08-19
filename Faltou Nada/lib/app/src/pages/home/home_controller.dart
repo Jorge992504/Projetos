@@ -15,8 +15,9 @@ class HomeController extends Cubit<HomeState> {
       emit(state.copyWith(status: HomeStatus.loading));
 
       List<ProductModel> productsModel = await _homeRepository.findProduct();
-      emit(state.copyWith(
-          status: HomeStatus.loaded, productModel: productsModel));
+      emit(
+        state.copyWith(status: HomeStatus.loaded, productModel: productsModel),
+      );
     } on RepositoryException catch (e, s) {
       log('$s');
       emit(state.copyWith(status: HomeStatus.failure, errorMessage: e.message));
@@ -27,10 +28,11 @@ class HomeController extends Cubit<HomeState> {
     try {
       emit(state.copyWith(status: HomeStatus.loading));
 
-      List<ProductModel> productsUser =
-          await _homeRepository.findProductFromUser();
+      List<ProductModel> productsUser = await _homeRepository
+          .findProductFromUser();
       emit(
-          state.copyWith(status: HomeStatus.loaded, productUser: productsUser));
+        state.copyWith(status: HomeStatus.loaded, productUser: productsUser),
+      );
     } on RepositoryException catch (e, s) {
       log('$s');
       emit(state.copyWith(status: HomeStatus.failure, errorMessage: e.message));
@@ -79,14 +81,27 @@ class HomeController extends Cubit<HomeState> {
     }
   }
 
+  Future<void> enviarUrl(String url) async {
+    try {
+      emit(state.copyWith(status: HomeStatus.loading));
+
+      await _homeRepository.enviarUrl(url);
+      emit(state.copyWith(status: HomeStatus.loaded));
+    } on RepositoryException catch (e, s) {
+      log('$s');
+      emit(state.copyWith(status: HomeStatus.failure, errorMessage: e.message));
+    }
+  }
+
   Future<void> refresh() async {
     try {
       emit(state.copyWith(status: HomeStatus.loading));
 
-      List<ProductModel> productsUser =
-          await _homeRepository.findProductFromUser();
+      List<ProductModel> productsUser = await _homeRepository
+          .findProductFromUser();
       emit(
-          state.copyWith(status: HomeStatus.loaded, productUser: productsUser));
+        state.copyWith(status: HomeStatus.loaded, productUser: productsUser),
+      );
     } on RepositoryException catch (e, s) {
       log('$s');
       emit(state.copyWith(status: HomeStatus.failure, errorMessage: e.message));

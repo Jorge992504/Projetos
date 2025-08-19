@@ -5,4 +5,7 @@ sealed class ImageConstants {
   static const loginMascote = 'assets/images/loginMascote.png';
   static const piscada16 = 'assets/images/piscada16.png';
   static const piscada20 = 'assets/images/piscada20.png';
+  static const dashboard = 'assets/images/dashboard16.png';
+  static const dashboardMercado20 = 'assets/images/dashboardMercado20.png';
+  static const add20 = 'assets/images/add20.png';
 }

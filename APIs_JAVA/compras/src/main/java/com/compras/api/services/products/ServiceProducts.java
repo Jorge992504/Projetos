@@ -26,7 +26,7 @@ public class ServiceProducts {
     private final ServiceUser serviceUser;
 
 
-    private static final String url = "http://172.16.251.22:8081/api/public/";
+    private static final String url = "http://172.20.10.7:8081/api/public/";
 
     public ServiceProducts(ProductsRepository productsRepository, SelectProductsRespository selectProductsRespository, ServiceUser serviceUser){
         this.productsRepository = productsRepository;
