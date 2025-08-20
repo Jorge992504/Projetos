@@ -52,6 +52,27 @@ class DashboardController extends Cubit<DashboardState> {
     }
   }
 
+  Future<bool> buscaItensGastos(int mes, String ano) async {
+    try {
+      emit(state.copyWith(status: DashboardStatus.loading));
+
+      final result = await _dashboardRepository.buscaItensGastos(mes, ano);
+
+      emit(state.copyWith(status: DashboardStatus.loaded, itens: result));
+
+      return true;
+    } on RepositoryException catch (e, s) {
+      log('$s');
+      emit(
+        state.copyWith(
+          status: DashboardStatus.failure,
+          errorMessage: e.message,
+        ),
+      );
+      return false;
+    }
+  }
+
   Future<void> refresh() async {
     try {
       emit(state.copyWith(status: DashboardStatus.loading));

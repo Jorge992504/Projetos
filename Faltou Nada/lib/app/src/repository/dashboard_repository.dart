@@ -26,8 +26,29 @@ class DashboardRepository {
           .map<DashboardModel>((e) => DashboardModel.fromMap(e))
           .toList();
     } catch (e, s) {
-      log('Erro ao registrar gastos', error: e, stackTrace: s);
-      throw CreateException.dioException(e, 'Erro ao registrar gastos');
+      log('Erro ao buscar gastos', error: e, stackTrace: s);
+      throw CreateException.dioException(e, 'Erro ao buscar gastos');
+    }
+  }
+
+  Future<List<DashboardItensModel>> buscaItensGastos(
+    int mes,
+    String ano,
+  ) async {
+    try {
+      final result = await restClient.auth.get(
+        "/dashboard/gastos/itens",
+        queryParameters: {'mes': mes, 'ano': ano},
+      );
+      return result.data!
+          .map<DashboardItensModel>((e) => DashboardItensModel.fromMap(e))
+          .toList();
+    } catch (e, s) {
+      log('Erro ao buscar os itens dos gastos', error: e, stackTrace: s);
+      throw CreateException.dioException(
+        e,
+        'Erro ao buscar os itens dos gastos',
+      );
     }
   }
 }

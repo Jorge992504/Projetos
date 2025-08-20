@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface NfeRepository extends JpaRepository<Nfe, Long> {
-    @Query("SELECT YEAR(i.data), MONTH(i.data), SUM(i.valor) " +
+    @Query("SELECT YEAR(i.dataTime), MONTH(i.dataTime), SUM(i.vlTotal) " +
             "FROM Nfe i " +
-            "WHERE i.userId = :userId " +
-            "GROUP BY YEAR(i.data), MONTH(i.data) " +
-            "ORDER BY YEAR(i.data), MONTH(i.data)")
+            "WHERE i.user_id = :userId " +
+            "GROUP BY YEAR(i.dataTime), MONTH(i.dataTime) " +
+            "ORDER BY YEAR(i.dataTime), MONTH(i.dataTime)")
     List<Object[]> somarPorMes(Long userId);
 }

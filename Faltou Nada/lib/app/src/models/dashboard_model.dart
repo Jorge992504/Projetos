@@ -1,34 +1,32 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class DashboardModel {
-  DateTime? dateTime;
   String? empresa;
+  String? data;
   num? vlTotal;
+  DashboardModel({this.empresa, this.data, this.vlTotal});
 
-  DashboardModel({this.dateTime, this.empresa, this.vlTotal});
-
-  DashboardModel copyWith({DateTime? dateTime, String? empresa, num? vlTotal}) {
+  DashboardModel copyWith({String? empresa, String? data, num? vlTotal}) {
     return DashboardModel(
-      dateTime: dateTime ?? this.dateTime,
       empresa: empresa ?? this.empresa,
+      data: data ?? this.data,
       vlTotal: vlTotal ?? this.vlTotal,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'dateTime': dateTime?.toIso8601String(),
       'empresa': empresa,
+      'data': data,
       'vlTotal': vlTotal,
     };
   }
 
   factory DashboardModel.fromMap(Map<String, dynamic> map) {
     return DashboardModel(
-      dateTime: map['dateTime'] != null
-          ? DateTime.parse(map['dateTime'])
-          : null,
       empresa: map['empresa'] ?? "",
+      data: map['data'] ?? "",
       vlTotal: map['vlTotal'] ?? 0,
     );
   }
@@ -39,21 +37,99 @@ class DashboardModel {
       DashboardModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() {
-    return 'DashboardModel(dateTime: $dateTime, empresa: $empresa, vlTotal: $vlTotal)';
-  }
+  String toString() =>
+      'DashboardModel(empresa: $empresa, data: $data, vlTotal: $vlTotal)';
 
   @override
   bool operator ==(covariant DashboardModel other) {
     if (identical(this, other)) return true;
 
-    return other.dateTime == dateTime &&
-        other.empresa == empresa &&
+    return other.empresa == empresa &&
+        other.data == data &&
         other.vlTotal == vlTotal;
   }
 
   @override
+  int get hashCode => empresa.hashCode ^ data.hashCode ^ vlTotal.hashCode;
+}
+
+class DashboardItensModel {
+  String? descricao;
+  int? unid;
+  num? qtde;
+  String? un;
+  num? total;
+  DashboardItensModel({
+    this.descricao,
+    this.unid,
+    this.qtde,
+    this.un,
+    this.total,
+  });
+
+  DashboardItensModel copyWith({
+    String? descricao,
+    int? unid,
+    num? qtde,
+    String? un,
+    num? total,
+  }) {
+    return DashboardItensModel(
+      descricao: descricao ?? this.descricao,
+      unid: unid ?? this.unid,
+      qtde: qtde ?? this.qtde,
+      un: un ?? this.un,
+      total: total ?? this.total,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'descricao': descricao,
+      'unid': unid,
+      'qtde': qtde,
+      'un': un,
+      'total': total,
+    };
+  }
+
+  factory DashboardItensModel.fromMap(Map<String, dynamic> map) {
+    return DashboardItensModel(
+      descricao: map['descricao'] ?? "",
+      unid: map['unid'] ?? 0,
+      qtde: map['qtde'] ?? 0,
+      un: map['un'] ?? "",
+      total: map['total'] ?? 0,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory DashboardItensModel.fromJson(String source) =>
+      DashboardItensModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'DashboardItensModel(descricao: $descricao, unid: $unid, qtde: $qtde, un: $un, total: $total)';
+  }
+
+  @override
+  bool operator ==(covariant DashboardItensModel other) {
+    if (identical(this, other)) return true;
+
+    return other.descricao == descricao &&
+        other.unid == unid &&
+        other.qtde == qtde &&
+        other.un == un &&
+        other.total == total;
+  }
+
+  @override
   int get hashCode {
-    return dateTime.hashCode ^ empresa.hashCode ^ vlTotal.hashCode;
+    return descricao.hashCode ^
+        unid.hashCode ^
+        qtde.hashCode ^
+        un.hashCode ^
+        total.hashCode;
   }
 }

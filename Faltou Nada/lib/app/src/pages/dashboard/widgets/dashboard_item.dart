@@ -1,9 +1,10 @@
 import 'package:faltou_nada/app/core/ui/style/custom_colors.dart';
 import 'package:faltou_nada/app/core/ui/style/fontes_letras.dart';
+import 'package:faltou_nada/app/src/models/dashboard_model.dart';
 import 'package:flutter/material.dart';
 
 class DashboardItem extends StatelessWidget {
-  final Map<String, dynamic>? item;
+  final DashboardItensModel? item;
   const DashboardItem({super.key, this.item});
 
   @override
@@ -14,7 +15,7 @@ class DashboardItem extends StatelessWidget {
         SizedBox(
           width: 160,
           child: Text(
-            item!['descricao'] ?? "",
+            item!.descricao ?? "",
             style: context.fontesLetras.textLight.copyWith(
               color: ColorsConstants.black,
               fontSize: 12,
@@ -23,7 +24,7 @@ class DashboardItem extends StatelessWidget {
           ),
         ),
         Text(
-          item!['unid'].toString(),
+          item!.unid.toString(),
           style: context.fontesLetras.textLight.copyWith(
             color: ColorsConstants.black,
             fontSize: 12,
@@ -32,7 +33,7 @@ class DashboardItem extends StatelessWidget {
         SizedBox(
           width: 30,
           child: Text(
-            item!['qtde'].toString(),
+            item!.qtde.toString(),
             textAlign: TextAlign.center,
             style: context.fontesLetras.textLight.copyWith(
               color: ColorsConstants.black,
@@ -41,14 +42,14 @@ class DashboardItem extends StatelessWidget {
           ),
         ),
         Text(
-          item!['un'],
+          item!.un ?? "",
           style: context.fontesLetras.textLight.copyWith(
             color: ColorsConstants.black,
             fontSize: 12,
           ),
         ),
         Text(
-          item!['total'].toString(),
+          item!.total.toString(),
           style: context.fontesLetras.textLight.copyWith(
             color: ColorsConstants.black,
             fontSize: 12,

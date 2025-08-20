@@ -1,12 +1,12 @@
 import 'package:faltou_nada/app/core/ui/style/custom_colors.dart';
 import 'package:faltou_nada/app/core/ui/style/fontes_letras.dart';
 import 'package:faltou_nada/app/core/ui/style/size_extension.dart';
+import 'package:faltou_nada/app/src/models/dashboard_model.dart';
 import 'package:faltou_nada/app/src/pages/dashboard/widgets/dashboard_cabecalho.dart';
 import 'package:faltou_nada/app/src/pages/dashboard/widgets/dashboard_item.dart';
 import 'package:flutter/material.dart';
 
 class DashboardCard extends StatelessWidget {
-  final String? empresa;
   final String? dataTime;
   final String? vlTotal;
   final String? vlProd;
@@ -14,10 +14,9 @@ class DashboardCard extends StatelessWidget {
   final double? height;
   final bool isExpanded;
   final Function()? onTap;
-  final List<Map<String, dynamic>>? itens;
+  final List<DashboardItensModel>? itens;
   const DashboardCard({
     super.key,
-    this.empresa,
     this.dataTime,
     this.width,
     this.height,
@@ -35,7 +34,7 @@ class DashboardCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         width: width ?? context.percentWidth(1),
-        height: height ?? 170,
+        height: height ?? 130,
         child: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -52,14 +51,6 @@ class DashboardCard extends StatelessWidget {
                   style: context.fontesLetras.textRegular.copyWith(
                     color: ColorsConstants.appBar,
                     fontSize: 18,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  empresa ?? "",
-                  style: context.fontesLetras.textRegular.copyWith(
-                    color: ColorsConstants.appBar,
-                    fontSize: 16,
                   ),
                 ),
                 const SizedBox(height: 10),

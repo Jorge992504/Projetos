@@ -24,6 +24,9 @@ class _DashboardPageState
   bool isExpanded = false;
   double? height;
   String? url;
+  String? ano, mes;
+  int mesParts = 0;
+  List<DashboardItensModel>? itens;
 
   @override
   void onReady() async {
@@ -121,13 +124,17 @@ class _DashboardPageState
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: ListView.builder(
+                    shrinkWrap: true,
                     itemCount: state.cabeca!.length,
                     itemBuilder: (context, index) {
                       DashboardModel dashboardModel = state.cabeca![index];
-                      // Extrai o mês e monta o nome do mês
-                      String nomeMes = '';
-                      if (dashboardModel.dateTime != null) {
-                        int mes = dashboardModel.dateTime!.month;
+                      if (dashboardModel.data != null &&
+                          dashboardModel.data!.contains('-')) {
+                        List<String> dataParts = dashboardModel.data!.split(
+                          '-',
+                        );
+                        ano = dataParts[0];
+                        mesParts = int.parse(dataParts[1]);
                         List<String> meses = [
                           'Janeiro',
                           'Fevereiro',
@@ -142,17 +149,16 @@ class _DashboardPageState
                           'Novembro',
                           'Dezembro',
                         ];
-                        nomeMes = meses[mes - 1];
+                        mes = meses[mesParts - 1];
                       }
 
                       return DashboardCard(
-                        dataTime: nomeMes,
-                        vlTotal: dashboardModel.vlTotal.toString(),
-                        empresa: dashboardModel.empresa,
+                        dataTime: "$mes de $ano",
+                        vlTotal: "R\$ ${dashboardModel.vlTotal}",
                         isExpanded: isExpanded,
                         onTap: onTap,
                         height: height,
-                        // itens: state.cabeca,
+                        itens: state.itens,
                       );
                     },
                   ),
@@ -165,16 +171,22 @@ class _DashboardPageState
     );
   }
 
-  void onTap() {
+  void onTap() async {
     if (isExpanded) {
       setState(() {
         isExpanded = !isExpanded;
-        height = 170;
+        height = 130;
       });
     } else {
-      setState(() {
+      setState(() async {
         isExpanded = !isExpanded;
         height = context.percentHeight(0.8);
+        if (controller.state.itens!.isEmpty) {
+          await controller.buscaItensGastos(mesParts, ano!);
+        }
+        setState(() {
+          itens = controller.state.itens;
+        });
       });
     }
   }
