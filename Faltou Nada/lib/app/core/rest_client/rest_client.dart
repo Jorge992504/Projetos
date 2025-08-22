@@ -13,6 +13,7 @@ class RestClient extends DioForNative {
             connectTimeout: const Duration(seconds: 10),
             receiveTimeout: const Duration(seconds: 60),
             contentType: ContentType.json.value,
+            responseType: ResponseType.json,
           ),
         ) {
     interceptors.addAll(

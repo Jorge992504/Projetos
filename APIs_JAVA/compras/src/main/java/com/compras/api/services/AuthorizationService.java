@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Collections;
 
 @Service
@@ -23,12 +24,12 @@ public class AuthorizationService {
     private String secretKey;
 
     //verifica se o token é valido
-    public boolean isAuthorized(HttpServletRequest request) {
+    public boolean isAuthorized(HttpServletRequest request) throws IOException {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("Authorization header ausente ou mal formatado" + authHeader);
-            return false;
+            throw new ErrorException(401,"Authorization header ausente ou mal formatado" + authHeader);
+
         }
 
         String token = authHeader.replace("Bearer ", "");
@@ -38,17 +39,14 @@ public class AuthorizationService {
             String user = claims.getSubject();
 
             if (user == null) {
-                System.out.println("Token sem subject (sub)");
-                return false;
+                throw new ErrorException(403,"Token sem subject (sub)");
             }
 
             var auth = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
             SecurityContextHolder.getContext().setAuthentication(auth);
             return true;
         } catch (Exception e) {
-            System.out.println("Erro ao validar token: " + e.getMessage());
-            e.printStackTrace();
-            return false;
+            throw new ErrorException(403,"Erro ao validar token: " + e.getMessage());
         }
     }
     public Claims getClaimsFromToken(String token) throws SignatureException {

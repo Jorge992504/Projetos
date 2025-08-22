@@ -1,6 +1,7 @@
 package com.compras.api.authorization;
 
 
+import com.compras.api.api.exception.ErrorException;
 import com.compras.api.services.AuthorizationService;
 import com.compras.api.services.user.ServiceUser;
 import io.jsonwebtoken.Claims;
@@ -35,10 +36,9 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        if (!authorizationService.isAuthorized(request)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
-            return;
-        }
+//        if (!authorizationService.isAuthorized(request)) {
+//            throw new ErrorException(401,"SC_UNAUTHORIZED"); // 401
+//        }
 
         String header = request.getHeader("Authorization");
 
@@ -62,9 +62,10 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             } catch (RuntimeException e) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Token inválido ou expirado: " + e.getMessage());
-                return;
+//                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//                response.getWriter().write("Token inválido ou expirado: " + e.getMessage());
+//                return;
+                throw new ErrorException(e.getMessage(),401,"SC_UNAUTHORIZED");
             }
         }
         filterChain.doFilter(request, response);

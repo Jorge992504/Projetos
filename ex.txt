@@ -1,0 +1,34 @@
+@Component
+public class AuthorizationFilter extends OncePerRequestFilter {
+
+    private final AuthorizationService authorizationService;
+
+    public AuthorizationFilter(AuthorizationService authorizationService) {
+        this.authorizationService = authorizationService;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws IOException, ServletException {
+        try {
+            // valida token
+            authorizationService.isAuthorized(request);
+
+            filterChain.doFilter(request, response);
+
+        } catch (AuthFilterException ex) {
+            // captura só as exceptions do filtro
+            response.setStatus(ex.getStatus());
+            response.setContentType("application/json");
+
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", ex.getStatus());
+            errorResponse.put("error", ex.getError());
+            errorResponse.put("message", ex.getMessage());
+
+            ObjectMapper mapper = new ObjectMapper();
+            response.getWriter().write(mapper.writeValueAsString(errorResponse));
+        }
+    }
+}

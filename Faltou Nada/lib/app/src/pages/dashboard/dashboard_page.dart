@@ -96,7 +96,7 @@ class _DashboardPageState
                 Visibility(
                   visible: url != null ? true : false,
                   child: Padding(
-                    padding: const EdgeInsetsGeometry.only(top: 16),
+                    padding: const EdgeInsets.only(top: 16),
                     child: DashboardUrl(url: url),
                   ),
                 ),
