@@ -1,5 +1,5 @@
 //criar project
-flutter create --project-name consunfe --android-language java --platforms ios,android,windows,web --org jorgeabp99@gmail.com ConsuNF-E
+flutter create --project-name payment --android-language java --platforms ios,android,windows,web --org jabp.dev@gmail.com Payment
 
 //add plataforma
 flutter create --plataforms=web .
