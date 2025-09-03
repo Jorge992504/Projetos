@@ -7,7 +7,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   GoogleSignIn.instance.initialize(
       serverClientId:
-          '357248999551-3kq8peeb7lvr65f3b9g2s0ktageparhp.apps.googleusercontent.com');
+          '357248999551-muiln76jok3c7rccicpbpthhkacnm5h3.apps.googleusercontent.com');
   runApp(const MyApp());
 }
 
