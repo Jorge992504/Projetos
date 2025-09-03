@@ -21,8 +21,8 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState
     extends BaseState<DashboardPage, DashboardController> {
-  bool isExpanded = false;
-  double? height;
+  List<bool> expandedStates = [];
+  List<double> height = [];
   String? url;
   String? ano, mes;
   int mesParts = 0;
@@ -32,6 +32,8 @@ class _DashboardPageState
   void onReady() async {
     super.onReady();
     await controller.buscaGastos();
+    expandedStates = List.filled(controller.state.cabeca!.length, false);
+    height = List.filled(controller.state.cabeca!.length, 130);
   }
 
   @override
@@ -155,9 +157,11 @@ class _DashboardPageState
                       return DashboardCard(
                         dataTime: "$mes de $ano",
                         vlTotal: "R\$ ${dashboardModel.vlTotal}",
-                        isExpanded: isExpanded,
-                        onTap: onTap,
-                        height: height,
+                        isExpanded: expandedStates[index],
+                        onTap: () {
+                          onTap(index);
+                        },
+                        height: height[index],
                         itens: state.itens,
                       );
                     },
@@ -171,16 +175,18 @@ class _DashboardPageState
     );
   }
 
-  void onTap() async {
-    if (isExpanded) {
+  void onTap(int index) async {
+    if (expandedStates[index]) {
       setState(() {
-        isExpanded = !isExpanded;
-        height = 130;
+        for (int i = 0; i < expandedStates.length; i++) {
+          expandedStates[i] = false;
+          height[index] = 130;
+        }
       });
     } else {
       setState(() async {
-        isExpanded = !isExpanded;
-        height = context.percentHeight(0.8);
+        expandedStates[index] = !expandedStates[index];
+        height[index] = context.percentHeight(0.7);
         if (controller.state.itens!.isEmpty) {
           await controller.buscaItensGastos(mesParts, ano!);
         }

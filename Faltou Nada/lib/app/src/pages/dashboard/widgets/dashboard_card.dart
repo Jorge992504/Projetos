@@ -33,7 +33,7 @@ class DashboardCard extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
-        width: width ?? context.percentWidth(1),
+        width: width ?? context.percentWidth(5),
         height: height ?? 130,
         child: Card(
           shape: RoundedRectangleBorder(

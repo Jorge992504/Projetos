@@ -30,7 +30,7 @@ public class ControllerUser {
         if (user.isPresent()) {
             return new ResponseUserDto(user.get().getId(),user.get().getEmail(),user.get().getName());
         } else {
-            throw new ErrorException("Usuário não encontrado", 401, "OBJECT_NOT_FOUND");
+            throw new ErrorException("Usuário não encontrado");
         }
     }
 

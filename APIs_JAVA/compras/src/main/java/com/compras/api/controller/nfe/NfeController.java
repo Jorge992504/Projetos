@@ -24,7 +24,7 @@ public class NfeController {
     @PostMapping
     public ResponseEntity<List<ResponseNfeDto>> nfe(@RequestParam String url, @RequestParam String empresa) throws IOException {
         if (url.isEmpty()){
-            throw new ErrorException("Erro ao gravar preços", 401,"URL vazia");
+            throw new ErrorException("Erro ao gravar preços");
         }else{
             return ResponseEntity.ok(nfeService.importarProdutos(url,empresa));
 

@@ -37,7 +37,7 @@ public class ControllerProdutct {
         if(productId != 0){
           serviceProducts.deleteProductFromUser(productId);
         }else{
-            throw new ErrorException("Selecione o produto", 403, "OBJECT_NOT_FOUND");
+            throw new ErrorException("Selecione o produto");
         }
     }
 
@@ -46,14 +46,14 @@ public class ControllerProdutct {
         if(productId != 0){
             serviceProducts.saveProductToUser(productId);
         }else{
-            throw new ErrorException("Selecione o produto", 403, "OBJECT_NOT_FOUND");
+            throw new ErrorException("Selecione o produto");
         }
     }
 
     @PostMapping("/name")
     public void saveProductToUserForName(@RequestParam String productName){
         if(productName.isEmpty()){
-            throw new ErrorException("Selecione o produto", 403, "OBJECT_NOT_FOUND");
+            throw new ErrorException("Selecione o produto");
         }else{
             serviceProducts.saveProductToUserForName(productName);
         }

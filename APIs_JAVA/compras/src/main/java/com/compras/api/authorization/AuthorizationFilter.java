@@ -65,8 +65,10 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 //                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 //                response.getWriter().write("Token inválido ou expirado: " + e.getMessage());
 //                return;
-                throw new ErrorException(e.getMessage(),401,"SC_UNAUTHORIZED");
+                throw new ErrorException(e.getMessage());
             }
+        }else{
+            throw new ErrorException("Token não informado");
         }
         filterChain.doFilter(request, response);
     }

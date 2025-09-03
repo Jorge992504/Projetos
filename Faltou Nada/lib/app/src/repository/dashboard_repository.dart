@@ -15,7 +15,7 @@ class DashboardRepository {
       );
     } catch (e, s) {
       log('Erro ao registrar gastos', error: e, stackTrace: s);
-      throw CreateException.dioException(e, 'Erro ao registrar gastos');
+      throw CreateException.dioException(e);
     }
   }
 
@@ -27,7 +27,7 @@ class DashboardRepository {
           .toList();
     } catch (e, s) {
       log('Erro ao buscar gastos', error: e, stackTrace: s);
-      throw CreateException.dioException(e, 'Erro ao buscar gastos');
+      throw CreateException.dioException(e);
     }
   }
 
@@ -45,10 +45,7 @@ class DashboardRepository {
           .toList();
     } catch (e, s) {
       log('Erro ao buscar os itens dos gastos', error: e, stackTrace: s);
-      throw CreateException.dioException(
-        e,
-        'Erro ao buscar os itens dos gastos',
-      );
+      throw CreateException.dioException(e);
     }
   }
 }

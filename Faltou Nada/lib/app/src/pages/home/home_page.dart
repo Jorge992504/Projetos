@@ -36,9 +36,9 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
     pesquisaController = TextEditingController();
     pesquisaFocus = FocusNode();
 
-    timer = Timer.periodic(const Duration(minutes: 5), (timer) {
-      context.read<HomeController>().refresh();
-    });
+    // timer = Timer.periodic(const Duration(minutes: 5), (timer) {
+    //   context.read<HomeController>().refresh();
+    // });
     // FocusScope.of(context).unfocus();
     versao();
   }

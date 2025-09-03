@@ -19,9 +19,9 @@ public class ExceptionService {
     public ResponseEntity<?> handleErrorException(ErrorException errorException, HttpServletRequest request){
         Map<String, Object> response = new HashMap<>();
 
-        response.put("status", errorException.getStatus());
+//        response.put("status", errorException.getStatus());
         response.put("message", errorException.getMessage());
-        response.put("error", errorException.getError());
+//        response.put("error", errorException.getError());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }

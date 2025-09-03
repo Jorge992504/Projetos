@@ -15,7 +15,7 @@ class HomeRepository {
           .toList();
     } catch (e, s) {
       log('Erro ao buscar produtos', error: e, stackTrace: s);
-      throw CreateException.dioException(e, 'Erro ao buscar produto');
+      throw CreateException.dioException(e);
     }
   }
 
@@ -27,10 +27,7 @@ class HomeRepository {
           .toList();
     } catch (e, s) {
       log('Erro ao buscar produtos do usuário', error: e, stackTrace: s);
-      throw CreateException.dioException(
-        e,
-        'Erro ao buscar produtos do usuário',
-      );
+      throw CreateException.dioException(e);
     }
   }
 
@@ -43,7 +40,7 @@ class HomeRepository {
       return true;
     } catch (e, s) {
       log('Erro ao excluir produto da lista', error: e, stackTrace: s);
-      throw CreateException.dioException(e, 'Erro ao excluir produto da lista');
+      throw CreateException.dioException(e);
     }
   }
 
@@ -55,7 +52,7 @@ class HomeRepository {
       );
     } catch (e, s) {
       log('Erro ao salvar produto na lista', error: e, stackTrace: s);
-      throw CreateException.dioException(e, 'Erro ao salvar produto na lista');
+      throw CreateException.dioException(e);
     }
   }
 
@@ -67,7 +64,7 @@ class HomeRepository {
       );
     } catch (e, s) {
       log('Erro ao salvar produto na lista', error: e, stackTrace: s);
-      throw CreateException.dioException(e, 'Erro ao salvar produto na lista');
+      throw CreateException.dioException(e);
     }
   }
 
@@ -76,7 +73,7 @@ class HomeRepository {
       await restClient.auth.post("/nfe", queryParameters: {'url': url});
     } catch (e, s) {
       log('Erro ao gravar preços', error: e, stackTrace: s);
-      throw CreateException.dioException(e, 'Erro ao gravar preços');
+      throw CreateException.dioException(e);
     }
   }
 }

@@ -8,36 +8,28 @@ import 'package:faltou_nada/app/src/models/user_model.dart';
 
 class AuthRepository {
   final RestClient restClient;
-  AuthRepository({
-    required this.restClient,
-  });
+  AuthRepository({required this.restClient});
 
   Future<AuthModel> login(String email, String password) async {
     try {
-      final authModel = await restClient.unauth.get('/login', queryParameters: {
-        'email': email,
-        'password': password,
-      });
+      final authModel = await restClient.unauth.get(
+        '/login',
+        queryParameters: {'email': email, 'password': password},
+      );
       return AuthModel.fromMap(authModel.data);
     } on DioException catch (e) {
       e.response?.statusCode == 401
-          ? {
-              throw UnauthorizedExceptiom(
-                e.response?.data['msg'],
-              ),
-            }
+          ? {throw UnauthorizedExceptiom(e.response?.data['msg'])}
           : {throw RepositoryException(message: 'Erro ao realizar login')};
     }
   }
 
   Future<UserModel> buscarUsuario() async {
     try {
-      final userModel = await restClient.auth.get(
-        '/user',
-      );
+      final userModel = await restClient.auth.get('/user');
       return UserModel.fromMap(userModel.data);
     } catch (e) {
-      throw CreateException.dioException(e, 'Erro ao buscar usurio');
+      throw CreateException.dioException(e);
     }
   }
 }

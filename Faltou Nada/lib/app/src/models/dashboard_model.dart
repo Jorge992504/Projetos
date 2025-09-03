@@ -55,7 +55,7 @@ class DashboardModel {
 
 class DashboardItensModel {
   String? descricao;
-  int? unid;
+  num? unid;
   num? qtde;
   String? un;
   num? total;

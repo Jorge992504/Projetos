@@ -87,7 +87,7 @@ public class ServiceProducts {
         Optional<Users> user = serviceUser.getUser(u.getEmail());
         Optional<Products> products = productsRepository.findById(productId);
         if (selectProductsRespository.existsByUserIdAndProductId(user.get().getId(), productId)){
-            throw new ErrorException("Produto já selecionado", 400,"PRODUCT_ALREADY_SELECTED");
+            throw new ErrorException("Produto já selecionado");
         }
         Select_Products sp = Select_Products.builder().user_id(user.get().getId()).product_id(productId).build();
         selectProductsRespository.save(sp);
@@ -100,7 +100,7 @@ public class ServiceProducts {
         Optional<Products> products = productsRepository.findByName(productName);
         if (products.isPresent()){
             if (selectProductsRespository.existsByUserIdAndProductId(user.get().getId(), products.get().getId())){
-                throw new ErrorException("Produto já selecionado", 400,"PRODUCT_ALREADY_SELECTED");
+                throw new ErrorException("Produto já selecionado");
             }
             Select_Products sp = Select_Products.builder().user_id(user.get().getId()).product_id(products.get().getId()).build();
             selectProductsRespository.save(sp);

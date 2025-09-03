@@ -26,18 +26,18 @@ public class RegisterUser {
     @PostMapping
     public ResponseRegisterUserDto registerUser(@RequestBody RequestRegisterUserDto body){
         if (body.email().isEmpty() || body.password().isEmpty()){
-            throw new ErrorException("EmptyObject",400,"Usuário e senha obrigatorios");
+            throw new ErrorException("EmptyObject");
         }
         boolean userExist = serviceRegisterUser.verificaUser(body.email());
         if (userExist){
-            throw new ErrorException("ObjectFound",404,"Usuário já cadastrado");
+            throw new ErrorException("ObjectFound");
         }else{
             Users saveUser = serviceRegisterUser.saveUser(body);
             if (saveUser.getId() > 0){
                 //envia email com codigo de verificação
                 return new ResponseRegisterUserDto("Usuário cadastrado com sucesso");
             }else{
-                throw new ErrorException("Internal Error",500,"Erro ao cadastrar usuário");
+                throw new ErrorException("Internal Error");
             }
         }
     }

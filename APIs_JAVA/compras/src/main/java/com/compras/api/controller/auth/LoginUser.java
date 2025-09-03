@@ -24,12 +24,12 @@ public class LoginUser {
     @GetMapping
     public ResponseTokenDto loginUser(@RequestParam String email, @RequestParam String password){
         if (email.isEmpty() || password.isEmpty()){
-            throw new ErrorException("EmptyObjecy",400,"E-mail e senha obrigatorios");
+            throw new ErrorException("E-mail e senha obrigatorios");
         }else{
             ResponseLoginUserDto loginUserDto = new ResponseLoginUserDto(email,password);
             String response = serviceLoginUser.loginUser(loginUserDto);
             if (response == null){
-                throw new ErrorException("ObjectNotFound",404,"Usuário ou senha incorretos");
+                throw new ErrorException("Usuário ou senha incorretos");
             }else{
                 return new ResponseTokenDto(response,"Sucesso ao realizar login");
             }

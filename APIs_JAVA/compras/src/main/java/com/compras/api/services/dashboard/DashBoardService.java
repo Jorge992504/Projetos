@@ -2,6 +2,7 @@ package com.compras.api.services.dashboard;
 
 
 import com.compras.api.api.dto.response.ResponseGastosDto;
+import com.compras.api.api.dto.response.ResponseGastosItemDto;
 import com.compras.api.api.dto.response.ResponseNfeDto;
 import com.compras.api.api.exception.ErrorException;
 import com.compras.api.api.models.Nfe;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,8 +41,34 @@ public class DashBoardService {
                     })
                     .toList();
         }else{
-            throw new ErrorException("USER_NOT_FOUND",401,"Usuário não encontrado");
+            throw new ErrorException("Usuário não encontrado");
         }
+    }
 
+    public List<ResponseGastosItemDto> getItens(int mes, int ano){
+        List<ResponseGastosItemDto> dtos = new ArrayList<>();
+        Users u = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); //contexto para pegar o email do token
+        Optional<Users> user = serviceUser.getUser(u.getEmail());
+        Users users = user.get();
+        if (user.isEmpty()){
+            throw new ErrorException("Usuário não esta logado");
+        }
+        List<Nfe> itens = nfeRepository.findAll()
+                .stream()
+                .filter(n -> n.getUser_id().equals(users.getId()))
+                .filter(n -> n.getDataTime().getMonthValue() == mes)
+                .filter(n -> Integer.toString(n.getDataTime().getYear()).equals(ano))
+                .collect(Collectors.toList());
+
+        // Converte para DTO
+        return itens.stream()
+                .map(n -> new ResponseGastosItemDto(
+                        n.getDescricao(),
+                        n.getUnit(),
+                        n.getQtde(),
+                        n.getUn(),
+                        n.getVlTotal()
+                ))
+                .collect(Collectors.toList());
     }
 }

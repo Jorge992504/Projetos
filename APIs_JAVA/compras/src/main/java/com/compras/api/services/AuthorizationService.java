@@ -28,7 +28,7 @@ public class AuthorizationService {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new ErrorException(401,"Authorization header ausente ou mal formatado" + authHeader);
+            throw new ErrorException("Authorization header ausente ou mal formatado");
 
         }
 
@@ -39,14 +39,14 @@ public class AuthorizationService {
             String user = claims.getSubject();
 
             if (user == null) {
-                throw new ErrorException(403,"Token sem subject (sub)");
+                throw new ErrorException("Token sem subject (sub)");
             }
 
             var auth = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
             SecurityContextHolder.getContext().setAuthentication(auth);
             return true;
         } catch (Exception e) {
-            throw new ErrorException(403,"Erro ao validar token: " + e.getMessage());
+            throw new ErrorException("Erro ao validar token");
         }
     }
     public Claims getClaimsFromToken(String token) throws SignatureException {
@@ -66,9 +66,9 @@ public class AuthorizationService {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
-            throw new ErrorException("InvalidObject",401,e.getMessage());
+            throw new ErrorException("InvalidObject");
         } catch (JwtException e) {
-            throw new ErrorException("InternalError",501,e.getMessage());
+            throw new ErrorException("InternalError");
         }
     }
 }
