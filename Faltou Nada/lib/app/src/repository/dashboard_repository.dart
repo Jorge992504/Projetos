@@ -31,10 +31,7 @@ class DashboardRepository {
     }
   }
 
-  Future<List<DashboardItensModel>> buscaItensGastos(
-    int mes,
-    String ano,
-  ) async {
+  Future<List<DashboardItensModel>> buscaItensGastos(int mes, int ano) async {
     try {
       final result = await restClient.auth.get(
         "/dashboard/gastos/itens",

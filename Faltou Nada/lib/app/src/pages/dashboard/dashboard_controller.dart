@@ -52,7 +52,7 @@ class DashboardController extends Cubit<DashboardState> {
     }
   }
 
-  Future<bool> buscaItensGastos(int mes, String ano) async {
+  Future<bool> buscaItensGastos(int mes, int ano) async {
     try {
       emit(state.copyWith(status: DashboardStatus.loading));
 

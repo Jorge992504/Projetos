@@ -129,14 +129,17 @@ class _DashboardPageState
                     shrinkWrap: true,
                     itemCount: state.cabeca!.length,
                     itemBuilder: (context, index) {
+                      int anoInt = 0;
+                      int mesInt = 0;
                       DashboardModel dashboardModel = state.cabeca![index];
                       if (dashboardModel.data != null &&
                           dashboardModel.data!.contains('-')) {
                         List<String> dataParts = dashboardModel.data!.split(
                           '-',
                         );
+                        anoInt = int.tryParse(dataParts[0]) ?? 0;
+                        mesInt = int.tryParse(dataParts[1]) ?? 0;
                         ano = dataParts[0];
-                        mesParts = int.parse(dataParts[1]);
                         List<String> meses = [
                           'Janeiro',
                           'Fevereiro',
@@ -151,7 +154,7 @@ class _DashboardPageState
                           'Novembro',
                           'Dezembro',
                         ];
-                        mes = meses[mesParts - 1];
+                        mes = meses[mesInt - 1];
                       }
 
                       return DashboardCard(
@@ -159,7 +162,7 @@ class _DashboardPageState
                         vlTotal: "R\$ ${dashboardModel.vlTotal}",
                         isExpanded: expandedStates[index],
                         onTap: () {
-                          onTap(index);
+                          onTap(index, mesInt, anoInt);
                         },
                         height: height[index],
                         itens: state.itens,
@@ -175,24 +178,20 @@ class _DashboardPageState
     );
   }
 
-  void onTap(int index) async {
+  void onTap(int index, int mes, int ano) async {
+    setState(() {
+      // alterna apenas o estado do card clicado
+      expandedStates[index] = !expandedStates[index];
+      height[index] = expandedStates[index]
+          ? context.percentHeight(0.7) // altura expandida
+          : 130; // altura normal
+    });
+
+    // busca itens apenas se o card acabou de ser expandido
     if (expandedStates[index]) {
+      await controller.buscaItensGastos(mes, ano);
       setState(() {
-        for (int i = 0; i < expandedStates.length; i++) {
-          expandedStates[i] = false;
-          height[index] = 130;
-        }
-      });
-    } else {
-      setState(() async {
-        expandedStates[index] = !expandedStates[index];
-        height[index] = context.percentHeight(0.7);
-        if (controller.state.itens!.isEmpty) {
-          await controller.buscaItensGastos(mesParts, ano!);
-        }
-        setState(() {
-          itens = controller.state.itens;
-        });
+        itens = controller.state.itens ?? [];
       });
     }
   }

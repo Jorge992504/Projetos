@@ -8,6 +8,7 @@ import com.compras.api.services.dashboard.DashBoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,10 +26,9 @@ public class DashBoardController {
     }
 
     @GetMapping("/gastos/itens")
-    public List<ResponseGastosItemDto> getItens(int mes, String ano){
-        if (mes != 0 && !ano.isEmpty()){
-            int anoInt = Integer.parseInt(ano);
-            return dashBoardService.getItens(mes, anoInt);
+    public List<ResponseGastosItemDto> getItens(@RequestParam(name = "mes", required = true) int mes, @RequestParam(name = "ano", required = true) int ano){
+        if (mes != 0 && ano != 0){
+            return dashBoardService.getItens(mes, ano);
         }else{
             throw new ErrorException("Mes e ano não informado");
         }

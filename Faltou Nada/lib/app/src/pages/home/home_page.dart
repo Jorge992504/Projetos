@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:faltou_nada/app/core/router/rotas.dart';
 import 'package:faltou_nada/app/core/ui/base/base_state.dart';
 import 'package:faltou_nada/app/core/ui/style/custom_colors.dart';
@@ -64,6 +65,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
       context,
       listen: false,
     ).userModel.name;
+    log('-------------------------------------$nome');
     String email = Provider.of<AuthProvider>(
       context,
       listen: false,

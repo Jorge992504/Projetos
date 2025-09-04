@@ -24,7 +24,7 @@ class DashboardItem extends StatelessWidget {
           ),
         ),
         Text(
-          item!.unid.toString(),
+          item!.unit != null ? item!.unit!.toString() : "",
           style: context.fontesLetras.textLight.copyWith(
             color: ColorsConstants.black,
             fontSize: 12,

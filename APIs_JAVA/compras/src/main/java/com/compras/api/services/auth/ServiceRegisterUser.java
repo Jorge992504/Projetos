@@ -4,6 +4,7 @@ import com.compras.api.api.dto.request.RequestRegisterUserDto;
 import com.compras.api.api.models.Users;
 import com.compras.api.api.repository.user.UserRepository;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -46,24 +47,19 @@ public class ServiceRegisterUser {
         return userRepository.save(user);
     }
 
-    public String gerarToken(String email, String password) {
+    public String gerarToken(String email) {
         String token;
         Optional<Users> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
-            String userPassword = user.get().getPassword();
-            if (passwordEncoder.matches(password, userPassword)) {
                 Map<String, Object> claims = new HashMap<>();
                 claims.put("id", user.get().getId());
                 claims.put("email", user.get().getEmail());
                 token = Jwts.builder().setClaims(claims)
                         .setIssuedAt(new Date(System.currentTimeMillis()))
                         .setExpiration(Date.from(LocalDateTime.now().plusDays(expirationTokenTime).atZone(ZoneId.systemDefault()).toInstant()))
-                        .signWith(SignatureAlgorithm.HS256, secretKey)
+                        .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
                         .compact();
                 return token;
-            } else {
-                return null;
-            }
         } else {
             return null;
         }

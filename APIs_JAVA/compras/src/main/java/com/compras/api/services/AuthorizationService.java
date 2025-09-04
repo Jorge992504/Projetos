@@ -1,6 +1,7 @@
 package com.compras.api.services;
 
 
+import com.compras.api.api.exception.AuthorizationException;
 import com.compras.api.api.exception.ErrorException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -28,7 +29,7 @@ public class AuthorizationService {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new ErrorException("Authorization header ausente ou mal formatado");
+            throw new AuthorizationException("Authorization header ausente ou mal formatado");
 
         }
 
@@ -39,14 +40,14 @@ public class AuthorizationService {
             String user = claims.getSubject();
 
             if (user == null) {
-                throw new ErrorException("Token sem subject (sub)");
+                throw new AuthorizationException("Token sem subject (sub)");
             }
 
             var auth = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
             SecurityContextHolder.getContext().setAuthentication(auth);
             return true;
         } catch (Exception e) {
-            throw new ErrorException("Erro ao validar token");
+            throw new AuthorizationException("Erro ao validar token");
         }
     }
     public Claims getClaimsFromToken(String token) throws SignatureException {
@@ -66,9 +67,9 @@ public class AuthorizationService {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
-            throw new ErrorException("InvalidObject");
+            throw new AuthorizationException("Token expirado");
         } catch (JwtException e) {
-            throw new ErrorException("InternalError");
+            throw new AuthorizationException("Token inválido");
         }
     }
 }

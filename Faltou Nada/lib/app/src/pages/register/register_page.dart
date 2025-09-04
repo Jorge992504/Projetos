@@ -1,12 +1,13 @@
+import 'dart:developer';
 import 'package:faltou_nada/app/core/router/rotas.dart';
 import 'package:faltou_nada/app/core/ui/base/base_state.dart';
 import 'package:faltou_nada/app/core/ui/style/custom_colors.dart';
 import 'package:faltou_nada/app/core/ui/style/custom_images.dart';
-import 'package:faltou_nada/app/core/ui/style/fontes_letras.dart';
 import 'package:faltou_nada/app/core/ui/style/size_extension.dart';
 import 'package:faltou_nada/app/src/app_providers/auth_provider.dart';
-import 'package:faltou_nada/app/src/pages/login/login_controller.dart';
-import 'package:faltou_nada/app/src/pages/login/login_state.dart';
+import 'package:faltou_nada/app/src/models/register_user_model.dart';
+import 'package:faltou_nada/app/src/pages/register/register_controller.dart';
+import 'package:faltou_nada/app/src/pages/register/register_state.dart';
 import 'package:faltou_nada/app/src/widgets/custom_buttom.dart';
 import 'package:faltou_nada/app/src/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
@@ -14,29 +15,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:validatorless/validatorless.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends BaseState<LoginPage, LoginController> {
+class _RegisterPageState extends BaseState<RegisterPage, RegisterController> {
   bool obscureText = true;
   bool valido = true;
   final formKey = GlobalKey<FormState>();
   late TextEditingController emailController;
   late TextEditingController passwordController;
+  late TextEditingController nomeController;
   late FocusNode emailFocus;
   late FocusNode passwordFocus;
+  late FocusNode nomeFocus;
 
   @override
   void initState() {
     super.initState();
     emailController = TextEditingController();
     passwordController = TextEditingController();
+    nomeController = TextEditingController();
     emailFocus = FocusNode();
     passwordFocus = FocusNode();
+    nomeFocus = FocusNode();
   }
 
   @override
@@ -46,32 +51,34 @@ class _LoginPageState extends BaseState<LoginPage, LoginController> {
     passwordController.dispose();
     emailFocus.dispose();
     passwordFocus.dispose();
+    nomeController.dispose();
+    nomeFocus.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LoginController, LoginState>(
+    return BlocConsumer<RegisterController, RegisterState>(
       listener: (context, state) {
         state.status.matchAny(
           any: hideLoader,
           loading: showLoader,
           loaded: hideLoader,
           failure: () {
-            showError(state.errorMessage ?? 'Login ou senha inválidos');
+            showError(state.errorMessage ?? 'INTERNAL_ERROR');
             hideLoader();
           },
-          sucess: () async {
-            hideLoader(); // <- Primeiro esconde o loading
-            showSuccess('Sucesso ao realizar login');
+          success: () async {
+            showSuccess(state.errorMessage ?? "Sucesso");
             await Provider.of<AuthProvider>(
               context,
               listen: false,
             ).autualizarUsearioSP();
-            // ignore: use_build_context_synchronously
-            Navigator.of(
-              // ignore: use_build_context_synchronously
-              context,
-            ).pushNamedAndRemoveUntil(Rotas.home, (route) => false);
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.of(
+                context,
+              ).pushNamedAndRemoveUntil(Rotas.home, (route) => false);
+            });
+            hideLoader();
           },
         );
       },
@@ -91,7 +98,7 @@ class _LoginPageState extends BaseState<LoginPage, LoginController> {
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
-                        height: 230,
+                        height: 250,
                         width: context.percentWidth(0.9),
                         margin: const EdgeInsets.only(
                           left: 20,
@@ -114,7 +121,29 @@ class _LoginPageState extends BaseState<LoginPage, LoginController> {
                                       labelText: 'E-mail',
                                       controller: emailController,
                                       focusNode: emailFocus,
-                                      keyboardType: TextInputType.emailAddress,
+                                      keyboardType: TextInputType.text,
+                                      textInputAction: TextInputAction.next,
+                                      onFieldSubmitted: (value) {
+                                        if (value.isNotEmpty) {
+                                          nomeFocus.requestFocus();
+                                        } else {
+                                          emailFocus.requestFocus();
+                                        }
+                                      },
+                                      validator: Validatorless.multiple([
+                                        Validatorless.required(
+                                          'E-mail obrigatorio',
+                                        ),
+                                        Validatorless.email('E-mail invalido'),
+                                      ]),
+                                    ),
+
+                                    CustomTextFormField(
+                                      height: valido ? 40 : 60,
+                                      labelText: 'Nome',
+                                      controller: nomeController,
+                                      focusNode: nomeFocus,
+                                      keyboardType: TextInputType.text,
                                       textInputAction: TextInputAction.next,
                                       onFieldSubmitted: (value) {
                                         if (value.isNotEmpty) {
@@ -125,9 +154,8 @@ class _LoginPageState extends BaseState<LoginPage, LoginController> {
                                       },
                                       validator: Validatorless.multiple([
                                         Validatorless.required(
-                                          'E-mail obrigatorio',
+                                          'Nome obrigatorio',
                                         ),
-                                        Validatorless.email('E-mail invalido'),
                                       ]),
                                     ),
                                     CustomTextFormField(
@@ -169,91 +197,46 @@ class _LoginPageState extends BaseState<LoginPage, LoginController> {
                                       ),
                                     ),
                                     CustomButtom(
-                                      label: 'Entrar',
-                                      onPressed: () {
+                                      label: 'Salvar',
+                                      onPressed: () async {
                                         final valid =
                                             formKey.currentState?.validate() ??
                                             false;
                                         if (valid) {
-                                          controller.login(
-                                            emailController.text,
-                                            passwordController.text,
-                                            context,
-                                          );
-                                          setState(() {
-                                            valido = !valido;
-                                          });
+                                          RegisterUserModel model =
+                                              RegisterUserModel(
+                                                email: emailController.text,
+                                                name: nomeController.text,
+                                                password:
+                                                    passwordController.text,
+                                              );
+                                          final result = await controller
+                                              .register(model);
+                                          if (result['token'] != null) {
+                                            final atualziar =
+                                                await Provider.of<AuthProvider>(
+                                                  // ignore: use_build_context_synchronously
+                                                  context,
+                                                  listen: false,
+                                                ).atualizar(
+                                                  result['token'],
+                                                  emailController.text,
+                                                );
+                                            if (atualziar) {
+                                              setState(() {
+                                                valido = !valido;
+                                              });
+                                            } else {
+                                              log('Nao atualizou o token');
+                                            }
+                                          }
                                         } else {
+                                          log('Token vazio');
                                           setState(() {
                                             valido = !valido;
                                           });
                                         }
                                       },
-                                    ),
-                                    Container(
-                                      height: 20,
-                                      width: context.percentWidth(0.9),
-                                      margin: const EdgeInsets.only(
-                                        top: 10,
-                                        left: 10,
-                                        right: 10,
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                      ),
-                                      child: InkWell(
-                                        onTap: () {},
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              'Esqueceu sua senha?',
-                                              style: context
-                                                  .fontesLetras
-                                                  .textRegular
-                                                  .copyWith(
-                                                    fontSize: 12,
-                                                    color:
-                                                        ColorsConstants.black,
-                                                  ),
-                                            ),
-                                            const Icon(
-                                              Icons.arrow_circle_right_outlined,
-                                              size: 18,
-                                              color: ColorsConstants.black,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      height: 20,
-                                      width: 100,
-                                      margin: const EdgeInsets.only(
-                                        top: 15,
-                                        left: 10,
-                                        right: 10,
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                      ),
-                                      alignment: Alignment.bottomCenter,
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.of(
-                                            context,
-                                          ).popAndPushNamed(Rotas.register);
-                                        },
-                                        child: Text(
-                                          'Criar conta',
-                                          style: context.fontesLetras.textLight
-                                              .copyWith(
-                                                fontSize: 12,
-                                                color: ColorsConstants.black,
-                                              ),
-                                        ),
-                                      ),
                                     ),
                                   ],
                                 ),

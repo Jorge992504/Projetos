@@ -46,29 +46,12 @@ public class DashBoardService {
     }
 
     public List<ResponseGastosItemDto> getItens(int mes, int ano){
-        List<ResponseGastosItemDto> dtos = new ArrayList<>();
+
         Users u = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); //contexto para pegar o email do token
         Optional<Users> user = serviceUser.getUser(u.getEmail());
-        Users users = user.get();
-        if (user.isEmpty()){
-            throw new ErrorException("Usuário não esta logado");
-        }
-        List<Nfe> itens = nfeRepository.findAll()
-                .stream()
-                .filter(n -> n.getUser_id().equals(users.getId()))
-                .filter(n -> n.getDataTime().getMonthValue() == mes)
-                .filter(n -> Integer.toString(n.getDataTime().getYear()).equals(ano))
-                .collect(Collectors.toList());
 
-        // Converte para DTO
-        return itens.stream()
-                .map(n -> new ResponseGastosItemDto(
-                        n.getDescricao(),
-                        n.getUnit(),
-                        n.getQtde(),
-                        n.getUn(),
-                        n.getVlTotal()
-                ))
-                .collect(Collectors.toList());
+        Long userId = user.get().getId();
+
+        return nfeRepository.findByUserAndMesAno(userId,ano,mes);
     }
 }

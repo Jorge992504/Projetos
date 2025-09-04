@@ -1,4 +1,4 @@
 package com.compras.api.api.dto.response;
 
-public record ResponseRegisterUserDto(String msg) {
+public record ResponseRegisterUserDto(String msg, String token) {
 }

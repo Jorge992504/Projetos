@@ -15,16 +15,21 @@ class LoginController extends Cubit<LoginState> {
   LoginController(this._authRepository) : super(LoginState.initial());
 
   Future<void> login(
-      String email, String password, BuildContext context) async {
+    String email,
+    String password,
+    BuildContext context,
+  ) async {
     try {
       emit(state.copyWith(status: LoginStatus.loading));
       AuthModel authModel = await _authRepository.login(email, password);
+      // ignore: use_build_context_synchronously
       Provider.of<AuthProvider>(context, listen: false).login(authModel);
       emit(state.copyWith(status: LoginStatus.sucess));
     } on RepositoryException catch (e, s) {
       log('$s');
       emit(
-          state.copyWith(status: LoginStatus.failure, errorMessage: e.message));
+        state.copyWith(status: LoginStatus.failure, errorMessage: e.message),
+      );
     }
   }
 }

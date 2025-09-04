@@ -30,14 +30,19 @@ public class RegisterUser {
         }
         boolean userExist = serviceRegisterUser.verificaUser(body.email());
         if (userExist){
-            throw new ErrorException("ObjectFound");
+            throw new ErrorException("Usuário ja canastrado");
         }else{
             Users saveUser = serviceRegisterUser.saveUser(body);
             if (saveUser.getId() > 0){
                 //envia email com codigo de verificação
-                return new ResponseRegisterUserDto("Usuário cadastrado com sucesso");
+               String token = serviceRegisterUser.gerarToken(body.email());
+               if (token.isEmpty()){
+                   throw new ErrorException("Erro ao gerar token");
+               }else{
+                   return new ResponseRegisterUserDto("Usuário cadastrado com sucesso",token);
+               }
             }else{
-                throw new ErrorException("Internal Error");
+                throw new ErrorException("Erro ao cadastrar usuário");
             }
         }
     }

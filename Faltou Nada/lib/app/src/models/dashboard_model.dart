@@ -55,13 +55,13 @@ class DashboardModel {
 
 class DashboardItensModel {
   String? descricao;
-  num? unid;
+  num? unit;
   num? qtde;
   String? un;
   num? total;
   DashboardItensModel({
     this.descricao,
-    this.unid,
+    this.unit,
     this.qtde,
     this.un,
     this.total,
@@ -69,14 +69,14 @@ class DashboardItensModel {
 
   DashboardItensModel copyWith({
     String? descricao,
-    int? unid,
+    int? unit,
     num? qtde,
     String? un,
     num? total,
   }) {
     return DashboardItensModel(
       descricao: descricao ?? this.descricao,
-      unid: unid ?? this.unid,
+      unit: unit ?? this.unit,
       qtde: qtde ?? this.qtde,
       un: un ?? this.un,
       total: total ?? this.total,
@@ -86,7 +86,7 @@ class DashboardItensModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'descricao': descricao,
-      'unid': unid,
+      'unit': unit,
       'qtde': qtde,
       'un': un,
       'total': total,
@@ -96,7 +96,7 @@ class DashboardItensModel {
   factory DashboardItensModel.fromMap(Map<String, dynamic> map) {
     return DashboardItensModel(
       descricao: map['descricao'] ?? "",
-      unid: map['unid'] ?? 0,
+      unit: map['unit'] ?? 0,
       qtde: map['qtde'] ?? 0,
       un: map['un'] ?? "",
       total: map['total'] ?? 0,
@@ -110,7 +110,7 @@ class DashboardItensModel {
 
   @override
   String toString() {
-    return 'DashboardItensModel(descricao: $descricao, unid: $unid, qtde: $qtde, un: $un, total: $total)';
+    return 'DashboardItensModel(descricao: $descricao, unit: $unit, qtde: $qtde, un: $un, total: $total)';
   }
 
   @override
@@ -118,7 +118,7 @@ class DashboardItensModel {
     if (identical(this, other)) return true;
 
     return other.descricao == descricao &&
-        other.unid == unid &&
+        other.unit == unit &&
         other.qtde == qtde &&
         other.un == un &&
         other.total == total;
@@ -127,7 +127,7 @@ class DashboardItensModel {
   @override
   int get hashCode {
     return descricao.hashCode ^
-        unid.hashCode ^
+        unit.hashCode ^
         qtde.hashCode ^
         un.hashCode ^
         total.hashCode;

@@ -17,14 +17,15 @@ class AuthProvider extends ChangeNotifier {
   AuthProvider({
     required AuthRepository loginRepository,
     required SharedPreferences prefs,
-  })  : _prefs = prefs,
-        _loginRepository = loginRepository {
+  }) : _prefs = prefs,
+       _loginRepository = loginRepository {
     if (_prefs.containsKey(Keys.token)) {
       _email = _prefs.getString(Keys.usuarioLogado) ?? '';
       _token = _prefs.getString(Keys.token) ?? '';
       final userJson = _prefs.getString(Keys.userModel);
-      _userModel =
-          userJson != null ? UserModel.fromJson(userJson) : UserModel();
+      _userModel = userJson != null
+          ? UserModel.fromJson(userJson)
+          : UserModel();
       notifyListeners();
     } else {
       _email = '';
@@ -35,12 +36,28 @@ class AuthProvider extends ChangeNotifier {
 
   Future<AuthModel> login(AuthModel authModel) async {
     // isLoading = true;
-    notifyListeners();
+
     _token = authModel.token;
 
     await _prefs.setString(Keys.usuarioLogado, _email);
     await _prefs.setString(Keys.token, _token);
+    notifyListeners();
     return authModel;
+  }
+
+  Future<bool> atualizar(String token, String email) async {
+    if (token.isNotEmpty) {
+      _token = token;
+
+      await _prefs.setString(Keys.usuarioLogado, email);
+      await _prefs.setString(Keys.token, _token);
+
+      notifyListeners();
+      return true;
+    } else {
+      notifyListeners();
+      return false;
+    }
   }
 
   Future<void> autualizarUsearioSP() async {
