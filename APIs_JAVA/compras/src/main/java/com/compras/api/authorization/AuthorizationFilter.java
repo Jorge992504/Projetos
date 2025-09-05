@@ -38,7 +38,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
-        if (path.equals("/register") || path.equals("/login") || path.startsWith("/public")) {
+        if (path.equals("/register") || path.equals("/login") || path.startsWith("/redefine") || path.startsWith("/public")) {
             filterChain.doFilter(request, response);
             return;
         }

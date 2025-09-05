@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -22,7 +24,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)  // Desabilita CSRF
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/login", "/register", "/public/**").permitAll()  // Permite as rotas públicas
+                        .requestMatchers("/login", "/register","/redefine", "/public/**").permitAll()  // Permite as rotas públicas
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -32,5 +34,10 @@ public class SecurityConfig {
         http.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

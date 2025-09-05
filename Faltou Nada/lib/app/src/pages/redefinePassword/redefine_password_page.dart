@@ -1,47 +1,45 @@
-import 'dart:developer';
 import 'package:faltou_nada/app/core/router/rotas.dart';
 import 'package:faltou_nada/app/core/ui/base/base_state.dart';
 import 'package:faltou_nada/app/core/ui/style/custom_colors.dart';
 import 'package:faltou_nada/app/core/ui/style/custom_images.dart';
 import 'package:faltou_nada/app/core/ui/style/size_extension.dart';
-import 'package:faltou_nada/app/src/app_providers/auth_provider.dart';
-import 'package:faltou_nada/app/src/models/register_user_model.dart';
-import 'package:faltou_nada/app/src/pages/register/register_controller.dart';
-import 'package:faltou_nada/app/src/pages/register/register_state.dart';
+import 'package:faltou_nada/app/src/pages/redefinePassword/redefine_password_controller.dart';
+import 'package:faltou_nada/app/src/pages/redefinePassword/redefine_password_state.dart';
 import 'package:faltou_nada/app/src/widgets/custom_buttom.dart';
 import 'package:faltou_nada/app/src/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:validatorless/validatorless.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class RedefinePasswordPage extends StatefulWidget {
+  const RedefinePasswordPage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<RedefinePasswordPage> createState() => _RedefinePasswordPageState();
 }
 
-class _RegisterPageState extends BaseState<RegisterPage, RegisterController> {
-  bool obscureText = true;
-  bool valido = true;
+class _RedefinePasswordPageState
+    extends BaseState<RedefinePasswordPage, RedefinePasswordController> {
   final formKey = GlobalKey<FormState>();
+  bool obscureText = true;
+  bool obscureText2 = true;
+  bool valido = true;
   late TextEditingController emailController;
   late TextEditingController passwordController;
-  late TextEditingController nomeController;
+  late TextEditingController password2Controller;
   late FocusNode emailFocus;
   late FocusNode passwordFocus;
-  late FocusNode nomeFocus;
+  late FocusNode password2Focus;
 
   @override
   void initState() {
     super.initState();
     emailController = TextEditingController();
     passwordController = TextEditingController();
-    nomeController = TextEditingController();
+    password2Controller = TextEditingController();
     emailFocus = FocusNode();
     passwordFocus = FocusNode();
-    nomeFocus = FocusNode();
+    password2Focus = FocusNode();
   }
 
   @override
@@ -51,40 +49,37 @@ class _RegisterPageState extends BaseState<RegisterPage, RegisterController> {
     passwordController.dispose();
     emailFocus.dispose();
     passwordFocus.dispose();
-    nomeController.dispose();
-    nomeFocus.dispose();
+    password2Controller.dispose();
+    password2Focus.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<RegisterController, RegisterState>(
-      listener: (context, state) {
-        state.status.matchAny(
-          any: hideLoader,
-          loading: showLoader,
-          loaded: hideLoader,
-          failure: () {
-            showError(state.errorMessage ?? 'INTERNAL_ERROR');
-            hideLoader();
-          },
-          success: () async {
-            showSuccess(state.errorMessage ?? "Sucesso");
-            await Provider.of<AuthProvider>(
-              context,
-              listen: false,
-            ).autualizarUsearioSP();
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.of(
-                context,
-              ).pushNamedAndRemoveUntil(Rotas.home, (route) => false);
-            });
-            hideLoader();
-          },
-        );
-      },
-      builder: (context, state) {
-        return Scaffold(
-          body: SafeArea(
+    return Scaffold(
+      body: BlocConsumer<RedefinePasswordController, RedefinePasswordState>(
+        listener: (context, state) {
+          state.status.matchAny(
+            any: hideLoader,
+            loading: showLoader,
+            loaded: hideLoader,
+            failure: () {
+              showError(state.errorMessage ?? 'INTERNAL_ERROR');
+              hideLoader();
+            },
+            success: () async {
+              showSuccess(state.errorMessage ?? "Sucesso");
+
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(
+                  context,
+                ).pushNamedAndRemoveUntil(Rotas.login, (route) => false);
+              });
+              hideLoader();
+            },
+          );
+        },
+        builder: (context, state) {
+          return SafeArea(
             child: LayoutBuilder(
               builder: (context, c) {
                 return Stack(
@@ -121,11 +116,11 @@ class _RegisterPageState extends BaseState<RegisterPage, RegisterController> {
                                       labelText: 'E-mail',
                                       controller: emailController,
                                       focusNode: emailFocus,
-                                      keyboardType: TextInputType.text,
+                                      keyboardType: TextInputType.multiline,
                                       textInputAction: TextInputAction.next,
                                       onFieldSubmitted: (value) {
                                         if (value.isNotEmpty) {
-                                          nomeFocus.requestFocus();
+                                          passwordFocus.requestFocus();
                                         } else {
                                           emailFocus.requestFocus();
                                         }
@@ -140,35 +135,15 @@ class _RegisterPageState extends BaseState<RegisterPage, RegisterController> {
 
                                     CustomTextFormField(
                                       height: valido ? 40 : 60,
-                                      labelText: 'Nome',
-                                      controller: nomeController,
-                                      focusNode: nomeFocus,
-                                      keyboardType: TextInputType.text,
-                                      textInputAction: TextInputAction.next,
-                                      onFieldSubmitted: (value) {
-                                        if (value.isNotEmpty) {
-                                          passwordFocus.requestFocus();
-                                        } else {
-                                          emailFocus.requestFocus();
-                                        }
-                                      },
-                                      validator: Validatorless.multiple([
-                                        Validatorless.required(
-                                          'Nome obrigatorio',
-                                        ),
-                                      ]),
-                                    ),
-                                    CustomTextFormField(
-                                      height: valido ? 40 : 60,
-                                      labelText: 'Senha',
-                                      obscureText: obscureText,
-                                      focusNode: passwordFocus,
+                                      labelText: 'Nova senha',
                                       controller: passwordController,
-                                      keyboardType: TextInputType.text,
-                                      textInputAction: TextInputAction.done,
+                                      focusNode: passwordFocus,
+                                      keyboardType: TextInputType.multiline,
+                                      textInputAction: TextInputAction.next,
+                                      obscureText: obscureText,
                                       onFieldSubmitted: (value) {
                                         if (value.isNotEmpty) {
-                                          passwordFocus.unfocus();
+                                          password2Focus.requestFocus();
                                         } else {
                                           passwordFocus.requestFocus();
                                         }
@@ -196,45 +171,59 @@ class _RegisterPageState extends BaseState<RegisterPage, RegisterController> {
                                         ),
                                       ),
                                     ),
+                                    CustomTextFormField(
+                                      height: valido ? 40 : 60,
+                                      labelText: 'Repeta a senha',
+                                      controller: password2Controller,
+                                      focusNode: password2Focus,
+                                      keyboardType: TextInputType.multiline,
+                                      textInputAction: TextInputAction.done,
+                                      obscureText: obscureText2,
+                                      onFieldSubmitted: (value) {
+                                        if (value.isNotEmpty) {
+                                          password2Focus.unfocus();
+                                        } else {
+                                          passwordFocus.requestFocus();
+                                        }
+                                      },
+                                      validator: Validatorless.multiple([
+                                        Validatorless.required(
+                                          'Repeta sua senha',
+                                        ),
+                                        Validatorless.compare(
+                                          passwordController,
+                                          'Senhas diferentes',
+                                        ),
+                                      ]),
+                                      suffixIcon: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            obscureText2 = !obscureText2;
+                                          });
+                                        },
+                                        icon: Icon(
+                                          obscureText == true
+                                              ? Icons.password_outlined
+                                              : Icons.remove_red_eye_outlined,
+                                          size: 18,
+                                        ),
+                                      ),
+                                    ),
                                     CustomButtom(
-                                      label: 'Salvar',
+                                      label: 'Redefinir senha',
                                       onPressed: () async {
                                         final valid =
                                             formKey.currentState?.validate() ??
                                             false;
                                         if (valid) {
-                                          RegisterUserModel model =
-                                              RegisterUserModel(
-                                                email: emailController.text,
-                                                name: nomeController.text,
-                                                password:
-                                                    passwordController.text,
-                                              );
-                                          final result = await controller
-                                              .register(model);
-                                          if (result['token'] != null) {
-                                            final atualziar =
-                                                await Provider.of<AuthProvider>(
-                                                  // ignore: use_build_context_synchronously
-                                                  context,
-                                                  listen: false,
-                                                ).atualizar(
-                                                  result['token'],
-                                                  emailController.text,
-                                                );
-                                            if (atualziar) {
-                                              await Provider.of<AuthProvider>(
-                                                // ignore: use_build_context_synchronously
-                                                context,
-                                                listen: false,
-                                              ).autualizarUsearioSP();
-                                            }
-                                          } else {
-                                            log('Token vazio');
-                                            setState(() {
-                                              valido = !valido;
-                                            });
-                                          }
+                                          await controller.redefinirSenha(
+                                            emailController.text,
+                                            passwordController.text,
+                                          );
+                                        } else {
+                                          setState(() {
+                                            valido = !valido;
+                                          });
                                         }
                                       },
                                     ),
@@ -250,9 +239,9 @@ class _RegisterPageState extends BaseState<RegisterPage, RegisterController> {
                 );
               },
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

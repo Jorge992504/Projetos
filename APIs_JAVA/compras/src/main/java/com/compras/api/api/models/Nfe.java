@@ -37,7 +37,7 @@ public class Nfe {
     private float unit;
     private String un;
     private String descricao;
-    private int qtde;
+    private float qtde;
     private String empresa;
     private float vlTotal;
 

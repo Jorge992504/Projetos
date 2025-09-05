@@ -202,7 +202,11 @@ class _LoginPageState extends BaseState<LoginPage, LoginController> {
                                         horizontal: 10,
                                       ),
                                       child: InkWell(
-                                        onTap: () {},
+                                        onTap: () {
+                                          Navigator.of(context).popAndPushNamed(
+                                            Rotas.resetPassword,
+                                          );
+                                        },
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,

@@ -76,6 +76,7 @@ public class NfeService {
 
             // entidade para persistir
             Nfe produto = Nfe.builder()
+                    .id(null)
                     .user_id(user.get().getId())
                     .descricao(descricao)
                     .qtde(qtde)

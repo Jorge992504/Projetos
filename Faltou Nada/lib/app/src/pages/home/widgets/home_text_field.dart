@@ -40,8 +40,12 @@ class HomeTextField extends StatelessWidget {
             cursorHeight: 16,
             cursorWidth: 2, // Mais fina
             decoration: InputDecoration(
-              contentPadding:
-                  const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+              contentPadding: const EdgeInsets.only(
+                left: 10,
+                right: 10,
+                top: 5,
+                bottom: 5,
+              ),
               labelText: 'Pesquisar produtos',
               labelStyle: context.fontesLetras.textLight.copyWith(
                 fontSize: 16,

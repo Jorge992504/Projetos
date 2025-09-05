@@ -7,7 +7,6 @@ import 'package:faltou_nada/app/src/models/dashboard_model.dart';
 import 'package:faltou_nada/app/src/pages/dashboard/dashboard_controller.dart';
 import 'package:faltou_nada/app/src/pages/dashboard/dashboard_state.dart';
 import 'package:faltou_nada/app/src/pages/dashboard/widgets/dashboard_card.dart';
-import 'package:faltou_nada/app/src/pages/dashboard/widgets/dashboard_url.dart';
 import 'package:faltou_nada/app/src/widgets/custom_bar_code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -85,7 +84,19 @@ class _DashboardPageState
                     foregroundColor: ColorsConstants.fundoCampos,
                     child: InkWell(
                       onTap: () async {
-                        await openCamera();
+                        final result = await openCamera();
+                        if (result) {
+                          final envie = await controller.enviarUrl(
+                            url!,
+                            "empresa",
+                          );
+                          if (envie) {
+                            setState(() {
+                              url = '';
+                            });
+                            await controller.buscaGastos();
+                          }
+                        }
                       },
                       child: const Icon(
                         Icons.add,
@@ -95,34 +106,34 @@ class _DashboardPageState
                     ),
                   ),
                 ),
-                Visibility(
-                  visible: url != null ? true : false,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: DashboardUrl(url: url),
-                  ),
-                ),
-                Visibility(
-                  visible: url != null ? true : false,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: SizedBox(
-                      width: context.percentWidth(.95),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          suffixIcon: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.send,
-                              size: 20,
-                              color: ColorsConstants.appBar,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                // Visibility(
+                //   visible: url != null ? true : false,
+                //   child: Padding(
+                //     padding: const EdgeInsets.only(top: 16),
+                //     child: DashboardUrl(url: url),
+                //   ),
+                // ),
+                // Visibility(
+                //   visible: url != null ? true : false,
+                //   child: Padding(
+                //     padding: const EdgeInsets.only(top: 16),
+                //     child: SizedBox(
+                //       width: context.percentWidth(.95),
+                //       child: TextField(
+                //         decoration: InputDecoration(
+                //           suffixIcon: IconButton(
+                //             onPressed: () {},
+                //             icon: const Icon(
+                //               Icons.send,
+                //               size: 20,
+                //               color: ColorsConstants.appBar,
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: ListView.builder(
