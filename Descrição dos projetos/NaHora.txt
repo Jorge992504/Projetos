@@ -1,0 +1,1 @@
+Tela Splash => verificar se o usuário esta logado, caso esteja navegar pagina home com login caso não, nevagar para home sem login

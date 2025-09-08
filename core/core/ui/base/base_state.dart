@@ -1,6 +1,6 @@
-import 'package:aumigo/core/ui/loader/loader_tela.dart';
-import 'package:aumigo/core/ui/messages/custom_messages.dart';
 import 'package:bloc/bloc.dart';
+import 'package:faltou_nada/app/core/ui/loader/loader_tela.dart';
+import 'package:faltou_nada/app/core/ui/messages/custom_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

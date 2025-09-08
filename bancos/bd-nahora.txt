@@ -1,0 +1,35 @@
+*Users*
+ -> id
+ -> name
+ -> email(unique)
+ -> address
+ -> telefone
+ -> password
+ -> photo
+
+*Products*
+ -> id
+ -> name
+ -> descricao
+ -> photo
+ -> price
+ -> type
+
+*Promocoes*
+ -> id
+ ->prod_id
+ ->ativo
+
+*Pedidos*
+ -> id
+ -> user_id
+ -> prod_id
+ -> met_pay
+ -> qtde
+ -> valor
+ -> status
+
+*Favoritos*
+ -> id
+ -> user_id
+ -> prod_id

@@ -1,5 +1,5 @@
-//criar project
-flutter create --project-name payment --android-language java --platforms ios,android,windows,web --org jabp.dev@gmail.com Payment
+n//criar project
+flutter create --project-name nahora --android-language java --platforms ios,android,windows,web --org jabp.dev@gmail.com NaHora
 
 //add plataforma
 flutter create --plataforms=web .

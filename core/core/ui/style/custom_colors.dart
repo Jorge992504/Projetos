@@ -1,8 +1,11 @@
 import 'dart:ui';
 
 sealed class ColorsConstants {
-  static const quadro = Color(0xff9beace);
-  static const appBar = Color(0xff99f783);
-  static const fundoTela = Color(0xffceeae0);
-  static const letraBordas = Color(0xff4b4a4a);
+  static const appBar = Color(0xffff9500);
+  static const buttonBordas = Color(0xffcd9d5a);
+  static const textos = Color(0xfff2cd98);
+  static const fundo = Color(0xffe7dfd4);
+  static const fundoCampos = Color(0xfff5f5f5);
+  static const fundoCard = Color(0xffe4d2b9);
+  static const black = Color.fromARGB(255, 0, 0, 0);
 }

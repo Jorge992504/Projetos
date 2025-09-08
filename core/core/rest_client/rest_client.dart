@@ -1,9 +1,8 @@
 import 'dart:io';
-
-import 'package:aumigo/core/env/env.dart';
-import 'package:aumigo/core/interceptor/interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
+import 'package:faltou_nada/app/core/env/env.dart';
+import 'package:faltou_nada/app/core/interceptor/interceptor.dart';
 
 class RestClient extends DioForNative {
   late AuthInterceptor _authInterceptor;
@@ -14,6 +13,7 @@ class RestClient extends DioForNative {
             connectTimeout: const Duration(seconds: 10),
             receiveTimeout: const Duration(seconds: 60),
             contentType: ContentType.json.value,
+            responseType: ResponseType.json,
           ),
         ) {
     interceptors.addAll(
