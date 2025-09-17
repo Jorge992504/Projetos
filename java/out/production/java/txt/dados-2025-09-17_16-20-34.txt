@@ -1,0 +1,7 @@
+==================== DADOS DO USUÁRIO ==========2025-09-17T16:20:34.709743600==========
+| Nome            : Jorge Bravo                    |
+| Idade           : 26                             |
+| Cidade          : Chapeco, Santa Catarina        |
+| Bairro          : Centro                         |
+| Telefone        : 49 99999-9999                  |
+============================================================
