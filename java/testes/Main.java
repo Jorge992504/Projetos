@@ -1,7 +1,5 @@
-import classes.GravaTxtBuild;
-import classes.InformaI;
-import classes.ListInt;
-import classes.SaveTxt;
+package testes;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,23 +43,26 @@ public class Main {
 //        System.out.println("------------------------------------------");
 //        System.out.println("\n");
 //
-        SaveTxt txt = new SaveTxt();
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Informa o caminho para gravar os dados: ");
-        String path = scanner.nextLine();
-        if (path.isEmpty()){
-            System.out.println("Erro ao copiar caminho");
-        }else{
-            txt.saveTxt(path);
-        }
+//        SaveTxt txt = new SaveTxt();
+//        Scanner scanner = new Scanner(System.in);
+//        System.out.println("Informa o caminho para gravar os dados: ");
+//        String path = scanner.nextLine();
+//        if (path.isEmpty()){
+//            System.out.println("Erro ao copiar caminho");
+//        }else{
+//            txt.saveTxt(path);
+//        }
 //        if (path.isEmpty()){
 //            System.out.println("Erro ao copiar caminho");
 //        }else{
 //            GravaTxtBuild gravaTxtBuild = new GravaTxtBuild();
 //            gravaTxtBuild.gravaTxtBuild(path);
 //        }
+        classes.PintaCarrinho pintaCarrinho = new classes.PintaCarrinho();
+        pintaCarrinho.pintaCarrinho();
 
-        scanner.close();
+
+
 
     }
 }

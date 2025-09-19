@@ -1,0 +1,10 @@
+Vá em File → Project Structure → Artifacts.
+
+Clique em + → JAR → From modules with dependencies.
+
+Escolha a classe Main.
+
+Marque “Include in project build”.
+
+Vá em Build → Build Artifacts → Build.
+java -jar MyProgram.jar
