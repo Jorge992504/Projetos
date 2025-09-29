@@ -31,6 +31,7 @@ class _ChatPageState extends BaseState<ChatPage, ChatController> {
       // Busca mensagens iniciais do banco via BLoC
       controller.buscaMessages(userFrom);
     });
+    _scrollParaUltimaMensagem();
   }
 
   /// Rola para a última mensagem
@@ -69,7 +70,11 @@ class _ChatPageState extends BaseState<ChatPage, ChatController> {
                     );
                     hideLoader();
                   },
-                  send: hideLoader,
+                  send: () {
+                    hideLoader();
+                    // NÃO adicionar mensagens do BLoC no WebSocket
+                    _scrollParaUltimaMensagem();
+                  },
                 );
               },
               builder: (context, state) {

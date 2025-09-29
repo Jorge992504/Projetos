@@ -96,6 +96,7 @@ class AuthProvider extends ChangeNotifier {
     _isAuthenticated = false;
     _token = '';
     _email = '';
+    _usuarioModel = UsuarioModel();
     await _sharedPreferences.remove(Keys.token);
     await _sharedPreferences.remove(Keys.userModel);
     await _sharedPreferences.remove(Keys.usuarioLogado);

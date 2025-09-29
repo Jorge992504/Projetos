@@ -11,7 +11,7 @@ class ChatController extends Cubit<ChatState> {
 
   Future<void> buscaMessages(String userFrom) async {
     try {
-      emit(state.copyWith(status: ChatStatus.loading));
+      emit(state.copyWith(status: ChatStatus.loading, messages: []));
 
       final response = await _repository.buscaMessages(userFrom);
 

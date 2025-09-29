@@ -5,6 +5,7 @@ import 'package:ichat/app/core/ui/base/base_state.dart';
 import 'package:ichat/app/src/pages/login/login_controller.dart';
 import 'package:ichat/app/src/pages/login/login_state.dart';
 import 'package:ichat/app/src/providers/auth_provider.dart';
+import 'package:ichat/app/src/providers/web_socket_provider.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -59,6 +60,14 @@ class _LoginPageState extends BaseState<LoginPage, LoginController> {
                 context,
                 listen: false,
               ).atualizarUsuarioLogado();
+              // ignore: use_build_context_synchronously
+              Provider.of<WebSocketProvider>(context, listen: false).conectar(
+                usuario: Provider.of<AuthProvider>(
+                  // ignore: use_build_context_synchronously
+                  context,
+                  listen: false,
+                ).usuarioModel.email,
+              );
               // ignore: use_build_context_synchronously
               Navigator.of(
                 // ignore: use_build_context_synchronously

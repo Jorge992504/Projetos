@@ -22,11 +22,17 @@ class WebSocketProvider extends ChangeNotifier {
 
   bool get conectado => _conectado;
 
-  Future<void> conectar() async {
+  Future<void> conectar({String? usuario}) async {
     try {
+      log("usuarioLogado : $usuarioLogado , usuario: $usuario");
+      if (usuario == null || usuarioLogado.isEmpty) {
+        throw RepositoryException(message: "Usuário não autenticado");
+      }
       _channel = IOWebSocketChannel.connect(
         Uri.parse(url),
-        headers: {'Authorization': usuarioLogado},
+        headers: {
+          'Authorization': usuarioLogado.isEmpty ? usuario : usuarioLogado,
+        },
       );
 
       _channel.stream.asBroadcastStream().listen(
@@ -86,6 +92,11 @@ class WebSocketProvider extends ChangeNotifier {
     } else {
       return false;
     }
+  }
+
+  Future<void> limparMensagens() async {
+    messagens.clear();
+    notifyListeners();
   }
 
   void desconectar() {

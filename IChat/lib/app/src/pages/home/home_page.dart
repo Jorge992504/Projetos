@@ -5,6 +5,7 @@ import 'package:ichat/app/core/ui/base/base_state.dart';
 import 'package:ichat/app/src/pages/home/home_controller.dart';
 import 'package:ichat/app/src/pages/home/home_state.dart';
 import 'package:ichat/app/src/providers/auth_provider.dart';
+import 'package:ichat/app/src/providers/web_socket_provider.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -25,7 +26,9 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title: Text(
+          'Home ${Provider.of<AuthProvider>(context, listen: false).usuarioModel.email}',
+        ),
         leading: IconButton(
           onPressed: () async {
             Provider.of<AuthProvider>(context, listen: false).logout();
@@ -69,6 +72,12 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
 
                   // Atualiza ao voltar
                   controller.buscaMessagesOfUSer();
+                  // ignore: use_build_context_synchronously
+                  Provider.of<WebSocketProvider>(
+                    // ignore: use_build_context_synchronously
+                    context,
+                    listen: false,
+                  ).limparMensagens();
                 },
               );
             },
