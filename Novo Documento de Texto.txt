@@ -1,0 +1,68 @@
+class WebSocketProvider extends ChangeNotifier {
+  final String token;
+
+  String url = "ws://172.16.251.22:8082/api/chat";
+  IOWebSocketChannel? _channel;
+  List<MessagesModel> mensagens = [];
+
+  WebSocketProvider({required this.token}) {
+    conectar();
+  }
+
+  /// Conecta no WebSocket com cabeçalho Authorization
+  void conectar() {
+    try {
+      _channel = IOWebSocketChannel.connect(
+        Uri.parse(url),
+        headers: {
+          'Authorization': token, // Aqui você envia o email ou token
+        },
+      );
+
+      // Escuta mensagens recebidas
+      _channel!.stream.listen(
+        (event) {
+          final Map<String, dynamic> data = jsonDecode(event);
+          final novaMensagem = MessagesModel.fromMap(data);
+          mensagens.add(novaMensagem);
+
+          // Notifica widgets que dependem deste provider
+          notifyListeners();
+        },
+        onError: (error) {
+          debugPrint('Erro no WebSocket: $error');
+        },
+        onDone: () {
+          debugPrint('Conexão WebSocket encerrada. Tentando reconectar...');
+          Future.delayed(const Duration(seconds: 5), conectar);
+        },
+      );
+    } catch (e) {
+      debugPrint('Falha ao conectar no WebSocket: $e');
+    }
+  }
+
+  /// Envia uma mensagem pelo WebSocket
+  void enviarMensagem(String para, String conteudo) {
+    if (_channel != null) {
+      final msg = MessagesModel(
+        userFrom: token,
+        userTo: para,
+        message: conteudo,
+        sentAt: DateTime.now(),
+      );
+      final dto = MessageDtoRequest(userTo: para, message: conteudo);
+
+      _channel!.sink.add(dto.toJson());
+
+      // Adiciona localmente para mostrar imediatamente
+      mensagens.add(msg);
+      notifyListeners();
+    }
+  }
+
+  /// Fecha a conexão
+  void desconectar() {
+    _channel?.sink.close();
+  }
+}

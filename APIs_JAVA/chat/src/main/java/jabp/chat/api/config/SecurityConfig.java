@@ -18,20 +18,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
     private final AuthorizationFilter authorizationFilter;
-    @Value("${jwt.secret}")
-    private String secretKey;
-    @Value("${jwt.expiration}")
-    private Long expirationTime;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         String register = "/register";
         String login = "/login";
         String redefine = "/redefine";
+        String validateToken = "/usuario/validateToken";
         String publicResource = "/public";
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(login, register, redefine, publicResource).permitAll()
+                        .requestMatchers(login, register, validateToken, redefine, publicResource).permitAll()
+                        .requestMatchers("/chat/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -44,15 +43,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
 
     }
-
-    @Bean
-    public String key() {
-        return secretKey;
-    }
-    @Bean
-    public Long expiration() {
-        return expirationTime;
-    }
-
-
 }

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class AuthorizationException extends RuntimeException{
-    public AuthorizationException(String exceptionMessage){
-        super(exceptionMessage);
+    public AuthorizationException(String message){
+        super(message);
     }
 }

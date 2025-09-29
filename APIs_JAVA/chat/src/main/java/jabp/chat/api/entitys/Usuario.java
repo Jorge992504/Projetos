@@ -32,8 +32,11 @@ public class Usuario implements UserDetails {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "user_id",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Message> messagesList = new ArrayList<>();
+    @OneToMany(mappedBy = "sender")
+    private List<Message> sentMessages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "receiver")
+    private List<Message> receivedMessages = new ArrayList<>();
 
 
 

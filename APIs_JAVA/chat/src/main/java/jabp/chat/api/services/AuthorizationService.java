@@ -52,4 +52,21 @@ public class AuthorizationService {
             throw new AuthorizationException("Token invalido: "+e.getMessage());
         }
     }
+
+    public boolean validarToken(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            // Se chegou aqui, o token é válido e não expirou
+            return true;
+
+        } catch (Exception e) {
+            // Token inválido ou expirado
+            return false;
+        }
+    }
 }

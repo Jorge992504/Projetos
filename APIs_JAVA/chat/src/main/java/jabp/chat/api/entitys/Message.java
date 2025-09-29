@@ -4,6 +4,8 @@ package jabp.chat.api.entitys;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table
 @Getter
@@ -15,15 +17,29 @@ public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", insertable = false,updatable = false)
-    private Usuario usuario;
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private Usuario sender;
 
-    @Column(name = "user_id", nullable = false)
-    private Long user_id;
+    @ManyToOne
+    @JoinColumn(name = "receiver_id")
+    private Usuario receiver;
 
+    @Column(nullable = false, columnDefinition = "TEXT")
+    //conteudo da mensagem
+    private String content;
 
+    @Column(nullable = false)
+    //data e hora que a mensagem foi enviada
+    private LocalDateTime sentAt = LocalDateTime.now();
+
+//    //data e hora que a mensagem foi entregue
+//    private LocalDateTime deliveredAt;
+//
+//    //data e hora que a mensagem foi lida
+//    private LocalDateTime readAt;
 }
+
+

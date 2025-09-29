@@ -1,10 +1,12 @@
 package jabp.chat.api.services;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jabp.chat.api.dto.request.MessageDtoRequest;
+import jabp.chat.api.dto.response.MessageDtoResponse;
 import jabp.chat.api.exceptions.WebSocketException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -15,25 +17,38 @@ import java.util.concurrent.ConcurrentHashMap;
 @AllArgsConstructor
 public class WebSocketService {
 
-    private static final ConcurrentHashMap<String, WebSocketSession> clientes = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, WebSocketSession> clients = new ConcurrentHashMap<>();
 
-    public static void registraCliente(String email, WebSocketSession socketSession){
-        clientes.put(email,socketSession);
+
+    public static void registerClient(String clientId, WebSocketSession session){
+        clients.put(clientId,session);
     }
-    public static void removeCLiente(String email, WebSocketSession socketSession){
-       boolean result =  clientes.remove(email,socketSession);
-       if (!result){
-           throw new WebSocketException("Erro ao se desconetar");
-       }
 
-    }
-    public static void sendMessageCliente(String email, String message) throws IOException{
-        WebSocketSession socketSession = clientes.get(email);
-        if (socketSession != null && socketSession.isOpen()){
-            socketSession.sendMessage(new TextMessage(message));
-
+    public static void removeClient(String clientId){
+        if (clientId.isEmpty() || clientId == null){
+            return;
         }else{
-            throw new WebSocketException("Erro ao enviar mensagem para: "+email);
+            clients.remove(clientId);
+        }
+
+    }
+
+    public static void sendMessageToClient(String clientSend, MessageDtoRequest messageDtoRequest) throws IOException {
+        WebSocketSession sessionReceiver = clients.get(messageDtoRequest.userReceiver());
+        WebSocketSession session = clients.get(clientSend);
+        if (session != null && session.isOpen()){
+            MessageDtoRequest messageDtoRequestSender = new MessageDtoRequest(clientSend, messageDtoRequest.userReceiver(), messageDtoRequest.message());
+            ObjectMapper objectMapper = new ObjectMapper();
+            System.out.println("----> "+messageDtoRequestSender);
+            String json = objectMapper.writeValueAsString(messageDtoRequestSender);
+            sessionReceiver.sendMessage(new TextMessage(json));
+        }else{
+            throw new WebSocketException("Erro ao enviar mensagem.");
         }
     }
+
+    public static String getClientEmailFromToken(String token){
+        return token;
+    }
+
 }

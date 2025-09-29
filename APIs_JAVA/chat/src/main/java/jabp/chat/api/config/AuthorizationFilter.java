@@ -36,30 +36,33 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         String login = "/login";
         String redefine = "/redefine";
         String publicResource = "/public";
+        String validateToken = "/usuario/validateToken";
+        String chat = "/chat";
         String path = request.getServletPath();
-        if (path.equals(register) || path.equals(login) || path.equals(redefine) || path.equals(publicResource)){
+        if (path.equals(login) || path.equals(register) || path.equals(validateToken) || path.equals(redefine) || path.equals(publicResource )|| path.equals(chat)){
             filterChain.doFilter(request,response);
-        }else{
-            writeErrorResponse(response,"Sem permissão");
+            return;
         }
+
         boolean header = authorization.isTokenValid(request);
         if (!header){
             writeErrorResponse(response, "Token não informado ou Header mal formatado");
-        }else{
+            return;
+        }
             try {
                 String token = request.getHeader("Authorization").substring(7);
                 Claims claims = authorization.getClaimsForToken(token);
                 String email = claims.get("email", String.class);
                 //trocar depois de criar o user
                 Usuario userDetails = usuarioService.buscaUsuario(email).orElseThrow(() -> new AuthorizationException("Usuário não encontrado"));
-                UsernamePasswordAuthenticationToken authtoken = new UsernamePasswordAuthenticationToken(email, null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authtoken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authtoken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authtoken);
                 filterChain.doFilter(request,response);
             }catch (AuthorizationException authorizationException){
                 writeErrorResponse(response, authorizationException.getMessage());
             }
-        }
+
 
 
 

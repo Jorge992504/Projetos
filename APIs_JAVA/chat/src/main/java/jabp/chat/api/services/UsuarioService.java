@@ -1,30 +1,42 @@
 package jabp.chat.api.services;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jabp.chat.api.dto.response.HistoricoMessagesDtoResponse;
+import jabp.chat.api.entitys.Message;
 import jabp.chat.api.entitys.Usuario;
+import jabp.chat.api.exceptions.AuthorizationException;
 import jabp.chat.api.exceptions.ErrorException;
+import jabp.chat.api.repositorio.HistoricoMessageRepository;
 import jabp.chat.api.repositorio.UsuarioRepository;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-    private Long expirationTime;
-    private String secretKey;
+    private final HistoricoMessageRepository messageRepository;
 
+
+    @Value("${jwt.secret}")
+    private String secretKey;
+    @Value("${jwt.expiration}")
+    private Long expirationTime;
+
+    public UsuarioService(UsuarioRepository usuarioRepository, HistoricoMessageRepository messageRepository) {
+        this.usuarioRepository = usuarioRepository;
+        this.messageRepository = messageRepository;
+    }
 
 
     public Optional<Usuario> buscaUsuario(String email){
@@ -46,5 +58,29 @@ public class UsuarioService {
                 .setExpiration(Date.from(LocalDateTime.now().plusDays(expirationTime).atZone(ZoneId.systemDefault()).toInstant()))
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+
+    public boolean validarToken(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            String email = claims.getSubject();
+            if (email == null || email.isEmpty()) {
+                throw new AuthorizationException("Token inválido: email ausente");
+            }
+            Optional<Usuario> usuarioOpt = buscaUsuario(email);
+            if (usuarioOpt.isEmpty()) {
+                throw new AuthorizationException("Usuário não encontrado para o email no token");
+            }
+            return true;
+
+        } catch (Exception e) {
+            throw new AuthorizationException("Token inválido ou expirado");
+        }
     }
 }
