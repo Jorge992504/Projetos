@@ -26,7 +26,7 @@ class CreateException {
         return RepositoryException(message: 'Erro ao conectar com o servidor');
       }
     } else {
-      return RepositoryException(message: 'Erro desconhecido');
+      return RepositoryException(message: 'Erro: $dio');
     }
   }
 }

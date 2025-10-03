@@ -3,6 +3,7 @@ package jabp.chat.api.controller;
 import jabp.chat.api.dto.request.MessageSendDtoRequest;
 import jabp.chat.api.dto.response.HistoricoMessagesDtoResponse;
 import jabp.chat.api.dto.response.MessageDtoResponse;
+import jabp.chat.api.dto.response.PathMessageDtoResponse;
 import jabp.chat.api.entitys.Message;
 import jabp.chat.api.exceptions.ErrorException;
 import jabp.chat.api.services.MessageService;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -22,7 +24,7 @@ public class MessageController {
     @GetMapping
     public List<HistoricoMessagesDtoResponse> getConversation(
             String userFrom
-    ) {
+    ) throws IOException {
         return messageService.getConversation(userFrom);
     }
 
@@ -36,13 +38,13 @@ public class MessageController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<?> sendMessage(@RequestBody MessageSendDtoRequest messageSendDtoRequest) {
+    public PathMessageDtoResponse sendMessage(@RequestBody MessageSendDtoRequest messageSendDtoRequest) {
         try {
             Message response = messageService.sendMessage(messageSendDtoRequest);
             if (response.getId() == null) {
                 throw new ErrorException("Erro ao enviar mensagem");
             }else{
-                return ResponseEntity.status(200).build();
+                return new PathMessageDtoResponse(response.getContent());
             }
         } catch (Exception e) {
             throw new ErrorException("Erro ao enviar mensagem: " + e.getMessage());

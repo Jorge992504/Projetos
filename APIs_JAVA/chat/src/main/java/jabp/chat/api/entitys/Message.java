@@ -35,6 +35,9 @@ public class Message {
     //data e hora que a mensagem foi enviada
     private LocalDateTime sentAt = LocalDateTime.now();
 
+    @Column(name = "isPick")
+    private Boolean isPick;
+
 //    //data e hora que a mensagem foi entregue
 //    private LocalDateTime deliveredAt;
 //

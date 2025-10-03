@@ -1,11 +1,14 @@
 import 'dart:ui';
 
 sealed class ColorsConstants {
-  static const appBar = Color(0xffff9500);
-  static const buttonBordas = Color(0xffcd9d5a);
-  static const textos = Color(0xfff2cd98);
-  static const fundo = Color(0xffe7dfd4);
-  static const fundoCampos = Color(0xfff5f5f5);
-  static const fundoCard = Color(0xffe4d2b9);
-  static const black = Color.fromARGB(255, 0, 0, 0);
+  static const primaryColor = Color(0xffd2e3fc);
+  static const secundaryColor = Color(0xff7e57c2);
+  static const appBarVeganColor = Color(0xff43a047);
+  static const appBarMeatColor = Color(0xffe53935);
+  static const appBarColor = Color(0xff7e57c2);
+  static const letrasColor = Color(0xff333333);
+  static const focusColor = Color(0xff999999);
+  static const buttonColor = Color(0xffffc107);
+  static const promocoesColor = Color(0xffffeb3b);
+  static const cardColor = Color(0xffa7caff);
 }

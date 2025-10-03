@@ -4,23 +4,34 @@ import 'dart:convert';
 class MessageDtoRequest {
   String? userReceiver;
   String? message;
-  MessageDtoRequest({this.userReceiver, this.message});
+  bool? isPick;
+  MessageDtoRequest({this.userReceiver, this.message, this.isPick});
 
-  MessageDtoRequest copyWith({String? userReceiver, String? message}) {
+  MessageDtoRequest copyWith({
+    String? userReceiver,
+    String? message,
+    bool? isPick,
+  }) {
     return MessageDtoRequest(
       userReceiver: userReceiver ?? this.userReceiver,
       message: message ?? this.message,
+      isPick: isPick ?? this.isPick,
     );
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{'userReceiver': userReceiver, 'message': message};
+    return <String, dynamic>{
+      'userReceiver': userReceiver,
+      'message': message,
+      'isPick': isPick,
+    };
   }
 
   factory MessageDtoRequest.fromMap(Map<String, dynamic> map) {
     return MessageDtoRequest(
       userReceiver: map['userReceiver'] ?? "",
       message: map['message'] ?? "",
+      isPick: map['isPick'] ?? false,
     );
   }
 
@@ -31,15 +42,18 @@ class MessageDtoRequest {
 
   @override
   String toString() =>
-      'MessageDtoRequest(userReceiver: $userReceiver, message: $message)';
+      'MessageDtoRequest(userReceiver: $userReceiver, message: $message, isPick; $isPick)';
 
   @override
   bool operator ==(covariant MessageDtoRequest other) {
     if (identical(this, other)) return true;
 
-    return other.userReceiver == userReceiver && other.message == message;
+    return other.userReceiver == userReceiver &&
+        other.message == message &&
+        other.isPick == isPick;
   }
 
   @override
-  int get hashCode => userReceiver.hashCode ^ message.hashCode;
+  int get hashCode =>
+      userReceiver.hashCode ^ message.hashCode ^ isPick.hashCode;
 }

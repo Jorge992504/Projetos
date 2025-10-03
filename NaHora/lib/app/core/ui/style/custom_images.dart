@@ -12,7 +12,7 @@ sealed class ImageConstants {
   static const exit = 'assets/image/exit.png';
   static const expand = 'assets/image/expand.png';
   static const fav = 'assets/image/fav.png';
-  static const hamburguer = 'assets/image/hamburguer.png';
+  static const hamburguer = 'assets/image/hamburger.png';
   static const home = 'assets/image/home.png';
   static const meat = 'assets/image/meat.png';
   static const nfav = 'assets/image/Nfav.png';

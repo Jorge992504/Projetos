@@ -1,5 +1,5 @@
 package jabp.chat.api.dto.request;
 
 
-public record MessageDtoRequest(String userSender, String userReceiver, String message) {
+public record MessageDtoRequest(String userSender, String userReceiver, String message, Boolean isPick) {
 }

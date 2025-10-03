@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:ichat/app/core/exceptions/repository_exception.dart';
 import 'package:ichat/app/src/models/messages_model.dart';
+import 'package:ichat/app/src/models/path_message_model_request.dart';
 import 'package:ichat/app/src/pages/chat/chat_state.dart';
 import 'package:ichat/app/src/repository/chat_repository.dart';
 
@@ -16,18 +19,19 @@ class ChatController extends Cubit<ChatState> {
       final response = await _repository.buscaMessages(userFrom);
 
       emit(state.copyWith(status: ChatStatus.loaded, messages: response));
-    } on RepositoryException catch (e) {
+    } on RepositoryException catch (e, s) {
+      log('$e\n$s');
       emit(
         state.copyWith(
           status: ChatStatus.error,
-          errorMessage: "Erro no controller: ${e.message}",
+          errorMessage: "Erro no controller: ${e.message}\nTrace: $s",
           messages: [],
         ),
       );
     }
   }
 
-  Future<bool> salvaMessages(MessagesModel messages) async {
+  Future<PathMessageModelRequest?> salvaMessages(MessagesModel messages) async {
     try {
       emit(state.copyWith(status: ChatStatus.loading));
 
@@ -35,14 +39,14 @@ class ChatController extends Cubit<ChatState> {
 
       emit(state.copyWith(status: ChatStatus.loaded));
       return response;
-    } on RepositoryException catch (e) {
+    } on RepositoryException catch (e, s) {
       emit(
         state.copyWith(
           status: ChatStatus.error,
-          errorMessage: "Erro no controller: ${e.message}",
+          errorMessage: "e.message}\nTrace: $s",
         ),
       );
-      return false;
+      return PathMessageModelRequest();
     }
   }
 

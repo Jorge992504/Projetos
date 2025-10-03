@@ -1,5 +1,5 @@
 n//criar project
-flutter create --project-name ichat --android-language java --platforms ios,android,windows,web --org jabp.dev@gmail.com IChat
+flutter create --project-name dente --android-language java --platforms ios,android,windows,web --org jabp.dev@gmail.com Dente
 
 //add plataforma
 flutter create --plataforms=web .

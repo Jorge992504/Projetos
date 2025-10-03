@@ -23,6 +23,16 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!Provider.of<WebSocketProvider>(context, listen: false).conectado) {
+        Provider.of<WebSocketProvider>(context, listen: false).conectar();
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

@@ -11,7 +11,7 @@ class WebSocketProvider extends ChangeNotifier {
   final String usuarioLogado;
 
   String url;
-  late IOWebSocketChannel _channel;
+  IOWebSocketChannel? _channel;
   final List<MessagesModel> messagens = [];
   bool _conectado = false;
 
@@ -35,18 +35,20 @@ class WebSocketProvider extends ChangeNotifier {
         },
       );
 
-      _channel.stream.asBroadcastStream().listen(
+      _channel?.stream.asBroadcastStream().listen(
         (event) {
           Map<String, dynamic> response = jsonDecode(event);
           log(response.toString());
           if (response["status"] == "connected") {
             _conectado = true;
+            log('Status do websocket: ${response["status"]}');
           } else {
             final message = MessagesModel(
               userTo: response['userReceiver'],
               message: response['message'],
               userFrom: response['userSender'],
               sentAt: DateTime.now(),
+              isPick: response['isPick'],
             );
             messagens.add(message);
             notifyListeners();
@@ -75,12 +77,12 @@ class WebSocketProvider extends ChangeNotifier {
   }
 
   Future<bool> enviarMessagens(String userFrom, String messsage) async {
-    if (_channel.closeCode == null) {
+    if (_channel != null && _channel!.closeCode == null) {
       MessageDtoRequest messageDtoRequest = MessageDtoRequest(
         userReceiver: userFrom,
         message: messsage,
       );
-      _channel.sink.add(messageDtoRequest.toJson());
+      _channel!.sink.add(messageDtoRequest.toJson());
       MessagesModel message = MessagesModel(
         userTo: userFrom,
         userFrom: usuarioLogado,
@@ -100,8 +102,9 @@ class WebSocketProvider extends ChangeNotifier {
   }
 
   void desconectar() {
-    _channel.sink.close();
+    _channel?.sink.close();
     _conectado = false;
+    _channel = null; // <- evita LateInitializationError depois
     notifyListeners();
   }
 }

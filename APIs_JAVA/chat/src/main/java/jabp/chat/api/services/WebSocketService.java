@@ -37,9 +37,8 @@ public class WebSocketService {
         WebSocketSession sessionReceiver = clients.get(messageDtoRequest.userReceiver());
         WebSocketSession session = clients.get(clientSend);
         if (session != null && session.isOpen()){
-            MessageDtoRequest messageDtoRequestSender = new MessageDtoRequest(clientSend, messageDtoRequest.userReceiver(), messageDtoRequest.message());
+            MessageDtoRequest messageDtoRequestSender = new MessageDtoRequest(clientSend, messageDtoRequest.userReceiver(), messageDtoRequest.message(), messageDtoRequest.isPick());
             ObjectMapper objectMapper = new ObjectMapper();
-            System.out.println("----> "+messageDtoRequestSender);
             String json = objectMapper.writeValueAsString(messageDtoRequestSender);
             sessionReceiver.sendMessage(new TextMessage(json));
         }else{

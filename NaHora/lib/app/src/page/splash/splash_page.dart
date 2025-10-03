@@ -1,8 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:nahora/app/core/ui/style/custom_colors.dart';
 import 'package:nahora/app/core/ui/style/custom_images.dart';
+import 'package:nahora/app/src/page/home/home_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -26,10 +25,12 @@ class _SplashPageState extends State<SplashPage> {
 
     Future.delayed(Duration(seconds: 5), () {
       _timer.cancel();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const SplashPage()),
-      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomePage()),
+        );
+      }
     });
   }
 
@@ -45,11 +46,16 @@ class _SplashPageState extends State<SplashPage> {
       body: Container(
         alignment: Alignment.center,
         child: CircleAvatar(
-          backgroundColor: ColorsConstants.letrasColor,
+          backgroundColor: Colors.transparent,
           child: AnimatedOpacity(
             opacity: _opacity,
             duration: Duration(milliseconds: 600),
-            child: Image.asset(ImageConstants.burger, width: 150, height: 150),
+            child: Image.asset(
+              ImageConstants.burger,
+              width: 1000,
+              height: 1000,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
       ),

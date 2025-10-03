@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nahora/app/core/rest_client/rest_client.dart';
+import 'package:nahora/app/src/page/home/home_controller.dart';
+import 'package:nahora/app/src/page/menu/menu_controllers.dart';
+import 'package:nahora/app/src/repositorio/home_repository.dart';
+import 'package:nahora/app/src/repositorio/menu_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,7 +22,7 @@ class ApplicationBanding extends StatelessWidget {
         }
         return MultiProvider(
           providers: [
-            Provider<SharedPreferences>(create: (context) => snapshot.data!),
+            // Provider<SharedPreferences>(create: (context) => snapshot.data!),
             Provider(create: (context) => RestClient()),
             // Provider<AuthRepository>(
             //   create: (context) => AuthRepository(restClient: RestClient()),
@@ -28,6 +33,16 @@ class ApplicationBanding extends StatelessWidget {
             //     loginRepository: context.read<AuthRepository>(),
             //   ),
             // ),
+            BlocProvider(
+              create: (context) => HomeController(
+                HomeRepository(restClient: context.read<RestClient>()),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => MenuControllers(
+                MenuRepository(restClient: context.read<RestClient>()),
+              ),
+            ),
           ],
           child: child,
         );
