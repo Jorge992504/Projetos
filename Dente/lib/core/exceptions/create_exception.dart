@@ -23,7 +23,9 @@ class CreateException {
         log(message);
         return RepositoryException(message: message);
       } else {
-        return RepositoryException(message: 'Erro ao conectar com o servidor');
+        final data = dio.response?.data;
+
+        return RepositoryException(message: data['message']);
       }
     } else {
       return RepositoryException(message: 'Erro desconhecido');

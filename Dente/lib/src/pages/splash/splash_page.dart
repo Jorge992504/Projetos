@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:dente/core/router/rotas.dart';
 import 'package:dente/core/ui/style/custom_images.dart';
 import 'package:dente/core/ui/style/size_extension.dart';
-import 'package:dente/src/pages/registrar_empresa/registrar_empresa_page.dart';
+import 'package:dente/src/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -27,10 +29,7 @@ class _SplashPageState extends State<SplashPage> {
     Future.delayed(Duration(seconds: 5), () {
       _timer.cancel();
       if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const RegistrarEmpresaPage()),
-        );
+        loading();
       }
     });
   }
@@ -41,8 +40,8 @@ class _SplashPageState extends State<SplashPage> {
       body: Container(
         alignment: Alignment.center,
         child: CircleAvatar(
-          maxRadius: 100,
-          minRadius: 100,
+          maxRadius: 120,
+          minRadius: 120,
           backgroundColor: Colors.transparent,
           child: AnimatedOpacity(
             opacity: _opacity,
@@ -51,11 +50,28 @@ class _SplashPageState extends State<SplashPage> {
               ImageConstants.logo,
               width: context.percentWidth(0.15),
               height: context.percentHeight(0.15),
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> loading() async {
+    bool isAuth = Provider.of<AuthProvider>(context, listen: false).isAuth;
+    if (isAuth) {
+      await Provider.of<AuthProvider>(
+        context,
+        listen: false,
+      ).atualizarUsuario();
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed(Rotas.home);
+      }
+    } else {
+      Navigator.of(context).pushReplacementNamed(Rotas.login);
+    }
+    // Provider.of<AuthProvider>(context, listen: false).logout();
+    // Navigator.of(context).popAndPushNamed(Rotas.login);
   }
 }
