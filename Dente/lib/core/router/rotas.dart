@@ -5,4 +5,5 @@ mixin Rotas {
   static const String register = "/register";
   static const String registrarEmpresa = "/register/empresa";
   static const String resetPassword = "/resetPassword";
+  static const String editarEmpresa = "/editarEmpresa";
 }

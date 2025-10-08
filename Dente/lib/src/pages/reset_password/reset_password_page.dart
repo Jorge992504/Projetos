@@ -1,5 +1,4 @@
-import 'dart:developer';
-
+import 'package:dente/core/router/rotas.dart';
 import 'package:dente/core/ui/base/base_state.dart';
 import 'package:dente/core/ui/style/custom_colors.dart';
 import 'package:dente/core/ui/style/fontes_letras.dart';
@@ -18,6 +17,8 @@ class ResetPasswordPage extends StatefulWidget {
 
 class _ResetPasswordPageState
     extends BaseState<ResetPasswordPage, ResetPasswordController> {
+  final formKey = GlobalKey<FormState>();
+
   final senhaFocus = FocusNode();
   final confirmaSenhaFocus = FocusNode();
   final senhaController = TextEditingController();
@@ -35,6 +36,9 @@ class _ResetPasswordPageState
 
   String email = "";
   late bool isUser;
+
+  bool obscureText = true;
+  bool obscureText2 = true;
 
   @override
   void initState() {
@@ -82,6 +86,11 @@ class _ResetPasswordPageState
               hideLoader();
             },
             success: () async {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(
+                  context,
+                ).pushNamedAndRemoveUntil(Rotas.login, (route) => false);
+              });
               hideLoader();
             },
           );
@@ -89,164 +98,223 @@ class _ResetPasswordPageState
         builder: (context, state) {
           return LayoutBuilder(
             builder: (context, tamanho) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: tamanho.maxWidth * 1,
-                    child: Text(
-                      "Redefinir senha",
-                      style: context.cusotomFontes.textExtraBold.copyWith(
-                        color: ColorsConstants.letrasColor,
-                        fontSize: 22,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-
-                  !isUser
-                      ? SizedBox(
-                          width: tamanho.maxWidth * 0.3,
-                          child: TextFormField(
-                            cursorColor: ColorsConstants.appBarColor,
-                            decoration: InputDecoration(
-                              labelText: "Senha",
-                              hintText: "Digite a senha",
-                            ),
-                            validator: Validatorless.multiple([
-                              Validatorless.min(
-                                4,
-                                'Senha deve ter minimo 4 cacteres',
-                              ),
-                              Validatorless.required("Senha obrigatoria"),
-                            ]),
-                            controller: senhaController,
-                            focusNode: senhaFocus,
-                            textInputAction: TextInputAction.next,
-                          ),
-                        )
-                      : SizedBox(),
-                  const SizedBox(height: 14),
-                  !isUser
-                      ? SizedBox(
-                          width: tamanho.maxWidth * 0.3,
-                          child: TextFormField(
-                            cursorColor: ColorsConstants.appBarColor,
-                            decoration: InputDecoration(
-                              labelText: "Confirme sua Senha",
-                              hintText: "Digite a senha",
-                            ),
-                            validator: Validatorless.multiple([
-                              Validatorless.compare(
-                                senhaController,
-                                "Senhas diferentes",
-                              ),
-                              Validatorless.required("Senha obrigatoria"),
-                            ]),
-                            controller: confirmaSenhaController,
-                            focusNode: confirmaSenhaFocus,
-                            textInputAction: TextInputAction.done,
-                          ),
-                        )
-                      : SizedBox(),
-                  isUser
-                      ? SizedBox(
-                          width: tamanho.maxWidth * 0.3,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                width: tamanho.maxWidth * 0.07,
-
-                                child: TextField(
-                                  controller: codigo1Controller,
-                                  focusNode: codigo1Focus,
-                                  textInputAction: TextInputAction.next,
-                                  cursorColor: ColorsConstants.appBarColor,
-                                  textAlign: TextAlign.center,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      borderSide: BorderSide(width: 3),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: tamanho.maxWidth * 0.07,
-
-                                child: TextField(
-                                  controller: codigo2Controller,
-                                  focusNode: codigo2Focus,
-                                  textInputAction: TextInputAction.next,
-                                  cursorColor: ColorsConstants.appBarColor,
-                                  textAlign: TextAlign.center,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      borderSide: BorderSide(width: 3),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: tamanho.maxWidth * 0.07,
-
-                                child: TextField(
-                                  controller: codigo3Controller,
-                                  focusNode: codigo3Focus,
-                                  textInputAction: TextInputAction.next,
-                                  cursorColor: ColorsConstants.appBarColor,
-                                  textAlign: TextAlign.center,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      borderSide: BorderSide(width: 3),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: tamanho.maxWidth * 0.07,
-                                child: TextField(
-                                  controller: codigo4Controller,
-                                  focusNode: codigo4Focus,
-                                  textInputAction: TextInputAction.done,
-                                  cursorColor: ColorsConstants.appBarColor,
-                                  textAlign: TextAlign.center,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      borderSide: BorderSide(width: 3),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : SizedBox(),
-                  const SizedBox(height: 24),
-                  Container(
-                    width: tamanho.maxWidth * 0.4,
-                    alignment: Alignment.center,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // setState(() {
-                        //   isUser = !isUser;
-                        // });
-                        verificaCodigo();
-                      },
+              return Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: tamanho.maxWidth * 1,
                       child: Text(
-                        isUser ? 'Verificar' : 'Redefinir senha',
-                        style: context.cusotomFontes.textBold.copyWith(
-                          color: ColorsConstants.primaryColor,
+                        "Redefinir senha",
+                        style: context.cusotomFontes.textExtraBold.copyWith(
+                          color: ColorsConstants.letrasColor,
+                          fontSize: 22,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+
+                    !isUser
+                        ? SizedBox(
+                            width: tamanho.maxWidth * 0.3,
+                            child: TextFormField(
+                              cursorColor: ColorsConstants.appBarColor,
+                              obscureText: obscureText,
+                              decoration: InputDecoration(
+                                labelText: "Senha",
+                                hintText: "Digite a senha",
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      obscureText = !obscureText;
+                                    });
+                                  },
+                                  icon: Icon(
+                                    obscureText == true
+                                        ? Icons.password_outlined
+                                        : Icons.remove_red_eye_outlined,
+                                    size: 18,
+                                  ),
+                                ),
+                              ),
+                              validator: Validatorless.multiple([
+                                Validatorless.min(
+                                  4,
+                                  'Senha deve ter minimo 4 cacteres',
+                                ),
+                                Validatorless.required("Senha obrigatoria"),
+                              ]),
+                              controller: senhaController,
+                              focusNode: senhaFocus,
+                              textInputAction: TextInputAction.next,
+                            ),
+                          )
+                        : SizedBox(),
+                    const SizedBox(height: 14),
+                    !isUser
+                        ? SizedBox(
+                            width: tamanho.maxWidth * 0.3,
+                            child: TextFormField(
+                              cursorColor: ColorsConstants.appBarColor,
+                              obscureText: obscureText2,
+                              decoration: InputDecoration(
+                                labelText: "Confirme sua Senha",
+                                hintText: "Digite a senha",
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      obscureText2 = !obscureText2;
+                                    });
+                                  },
+                                  icon: Icon(
+                                    obscureText2 == true
+                                        ? Icons.password_outlined
+                                        : Icons.remove_red_eye_outlined,
+                                    size: 18,
+                                  ),
+                                ),
+                              ),
+                              validator: Validatorless.multiple([
+                                Validatorless.compare(
+                                  senhaController,
+                                  "Senhas diferentes",
+                                ),
+                                Validatorless.required("Senha obrigatoria"),
+                              ]),
+                              controller: confirmaSenhaController,
+                              focusNode: confirmaSenhaFocus,
+                              textInputAction: TextInputAction.done,
+                            ),
+                          )
+                        : SizedBox(),
+                    isUser
+                        ? SizedBox(
+                            width: tamanho.maxWidth * 0.3,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: tamanho.maxWidth * 0.07,
+
+                                  child: TextField(
+                                    controller: codigo1Controller,
+                                    focusNode: codigo1Focus,
+                                    textInputAction: TextInputAction.next,
+                                    cursorColor: ColorsConstants.appBarColor,
+                                    textAlign: TextAlign.center,
+                                    maxLength: 1,
+                                    onSubmitted: (value) {
+                                      codigo2Focus.requestFocus();
+                                    },
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(width: 3),
+                                      ),
+                                      counterText: "",
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: tamanho.maxWidth * 0.07,
+
+                                  child: TextField(
+                                    controller: codigo2Controller,
+                                    focusNode: codigo2Focus,
+                                    textInputAction: TextInputAction.next,
+                                    cursorColor: ColorsConstants.appBarColor,
+                                    textAlign: TextAlign.center,
+                                    maxLength: 1,
+                                    onSubmitted: (value) {
+                                      codigo3Focus.requestFocus();
+                                    },
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(width: 3),
+                                      ),
+                                      counterText: "",
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: tamanho.maxWidth * 0.07,
+
+                                  child: TextField(
+                                    controller: codigo3Controller,
+                                    focusNode: codigo3Focus,
+                                    textInputAction: TextInputAction.next,
+                                    cursorColor: ColorsConstants.appBarColor,
+                                    textAlign: TextAlign.center,
+                                    maxLength: 1,
+                                    onSubmitted: (value) {
+                                      codigo4Focus.requestFocus();
+                                    },
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(width: 3),
+                                      ),
+                                      counterText: "",
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: tamanho.maxWidth * 0.07,
+                                  child: TextField(
+                                    controller: codigo4Controller,
+                                    focusNode: codigo4Focus,
+                                    textInputAction: TextInputAction.done,
+                                    cursorColor: ColorsConstants.appBarColor,
+                                    textAlign: TextAlign.center,
+                                    maxLength: 1,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(width: 3),
+                                      ),
+                                      counterText: "",
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : SizedBox(),
+                    const SizedBox(height: 24),
+                    Container(
+                      width: tamanho.maxWidth * 0.4,
+                      alignment: Alignment.center,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          if (isUser) {
+                            final response = await verificaCodigo();
+                            if (response) {
+                              setState(() {
+                                isUser = !isUser;
+                              });
+                            }
+                          } else {
+                            final response = await redefinirSenha();
+                            if (response) {
+                              setState(() {
+                                isUser = !isUser;
+                              });
+                            }
+                          }
+                        },
+                        child: Text(
+                          isUser ? 'Verificar' : 'Redefinir senha',
+                          style: context.cusotomFontes.textBold.copyWith(
+                            color: ColorsConstants.primaryColor,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           );
@@ -255,13 +323,24 @@ class _ResetPasswordPageState
     );
   }
 
-  Future<void> verificaCodigo() async {
+  Future<bool> verificaCodigo() async {
     String codigoString =
         codigo1Controller.text +
         codigo2Controller.text +
         codigo3Controller.text +
         codigo4Controller.text;
     int codigo = int.tryParse(codigoString) ?? 0;
-    log('$codigo');
+    final response = await controller.verificaCodigo(codigo, email);
+    return response;
+  }
+
+  Future<bool> redefinirSenha() async {
+    final valid = formKey.currentState?.validate() ?? false;
+    if (valid) {
+      await controller.redefinirSenha(senhaController.text, email);
+      return true;
+    } else {
+      return false;
+    }
   }
 }

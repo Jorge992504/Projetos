@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dente/core/router/rotas.dart';
 import 'package:dente/core/ui/base/base_state.dart';
 import 'package:dente/core/ui/style/custom_colors.dart';
 import 'package:dente/core/ui/style/fontes_letras.dart';
 import 'package:dente/src/models/empresa_model.dart';
-import 'package:dente/src/pages/registrar_empresa/registrar_empresa_controller.dart';
-import 'package:dente/src/pages/registrar_empresa/registrar_empresa_state.dart';
+import 'package:dente/src/pages/editar_empresa/editar_empresa_controller.dart';
+import 'package:dente/src/pages/editar_empresa/editar_empresa_state.dart';
 import 'package:dente/src/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,30 +15,28 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:validatorless/validatorless.dart';
 
-class RegistrarEmpresaPage extends StatefulWidget {
-  const RegistrarEmpresaPage({super.key});
+class EditarEmpresaPage extends StatefulWidget {
+  const EditarEmpresaPage({super.key});
 
   @override
-  State<RegistrarEmpresaPage> createState() => _RegistrarEmpresaPageState();
+  State<EditarEmpresaPage> createState() => _EditarEmpresaPageState();
 }
 
-class _RegistrarEmpresaPageState
-    extends BaseState<RegistrarEmpresaPage, RegistrarEmpresaController> {
+class _EditarEmpresaPageState
+    extends BaseState<EditarEmpresaPage, EditarEmpresaController> {
   final formKey = GlobalKey<FormState>();
-  final nomeClinicaController = TextEditingController();
-  final cnpjClinicaController = TextEditingController();
-  final senhaController = TextEditingController();
-  final confirmaSenhaController = TextEditingController();
-  final emailController = TextEditingController();
-  final telefoneController = TextEditingController();
-  final enderecoController = TextEditingController();
+  late TextEditingController nomeClinicaController;
+  late TextEditingController cnpjClinicaController;
+  late TextEditingController emailController;
+  late TextEditingController telefoneController;
+  late TextEditingController enderecoController;
   final nomeFocus = FocusNode();
   final cnpjFocus = FocusNode();
-  final senhaFocus = FocusNode();
-  final confirmaSenhaFocus = FocusNode();
   final emailFocus = FocusNode();
   final enderecoFocus = FocusNode();
   final telefoneFocus = FocusNode();
+
+  late EmpresaModel empresaModel;
 
   bool obscureText = true;
   bool obscure2Text = true;
@@ -49,23 +46,37 @@ class _RegistrarEmpresaPageState
   final ImagePicker _picker = ImagePicker();
 
   @override
+  void initState() {
+    super.initState();
+
+    empresaModel = Provider.of<AuthProvider>(
+      context,
+      listen: false,
+    ).empresaModel;
+    nomeClinicaController = TextEditingController(
+      text: empresaModel.nomeClinica,
+    );
+    cnpjClinicaController = TextEditingController(text: empresaModel.cnpj);
+    emailController = TextEditingController(text: empresaModel.emailClinica);
+    telefoneController = TextEditingController(text: empresaModel.telefone);
+    enderecoController = TextEditingController(text: empresaModel.endereco);
+  }
+
+  @override
   void dispose() {
-    nomeClinicaController.dispose();
-    cnpjClinicaController.dispose();
     nomeFocus.dispose();
     cnpjFocus.dispose();
-    senhaController.dispose();
-    confirmaSenhaController.dispose();
-    emailController.dispose();
-    telefoneController.dispose();
-    enderecoController.dispose();
+    emailFocus.dispose();
+    enderecoFocus.dispose();
+    telefoneFocus.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer<RegistrarEmpresaController, RegistrarEmpresaState>(
+      appBar: AppBar(title: const Text('Editar dados da clinica')),
+      body: BlocConsumer<EditarEmpresaController, EditarEmpresaState>(
         listener: (context, state) {
           state.status.matchAny(
             any: hideLoader,
@@ -76,17 +87,12 @@ class _RegistrarEmpresaPageState
               hideLoader();
             },
             success: () async {
+              hideLoader();
               showSuccess("Sucesso ao realizar cadastro.");
               await Provider.of<AuthProvider>(
                 context,
                 listen: false,
               ).atualizarUsuario();
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(
-                  context,
-                ).pushNamedAndRemoveUntil(Rotas.home, (route) => false);
-              });
-              hideLoader();
             },
           );
         },
@@ -99,19 +105,7 @@ class _RegistrarEmpresaPageState
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 24),
-                      SizedBox(
-                        width: tamanho.maxWidth * 1,
-                        child: Text(
-                          "Cadastro da Clinica",
-                          style: context.cusotomFontes.textExtraBold.copyWith(
-                            color: ColorsConstants.letrasColor,
-                            fontSize: 22,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      const SizedBox(height: 14),
+                      SizedBox(width: tamanho.maxWidth * 1, height: 14),
                       Stack(
                         children: [
                           CircleAvatar(
@@ -121,10 +115,10 @@ class _RegistrarEmpresaPageState
                                 ? FileImage(fotoSelecionada!)
                                 : null,
                             child: fotoSelecionada == null
-                                ? const Icon(
-                                    Icons.person,
-                                    size: 50,
-                                    color: Colors.white,
+                                ? Image.network(
+                                    empresaModel.foto ?? "",
+                                    width: 80,
+                                    height: 80,
                                   )
                                 : null,
                           ),
@@ -171,7 +165,7 @@ class _RegistrarEmpresaPageState
                         child: TextFormField(
                           cursorColor: ColorsConstants.appBarColor,
                           decoration: InputDecoration(
-                            labelText: "CNPJ da clinica",
+                            labelText: "CNPJ",
                             hintText: "Digite o CNPJ",
                             counterText: "",
                           ),
@@ -191,7 +185,7 @@ class _RegistrarEmpresaPageState
                         child: TextFormField(
                           cursorColor: ColorsConstants.appBarColor,
                           decoration: InputDecoration(
-                            labelText: "Endereço da clinica",
+                            labelText: "Endereço",
                             hintText: "Digite o endereço",
                           ),
                           validator: Validatorless.required(
@@ -208,7 +202,7 @@ class _RegistrarEmpresaPageState
                         child: TextFormField(
                           cursorColor: ColorsConstants.appBarColor,
                           decoration: InputDecoration(
-                            labelText: "Telefone da clinica",
+                            labelText: "Telefone",
                             hintText: "Digite o telefone",
                           ),
                           validator: Validatorless.required(
@@ -226,7 +220,7 @@ class _RegistrarEmpresaPageState
                         child: TextFormField(
                           cursorColor: ColorsConstants.appBarColor,
                           decoration: InputDecoration(
-                            labelText: "E-mail da clinica",
+                            labelText: "E-mail",
                             hintText: "Digite o e-mail",
                           ),
                           validator: Validatorless.multiple([
@@ -236,106 +230,19 @@ class _RegistrarEmpresaPageState
                           controller: emailController,
                           focusNode: emailFocus,
                           textInputAction: TextInputAction.next,
+                          enabled: false,
                         ),
                       ),
-                      const SizedBox(height: 14),
-                      SizedBox(
-                        width: tamanho.maxWidth * 0.3,
-                        child: TextFormField(
-                          cursorColor: ColorsConstants.appBarColor,
-                          decoration: InputDecoration(
-                            labelText: "Senha",
-                            hintText: "Digite a senha",
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  obscureText = !obscureText;
-                                });
-                              },
-                              icon: Icon(
-                                obscureText == true
-                                    ? Icons.password_outlined
-                                    : Icons.remove_red_eye_outlined,
-                                size: 18,
-                              ),
-                            ),
-                          ),
-                          validator: Validatorless.multiple([
-                            Validatorless.min(
-                              4,
-                              'Senha deve ter minimo 4 cacteres',
-                            ),
-                            Validatorless.required("Senha obrigatoria"),
-                          ]),
-                          controller: senhaController,
-                          focusNode: senhaFocus,
-                          textInputAction: TextInputAction.next,
-                          obscureText: obscureText,
-                        ),
-                      ),
-                      const SizedBox(height: 14),
-                      SizedBox(
-                        width: tamanho.maxWidth * 0.3,
-                        child: TextFormField(
-                          cursorColor: ColorsConstants.appBarColor,
-                          decoration: InputDecoration(
-                            labelText: "Confirma Senha",
-                            hintText: "Digite sua senha novamente",
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  obscure2Text = !obscure2Text;
-                                });
-                              },
-                              icon: Icon(
-                                obscure2Text == true
-                                    ? Icons.password_outlined
-                                    : Icons.remove_red_eye_outlined,
-                                size: 18,
-                              ),
-                            ),
-                          ),
-                          validator: Validatorless.multiple([
-                            Validatorless.compare(
-                              senhaController,
-                              "Senhas diferentes",
-                            ),
-                            Validatorless.required(
-                              "Repeta sua senha obrigatoria",
-                            ),
-                          ]),
-                          controller: confirmaSenhaController,
-                          focusNode: confirmaSenhaFocus,
-                          textInputAction: TextInputAction.done,
-                          obscureText: obscure2Text,
-                        ),
-                      ),
-
-                      // Container(
-                      //   alignment: Alignment.centerRight,
-                      //   width: tamanho.maxWidth * 0.3,
-                      //   child: TextButton(
-                      //     onPressed: () {
-                      //       Navigator.of(context).popAndPushNamed(Rotas.login);
-                      //     },
-
-                      //     child: Text(
-                      //       "Já tenho cadastro",
-                      //       style: context.cusotomFontes.textBoldItalic
-                      //           .copyWith(color: ColorsConstants.buttonColor),
-                      //     ),
-                      //   ),
-                      // ),
                       const SizedBox(height: 24),
                       Container(
                         width: tamanho.maxWidth * 0.2,
                         alignment: Alignment.center,
                         child: ElevatedButton(
                           onPressed: () async {
-                            await registrarEmpresa();
+                            await gravaEditarEmpresa();
                           },
                           child: Text(
-                            'Continuar',
+                            'Salvar',
                             style: context.cusotomFontes.textBold.copyWith(
                               color: ColorsConstants.primaryColor,
                             ),
@@ -388,52 +295,11 @@ class _RegistrarEmpresaPageState
                   Navigator.of(context).pop();
                 },
               ),
-              // ListTile para câmera, se quiser
-              // ListTile(
-              //   leading: const Icon(Icons.photo_camera),
-              //   title: const Text('Câmera'),
-              //   onTap: () async {
-              //     final XFile? imagem = await _picker.pickImage(
-              //       source: ImageSource.camera,
-              //     );
-              //     if (imagem != null) {
-              //       final file = File(imagem.path);
-              //       final bytes = await file.readAsBytes();
-              //       setState(() {
-              //         fotoSelecionada = file;
-              //         fotoBase64 = base64Encode(bytes);
-              //       });
-              //     }
-              //     Navigator.of(context).pop();
-              //   },
-              // ),
             ],
           ),
         );
       },
     );
-  }
-
-  Future<void> registrarEmpresa() async {
-    final valid = formKey.currentState?.validate() ?? false;
-    if (valid) {
-      EmpresaModel model = EmpresaModel(
-        foto: fotoBase64,
-        nomeClinica: nomeClinicaController.text,
-        emailClinica: emailController.text,
-        telefone: telefoneController.text,
-        endereco: enderecoController.text,
-        passowrd: senhaController.text,
-        cnpj: cnpjClinicaController.text,
-      );
-      final token = await controller.register(model);
-      if (token.isNotEmpty) {
-        await Provider.of<AuthProvider>(
-          context,
-          listen: false,
-        ).registrarEmpresa(emailController.text, token['token']);
-      }
-    }
   }
 
   final cnpjFormatter = MaskTextInputFormatter(
@@ -445,4 +311,18 @@ class _RegistrarEmpresaPageState
     mask: '(##) # ####-####',
     filter: {"#": RegExp(r'[0-9]')},
   );
+
+  Future<void> gravaEditarEmpresa() async {
+    final valid = formKey.currentState?.validate() ?? false;
+    if (valid) {
+      EmpresaModel model = EmpresaModel(
+        foto: fotoSelecionada == null ? empresaModel.foto : fotoBase64,
+        nomeClinica: nomeClinicaController.text,
+        cnpj: cnpjClinicaController.text,
+        endereco: enderecoController.text,
+        telefone: telefoneController.text,
+      );
+      await controller.gravaEditarEmpresa(model);
+    }
+  }
 }

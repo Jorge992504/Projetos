@@ -3,7 +3,9 @@ import 'package:dente/core/ui/style/custom_colors.dart';
 import 'package:dente/core/ui/style/custom_images.dart';
 import 'package:dente/core/ui/style/fontes_letras.dart';
 import 'package:dente/src/models/empresa_model.dart';
+import 'package:dente/src/models/response/agendamentos_model_response.dart';
 import 'package:dente/src/providers/auth_provider.dart';
+import 'package:dente/src/widgets/custom_calendario.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -40,6 +42,17 @@ class _HomePageState extends State<HomePage> {
       return nomefinal;
     }
 
+    //!criar um refresh no controller
+
+    //! lista para simular os agendamentos
+    final agendamentos = [
+      AgendamentosModelResponse(data: DateTime(2025, 10, 8), id: 1),
+      AgendamentosModelResponse(data: DateTime(2025, 10, 8), id: 2),
+      AgendamentosModelResponse(data: DateTime(2025, 10, 10), id: 3),
+      AgendamentosModelResponse(data: DateTime(2025, 10, 15), id: 4),
+      AgendamentosModelResponse(data: DateTime(2025, 10, 15), id: 5),
+    ];
+
     return Scaffold(
       appBar: AppBar(title: const Text('Agendamentos')),
       endDrawer: SafeArea(
@@ -68,7 +81,11 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(
+                              context,
+                            ).pushNamed(Rotas.editarEmpresa);
+                          },
                           child: Text(
                             "Editar",
                             style: context.cusotomFontes.textItalic.copyWith(
@@ -88,6 +105,7 @@ class _HomePageState extends State<HomePage> {
                       backgroundImage: empresaModel.foto != null
                           ? NetworkImage(empresaModel.foto!)
                           : null,
+
                       child: empresaModel.foto == null ? Text(getNome()) : null,
                     ),
                     currentAccountPictureSize: const Size.square(70),
@@ -116,7 +134,13 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: Container(),
+      body: LayoutBuilder(
+        builder: (context, tamanho) {
+          return Column(
+            children: [CustomCalendario(agendamentos: agendamentos)],
+          );
+        },
+      ),
     );
   }
 }

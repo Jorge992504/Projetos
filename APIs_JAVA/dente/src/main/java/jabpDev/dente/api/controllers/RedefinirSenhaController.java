@@ -1,13 +1,11 @@
 package jabpDev.dente.api.controllers;
 
 
-import jabpDev.dente.api.dto.response.RedefinirSenhaDtoResponse;
+import jabpDev.dente.api.dto.request.RedefinirSenhaDtoRequest;
 import jabpDev.dente.api.services.RedefinirSenhaService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
@@ -18,5 +16,15 @@ public class RedefinirSenhaController {
     @GetMapping
     public void enviarCodigoRedefinirSenha(@RequestParam String email){
         redefinirSenhaService.enviarCodigoRedefinirSenha(email);
+    }
+
+    @PostMapping
+    public void verificarCodigo(@RequestBody RedefinirSenhaDtoRequest body){
+        redefinirSenhaService.verificarCodigo(body);
+    }
+
+    @PostMapping("/password")
+    public void redefinirSenha(@RequestBody RedefinirSenhaDtoRequest body){
+        redefinirSenhaService.redefinirSenha(body);
     }
 }

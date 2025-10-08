@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(filter.getLogin()).permitAll()
                         .requestMatchers("/registrar/empresa").permitAll()
-                        .requestMatchers( filter.getRedefine()).permitAll()
+                        .requestMatchers( "/redefine/**").permitAll()
                         .requestMatchers("/public/**").permitAll()
                         .anyRequest().authenticated()
                 )

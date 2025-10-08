@@ -1,6 +1,7 @@
 import 'package:dente/core/providers/application_banding.dart';
 import 'package:dente/core/router/rotas.dart';
 import 'package:dente/core/ui/theme/config_theme.dart';
+import 'package:dente/src/pages/editar_empresa/editar_empresa_router.dart';
 import 'package:dente/src/pages/home/home_page.dart';
 import 'package:dente/src/pages/login/login_router.dart';
 import 'package:dente/src/pages/registrar_empresa/registrar_empresa_router.dart';
@@ -25,6 +26,7 @@ class DenteApp extends StatelessWidget {
           Rotas.registrarEmpresa: (context) => RegistrarEmpresaRouter.page(),
           Rotas.resetPassword: (context) => ResetPasswordRouter.page(),
           Rotas.home: (context) => HomePage(),
+          Rotas.editarEmpresa: (context) => EditarEmpresaRouter.page(),
         },
       ),
     );

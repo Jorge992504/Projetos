@@ -31,4 +31,15 @@ class ResetPasswordRepository {
       throw CreateException.dioException(e);
     }
   }
+
+  Future<void> redefinirSenha(String password, String email) async {
+    try {
+      await restClient.unauth.post(
+        '/redefine/password',
+        data: {'password': password, 'email': email},
+      );
+    } on DioException catch (e) {
+      throw CreateException.dioException(e);
+    }
+  }
 }

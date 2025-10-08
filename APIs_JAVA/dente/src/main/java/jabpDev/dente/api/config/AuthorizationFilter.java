@@ -37,7 +37,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         IO.println("Path que entra no filter: "+ path);
         if (path.equals(filter.getLogin()) ||
                 path.equals(filter.getRegister()) ||
-                path.equals(filter.getRedefine()) ||
+                path.startsWith(filter.getRedefine()) ||
                 path.startsWith(filter.getPublicResource())){
             filterChain.doFilter(request,response);
             return;

@@ -138,7 +138,6 @@ class _LoginPageState extends BaseState<LoginPage, LoginController> {
                       onPressed: () {
                         if (emailController.text.isNotEmpty) {
                           //chama a função q envia o email com o codigo para redefinir a senha
-                          showInfo(emailController.text);
                           Navigator.of(context).pushNamed(
                             Rotas.resetPassword,
                             arguments: {"email": emailController.text},

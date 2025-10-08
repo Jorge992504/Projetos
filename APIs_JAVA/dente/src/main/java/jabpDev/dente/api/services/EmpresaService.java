@@ -1,15 +1,18 @@
 package jabpDev.dente.api.services;
 
 
+import jabpDev.dente.api.dto.request.RegistrarEmpresaDtoRequest;
 import jabpDev.dente.api.dto.response.EmpresaDtoResponse;
 import jabpDev.dente.api.entitys.Empresa;
 import jabpDev.dente.api.exceptions.ErrorException;
 import jabpDev.dente.api.repositories.EmpresaRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.io.*;
+import java.util.Base64;
 import java.util.Optional;
 
 @Service
@@ -17,9 +20,10 @@ import java.util.Optional;
 public class EmpresaService {
     private final EmpresaRepository empresaRepository;
     private static final String url = "http://172.16.251.22:5050/api/public/";
+    private final ServicesGerais servicesGerais;
 
 
-    public EmpresaDtoResponse buscaInfoEmpresa()throws IOException {
+    public EmpresaDtoResponse buscaInfoEmpresa(){
         String foto;
         String empresa = SecurityContextHolder.getContext().getAuthentication().getName();
         if (empresa.isEmpty()){
@@ -32,11 +36,67 @@ public class EmpresaService {
                 }else{
                     foto = url + optionalEmpresa.get().getNomeClinica() + "/" + optionalEmpresa.get().getFoto();
                 }
-                return new EmpresaDtoResponse(optionalEmpresa.get().getEmailClinica(),optionalEmpresa.get().getNomeClinica(), foto);
+                return new EmpresaDtoResponse(foto,
+                        optionalEmpresa.get().getNomeClinica(),
+                        optionalEmpresa.get().getEmailClinica(),
+                        optionalEmpresa.get().getTelefone(),
+                        optionalEmpresa.get().getEndereco(),
+                        optionalEmpresa.get().getCnpj()
+                        );
             }else{
                 throw new ErrorException("Empresa não encontrada");
             }
+        }
+    }
 
+
+    @Transactional
+    public void editarDadosEmpresa( RegistrarEmpresaDtoRequest body){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Empresa> empresa = empresaRepository.findByEmailClinica(email);
+        if (!empresa.isPresent()){
+            throw new ErrorException("Clinica não cadastrada");
+        }else{
+            String uploadDir = new File("src/main/resources/static/public/" + body.nomeClinica()).getAbsolutePath();
+            File directory = new File(uploadDir);
+            if (!directory.exists()) {
+                boolean created = directory.mkdirs();
+                if (!created) {
+                    throw new ErrorException("Não foi possível criar o diretório: " + uploadDir);
+                }
+            }
+            String nomeFoto = body.nomeClinica().replaceAll("\\s+", "_") + ".png";
+            File destino = new File(directory, nomeFoto);
+            String fotoBD = url + empresa.get().getNomeClinica() + "/" + empresa.get().getFoto();
+            if ( !body.foto().equals(fotoBD)){
+                IO.println("=====================>entrou");
+                if (body.foto() != null && !body.foto().isEmpty()) {
+                    String fotoBase64 = body.foto();
+                    if (fotoBase64.contains(",")) {
+                        fotoBase64 = fotoBase64.split(",")[1];
+                    }
+                    byte[] fotoBy = Base64.getDecoder().decode(fotoBase64);
+                    try (OutputStream stream = new FileOutputStream(destino)) {
+                        stream.write(fotoBy);
+                    } catch (FileNotFoundException e) {
+                        throw new ErrorException("Erro ao salvar foto");
+                    } catch (IOException e) {
+                        throw new ErrorException("Erro ao salvar foto");
+                    }
+                }
+            }
+
+//            if (!servicesGerais.isValid(body.cnpj())){
+//                throw new ErrorException("CNPJ não é valido");
+//            }
+
+
+            Empresa empresaNew = empresa.get();
+            empresaNew.setCnpj(body.cnpj());
+            empresaNew.setFoto(body.foto() != null ? nomeFoto : null);
+            empresaNew.setEndereco(body.endereco());
+            empresaNew.setNomeClinica(body.nomeClinica());
+            empresaRepository.save(empresaNew);
         }
 
     }

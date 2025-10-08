@@ -10,10 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Base64;
 
 @Service
@@ -26,7 +23,7 @@ public class RegistrarEmpresaService {
     private final ServicesGerais servicesGerais;
 
     @Transactional
-    public String registrarEmpresa(RegistrarEmpresaDtoRequest body) throws IOException {
+    public String registrarEmpresa(RegistrarEmpresaDtoRequest body)  {
 
         String password = passwordEncoder.encode(body.passowrd());
         String uploadDir = new File("src/main/resources/static/public/" + body.nomeClinica()).getAbsolutePath();
@@ -34,7 +31,7 @@ public class RegistrarEmpresaService {
         if (!directory.exists()) {
             boolean created = directory.mkdirs();
             if (!created) {
-                throw new IOException("Não foi possível criar o diretório: " + uploadDir);
+                throw new ErrorException("Não foi possível criar o diretório: " + uploadDir);
             }
         }
 
@@ -49,7 +46,15 @@ public class RegistrarEmpresaService {
             byte[] fotoBy = Base64.getDecoder().decode(fotoBase64);
             try (OutputStream stream = new FileOutputStream(destino)) {
                 stream.write(fotoBy);
+            } catch (FileNotFoundException e) {
+                throw new ErrorException(e.getMessage());
+            } catch (IOException e) {
+                throw new ErrorException(e.getMessage());
             }
+        }
+
+        if (!servicesGerais.isValid(body.cnpj())){
+            throw new ErrorException("CNPJ não é valido");
         }
 
 
@@ -64,7 +69,9 @@ public class RegistrarEmpresaService {
                 .build();
         Empresa response = empresaRepository.save(empresa);
         if (response.getId() > 0 ){
+            servicesGerais.enviarEmailCadastro(response.getEmailClinica(), response.getNomeClinica());
             return servicesGerais.geraToken(response.getEmailClinica());
+
         }else{
             throw new ErrorException("Erro ao realizar cadastro");
         }

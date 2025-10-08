@@ -18,7 +18,7 @@ class ResetPasswordController extends Cubit<ResetPasswordState> {
       await _repository.enviaEmailRedefineSenha(email);
 
       emit(
-        state.copyWith(status: ResetPasswordStatus.success, errorMessage: null),
+        state.copyWith(status: ResetPasswordStatus.loaded, errorMessage: null),
       );
     } on RepositoryException catch (e, s) {
       log('$s');
@@ -38,7 +38,7 @@ class ResetPasswordController extends Cubit<ResetPasswordState> {
       await _repository.verificaCodigo(codigo, email);
 
       emit(
-        state.copyWith(status: ResetPasswordStatus.success, errorMessage: null),
+        state.copyWith(status: ResetPasswordStatus.loaded, errorMessage: null),
       );
       return true;
     } on RepositoryException catch (e, s) {
@@ -50,6 +50,28 @@ class ResetPasswordController extends Cubit<ResetPasswordState> {
         ),
       );
       return false;
+    }
+  }
+
+  Future<void> redefinirSenha(String password, String email) async {
+    try {
+      emit(state.copyWith(status: ResetPasswordStatus.loading));
+
+      await _repository.redefinirSenha(password, email);
+
+      emit(
+        state.copyWith(status: ResetPasswordStatus.success, errorMessage: null),
+      );
+      await Future.delayed(const Duration(milliseconds: 300));
+      emit(state.copyWith(status: ResetPasswordStatus.loaded));
+    } on RepositoryException catch (e, s) {
+      log('$s');
+      emit(
+        state.copyWith(
+          status: ResetPasswordStatus.failure,
+          errorMessage: e.message,
+        ),
+      );
     }
   }
 }

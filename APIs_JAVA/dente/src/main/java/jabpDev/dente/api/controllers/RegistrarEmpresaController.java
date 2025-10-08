@@ -20,7 +20,7 @@ public class RegistrarEmpresaController {
     private final RegistrarEmpresaService registrarEmpresaService;
 
     @PostMapping
-    public TokenDtoResponse registrarEmpresa(@RequestBody RegistrarEmpresaDtoRequest body) throws IOException {
+    public TokenDtoResponse registrarEmpresa(@RequestBody RegistrarEmpresaDtoRequest body) {
         if (body.emailClinica().isEmpty()){
             throw new ErrorException("Campos mal informados");
         }else{
