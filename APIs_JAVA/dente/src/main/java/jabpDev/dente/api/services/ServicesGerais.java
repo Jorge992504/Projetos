@@ -96,6 +96,21 @@ public class ServicesGerais {
         javaMailSender.send(message);
     }
 
+    public void enviaEmailCadastroPaciente(String destinatario, String nome, String emailClinica) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(destinatario);
+        message.setFrom(emailClinica);
+        String text = """
+                Seja muito bem-vindo(a) à Clínica Dente! 😁
+                Seu cadastro foi realizado com sucesso e agora você \njá faz parte da nossa família de sorrisos saudáveis.
+                Nosso compromisso é cuidar do seu sorriso com atenção, carinho e profissionalismo 💙
+                Em caso de dúvidas ou para agendar sua primeira consulta, entre em contato com a nossa equipe — estamos sempre à disposição!
+                """;
+        message.setSubject("Olá, "+ nome +"! 🦷✨");
+        message.setText(text);
+        javaMailSender.send(message);
+    }
+
 
 
     public  boolean isValid(String cnpj) {
@@ -128,6 +143,41 @@ public class ServicesGerais {
         for (int i = 0; i < peso.length; i++) {
             soma += Character.getNumericValue(str.charAt(i)) * peso[i];
         }
+        int resto = soma % 11;
+        return (resto < 2) ? 0 : 11 - resto;
+    }
+
+
+    public boolean isValidCPF(String cpf) {
+        if (cpf == null) return false;
+
+        // Remove tudo que não é número
+        cpf = cpf.replaceAll("\\D", "");
+
+        // O CPF deve ter 11 dígitos
+        if (cpf.length() != 11) return false;
+
+        // Rejeita CPFs com todos os dígitos iguais (ex: 111.111.111-11)
+        if (cpf.matches("(\\d)\\1{10}")) return false;
+
+        try {
+            int dig1 = calcularDigitoCPF(cpf.substring(0, 9), 10);
+            int dig2 = calcularDigitoCPF(cpf.substring(0, 9) + dig1, 11);
+
+            return cpf.equals(cpf.substring(0, 9) + dig1 + dig2);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private static int calcularDigitoCPF(String str, int pesoInicial) {
+        int soma = 0;
+        int peso = pesoInicial;
+
+        for (int i = 0; i < str.length(); i++) {
+            soma += Character.getNumericValue(str.charAt(i)) * peso--;
+        }
+
         int resto = soma % 11;
         return (resto < 2) ? 0 : 11 - resto;
     }

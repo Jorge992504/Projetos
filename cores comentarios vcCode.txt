@@ -1,0 +1,5 @@
+// ! Alerta ou erro (vermelho)
+// * Dica ou destaque (azul)
+// ? Dúvida ou pergunta (verde)
+// TODO: tarefa pendente (laranja)
+// // Comentário normal (cinza)

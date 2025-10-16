@@ -19,7 +19,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class EmpresaService {
     private final EmpresaRepository empresaRepository;
-    private static final String url = "http://172.16.251.22:5050/api/public/";
+    private static final String url = "http://192.168.3.33:5050/api/public/";
     private final ServicesGerais servicesGerais;
 
 
@@ -69,7 +69,6 @@ public class EmpresaService {
             File destino = new File(directory, nomeFoto);
             String fotoBD = url + empresa.get().getNomeClinica() + "/" + empresa.get().getFoto();
             if ( !body.foto().equals(fotoBD)){
-                IO.println("=====================>entrou");
                 if (body.foto() != null && !body.foto().isEmpty()) {
                     String fotoBase64 = body.foto();
                     if (fotoBase64.contains(",")) {
