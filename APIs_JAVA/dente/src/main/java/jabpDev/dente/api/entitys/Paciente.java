@@ -20,7 +20,7 @@ public class Paciente {
     @Column(name = "nome")
     private String nome;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Column(name = "telefone")
@@ -29,7 +29,7 @@ public class Paciente {
     @Column(name = "endereco")
     private String endereco;
 
-    @Column(name = "cpf", unique = true, nullable = false)
+    @Column(name = "cpf", nullable = false)
     private String cpf;
 
     @Column(name = "rg")

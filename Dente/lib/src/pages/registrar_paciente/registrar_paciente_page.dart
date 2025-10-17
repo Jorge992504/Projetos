@@ -50,7 +50,7 @@ class _RegistrarPacientePageState
             },
             success: () async {
               showSuccess("Sucesso ao realizar cadastro.");
-              Navigator.of(context).pop();
+              // Navigator.of(context).pop();
               hideLoader();
             },
           );
@@ -200,7 +200,7 @@ class _RegistrarPacientePageState
                     width: 900,
                     child: ElevatedButton(
                       onPressed: () async {
-                        await registrarEmpresa();
+                        await registrarPaciente();
                       },
                       child: Text(
                         'Salvar dados',
@@ -232,7 +232,7 @@ class _RegistrarPacientePageState
   );
 
   //! registrar paciente
-  Future<void> registrarEmpresa() async {
+  Future<void> registrarPaciente() async {
     final valid = formKey.currentState?.validate() ?? false;
     if (valid) {
       PacienteModel model = PacienteModel(

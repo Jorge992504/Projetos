@@ -9,4 +9,5 @@ mixin Rotas {
   static const String agendamento = "/agendamento";
   static const String registrarPaciente = "/registrarPaciente";
   static const String dentista = "/dentista";
+  static const String servicos = "/servicos";
 }

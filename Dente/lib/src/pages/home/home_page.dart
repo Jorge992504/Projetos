@@ -142,10 +142,25 @@ class _HomePageState extends State<HomePage> {
                     ),
                     title: Text(
                       "Dentistas",
-                      style: context.cusotomFontes.textBold,
+                      style: context.cusotomFontes.textBoldItalic,
                     ),
                     onTap: () async {
                       Navigator.of(context).pushNamed(Rotas.dentista);
+                    },
+                  ),
+                  ListTile(
+                    leading: Image.asset(
+                      ImageConstants.servicos,
+                      width: 25,
+                      height: 25,
+                      fit: BoxFit.cover,
+                    ),
+                    title: Text(
+                      "Serviços",
+                      style: context.cusotomFontes.textBoldItalic,
+                    ),
+                    onTap: () async {
+                      Navigator.of(context).pushNamed(Rotas.servicos);
                     },
                   ),
                   ListTile(
@@ -155,7 +170,10 @@ class _HomePageState extends State<HomePage> {
                       height: 25,
                       fit: BoxFit.cover,
                     ),
-                    title: Text("Sair", style: context.cusotomFontes.textBold),
+                    title: Text(
+                      "Sair",
+                      style: context.cusotomFontes.textBoldItalic,
+                    ),
                     onTap: () async {
                       Provider.of<AuthProvider>(
                         context,

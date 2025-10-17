@@ -111,6 +111,21 @@ public class ServicesGerais {
         javaMailSender.send(message);
     }
 
+    public void enviaEmailCadastroDentista(String destinatario, String nome, String emailClinica) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(destinatario);
+        message.setFrom(emailClinica);
+        message.setSubject("Olá, "+ nome +"! 🦷✨ Bem-vindo(a) à equipe!");
+        String text = """
+                Parabéns, Dr(a).
+                Agora você faz parte da nossa família de profissionais\ndedicados a transformar sorrisos e promover saúde com excelência. 😁✨
+                Estamos felizes em ter você conosco e esperamos que esta\njornada seja repleta de conquistas, aprendizados e muitos sorrisos felizes.
+                Seja bem-vindo(a) à nossa equipe! 🦷💙
+                """;
+        message.setText(text);
+        javaMailSender.send(message);
+    }
+
 
 
     public  boolean isValid(String cnpj) {

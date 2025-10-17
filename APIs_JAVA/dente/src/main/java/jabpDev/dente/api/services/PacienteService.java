@@ -55,7 +55,7 @@ public class PacienteService {
         String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
         if (empresa.isEmpty()){
-            throw new ErrorException("Realizar login");
+            throw new ErrorException("Sem permissão para cadastrar dentista.\nRealizar login novamente");
         }
 
         Paciente paciente = Paciente.builder()
