@@ -4,13 +4,12 @@ package jabpDev.dente.api.services;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jabpDev.dente.api.exceptions.ErrorException;
-import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -24,6 +23,9 @@ public class ServicesGerais {
     private String secretKey;
     @Value("${jwt.expiration}")
     private Long expirationTokenTime;
+    @Getter
+    @Value("${app.base-url}")
+    public String baseUrl;
 
     private final JavaMailSender javaMailSender;
 

@@ -19,8 +19,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class EmpresaService {
     private final EmpresaRepository empresaRepository;
-    private static final String url = "http://192.168.3.33:5050/api/public/";
     private final ServicesGerais servicesGerais;
+
 
 
     public EmpresaDtoResponse buscaInfoEmpresa(){
@@ -32,9 +32,10 @@ public class EmpresaService {
             Optional<Empresa> optionalEmpresa = empresaRepository.findByEmailClinica(empresa);
             if (optionalEmpresa.isPresent()){
                 if (optionalEmpresa.get().getFoto() == null){
-                    foto = url + "logoGeral.png";
+
+                    foto = servicesGerais.baseUrl + "logoGeral.png";
                 }else{
-                    foto = url + optionalEmpresa.get().getNomeClinica() + "/" + optionalEmpresa.get().getFoto();
+                    foto = servicesGerais.baseUrl + optionalEmpresa.get().getNomeClinica() + "/" + optionalEmpresa.get().getFoto();
                 }
                 return new EmpresaDtoResponse(foto,
                         optionalEmpresa.get().getNomeClinica(),
@@ -67,7 +68,7 @@ public class EmpresaService {
             }
             String nomeFoto = body.nomeClinica().replaceAll("\\s+", "_") + ".png";
             File destino = new File(directory, nomeFoto);
-            String fotoBD = url + empresa.get().getNomeClinica() + "/" + empresa.get().getFoto();
+            String fotoBD = servicesGerais.baseUrl + empresa.get().getNomeClinica() + "/" + empresa.get().getFoto();
             if ( !body.foto().equals(fotoBD)){
                 if (body.foto() != null && !body.foto().isEmpty()) {
                     String fotoBase64 = body.foto();

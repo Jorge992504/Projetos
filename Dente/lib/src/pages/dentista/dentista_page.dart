@@ -36,9 +36,11 @@ class _DentistaPageState extends BaseState<DentistaPage, DentistaController> {
   List<DentistaModel> dentistaModel = [];
 
   @override
-  void onReady() async {
-    super.onReady();
-    dentistaModel = await controller.buscarDentista();
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.buscarDentista();
+    });
   }
 
   @override
@@ -105,17 +107,28 @@ class _DentistaPageState extends BaseState<DentistaPage, DentistaController> {
                         height: 450,
                         width: 900,
                         child: ListView.builder(
-                          itemCount: dentistaModel.length,
+                          itemCount: state.dentistas != null
+                              ? state.dentistas!.length
+                              : 0,
                           itemBuilder: (context, index) {
-                            DentistaModel dentista = dentistaModel[index];
+                            dentistaModel = state.dentistas ?? [];
+                            DentistaModel dentista = state.dentistas![index];
                             return TableDentista(
-                              nome: dentista.nome,
-                              email: dentista.email,
-                              cro: dentista.cro,
-                              telefone: dentista.telefone,
+                              nome: dentista.nome ?? "",
+                              email: dentista.email ?? "",
+                              cro: dentista.cro ?? "",
+                              telefone: dentista.telefone ?? "",
 
-                              onTap: () {},
-                              isAtivo: dentista.ativo,
+                              onTap: () {
+                                setState(() {
+                                  isAtivo = !(dentista.ativo ?? true);
+                                  dentista.ativo = isAtivo;
+                                });
+                                controller.inativarAtivarDentistas(
+                                  dentista.email!,
+                                );
+                              },
+                              isAtivo: dentista.ativo ?? false,
                             );
                           },
                         ),
@@ -249,7 +262,7 @@ class _DentistaPageState extends BaseState<DentistaPage, DentistaController> {
                               setState(() {
                                 isPesquisa = !isPesquisa;
                               });
-                              dentistaModel = await controller.buscarDentista();
+                              // dentistaModel = await controller.buscarDentista();
                             },
                             child: Text(
                               'Salvar dados',

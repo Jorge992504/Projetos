@@ -33,12 +33,13 @@ class DentistaRepository {
     }
   }
 
-  Future<void> inativarDentistas(DentistaModel dentistaModel) async {
+  Future<DentistaModel> inativarAtivarDentistas(String email) async {
     try {
-      await restClient.auth.post(
+      final response = await restClient.auth.get(
         "/dentista/inativar",
-        data: dentistaModel.toJson(),
+        queryParameters: {'email': email},
       );
+      return DentistaModel.fromMap(response.data);
     } catch (e, s) {
       log('Erro ao inativar dentista', error: e, stackTrace: s);
       throw CreateException.dioException(e);

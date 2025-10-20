@@ -91,6 +91,16 @@ class TableDentista extends StatelessWidget {
                 child: InkWell(
                   onTap: onTap,
                   hoverColor: Colors.transparent,
+                  borderRadius: BorderRadius.circular(8),
+                  splashColor: isAtivo == true
+                      ? ColorsConstants.errorColor
+                      : Colors.blue,
+                  overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                    (states) => isAtivo == true
+                        ? ColorsConstants.appBarColor.withOpacity(0.12)
+                        : ColorsConstants.errorColor.withOpacity(0.12),
+                  ),
+                  mouseCursor: SystemMouseCursors.click,
                   child: Text(
                     isAtivo == true ? 'Ativo' : 'Inativo',
                     textAlign: TextAlign.center,

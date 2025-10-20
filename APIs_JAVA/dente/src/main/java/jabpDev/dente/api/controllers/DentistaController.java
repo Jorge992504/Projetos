@@ -25,4 +25,9 @@ public class DentistaController {
     public List<BuscaDentistasDtoResponse> buscaDentistas(){
         return dentistaService.buscaDentistas();
     }
+
+    @GetMapping("/inativar")
+    public BuscaDentistasDtoResponse inativarAtivarDentista(@RequestParam String email){
+       return dentistaService.inativarAtivarDentista(email);
+    }
 }

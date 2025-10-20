@@ -82,4 +82,29 @@ public class DentistaService {
                     );
                 }).collect(Collectors.toList());
     }
+
+    @Transactional
+    public BuscaDentistasDtoResponse inativarAtivarDentista(String email){
+        String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
+        if (empresa.isEmpty()){
+            throw new ErrorException("Sem permissão para cadastrar dentista.\nRealizar login novamente");
+        }
+
+        Optional<Dentista> dentista = dentistaRepository.findByEmailAndEmpresaId(email,empresa.get().getId());
+        if (dentista.isEmpty()){
+            throw new ErrorException("Dentista não encontrado");
+        }
+
+        dentista.get().setAtivo(!dentista.get().isAtivo());
+        Dentista response = dentistaRepository.save(dentista.get());
+
+        return new BuscaDentistasDtoResponse(
+                response.getNome(),
+                response.getEmail(),
+                response.getCro(),
+                response.getTelefone(),
+                response.isAtivo()
+        );
+    }
 }

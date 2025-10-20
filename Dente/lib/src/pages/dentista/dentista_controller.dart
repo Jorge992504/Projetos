@@ -26,30 +26,48 @@ class DentistaController extends Cubit<DentistaState> {
     }
   }
 
-  Future<List<DentistaModel>> buscarDentista() async {
+  Future<void> buscarDentista() async {
     try {
       emit(state.copyWith(status: DentistaStatus.loading));
 
       final response = await _repository.buscarDentistas();
 
-      emit(state.copyWith(status: DentistaStatus.loaded, errorMessage: null));
-      return response;
+      emit(
+        state.copyWith(
+          status: DentistaStatus.loaded,
+          errorMessage: null,
+          dentistas: response,
+        ),
+      );
     } on RepositoryException catch (e, s) {
       log('$s');
       emit(
         state.copyWith(status: DentistaStatus.failure, errorMessage: e.message),
       );
-      return [];
     }
   }
 
-  Future<void> inativarDentistas() async {
+  Future<void> inativarAtivarDentistas(String email) async {
     try {
       emit(state.copyWith(status: DentistaStatus.loading));
 
-      final response = await _repository.buscarDentistas();
+      final response = await _repository.inativarAtivarDentistas(email);
 
-      emit(state.copyWith(status: DentistaStatus.loaded, errorMessage: null));
+      final current = state.dentistas ?? [];
+      final updatedDentistas = current.map((d) {
+        if (d.email == response.email) {
+          return response; // substitui pelo dentista atualizado
+        }
+        return d;
+      }).toList();
+
+      emit(
+        state.copyWith(
+          status: DentistaStatus.loaded,
+          errorMessage: null,
+          dentistas: updatedDentistas,
+        ),
+      );
     } on RepositoryException catch (e, s) {
       log('$s');
       emit(
