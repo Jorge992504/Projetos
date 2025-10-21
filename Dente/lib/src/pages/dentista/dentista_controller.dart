@@ -17,7 +17,21 @@ class DentistaController extends Cubit<DentistaState> {
 
       await _repository.registrarDentista(dentistaModel);
 
-      emit(state.copyWith(status: DentistaStatus.success, errorMessage: null));
+      final current = state.dentistas ?? [];
+      final updatedDentistas = current.map((d) {
+        if (d.email == dentistaModel.email) {
+          return dentistaModel; // substitui pelo dentista atualizado
+        }
+        return d;
+      }).toList();
+
+      emit(
+        state.copyWith(
+          status: DentistaStatus.success,
+          errorMessage: null,
+          dentistas: updatedDentistas,
+        ),
+      );
     } on RepositoryException catch (e, s) {
       log('$s');
       emit(

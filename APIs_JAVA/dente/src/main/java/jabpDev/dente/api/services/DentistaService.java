@@ -74,6 +74,7 @@ public class DentistaService {
         return response.stream()
                 .map(d -> {
                     return new BuscaDentistasDtoResponse(
+                            d.id(),
                             d.nome(),
                             d.email(),
                             d.cro(),
@@ -100,6 +101,7 @@ public class DentistaService {
         Dentista response = dentistaRepository.save(dentista.get());
 
         return new BuscaDentistasDtoResponse(
+                response.getId(),
                 response.getNome(),
                 response.getEmail(),
                 response.getCro(),

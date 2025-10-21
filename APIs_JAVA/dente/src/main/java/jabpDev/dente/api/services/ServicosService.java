@@ -63,6 +63,7 @@ public class ServicosService {
         return response.stream()
                 .map(s -> {
                     return new BuscarServicosDtoResponse(
+                            s.id(),
                             s.nome(),
                             s.vl()
                     );

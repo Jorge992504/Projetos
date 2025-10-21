@@ -18,11 +18,25 @@ class AgendamentosModelResponse {
   }
 
   factory AgendamentosModelResponse.fromMap(Map<String, dynamic> map) {
+    int? _toEpoch(dynamic value) {
+      if (value == null) return null;
+      if (value is int) return value;
+      if (value is String) {
+        final parsedInt = int.tryParse(value);
+        if (parsedInt != null) return parsedInt;
+        try {
+          return DateTime.parse(value).millisecondsSinceEpoch;
+        } catch (_) {
+          return null;
+        }
+      }
+      return null;
+    }
+
+    final epoch = _toEpoch(map['data']);
     return AgendamentosModelResponse(
-      data: map['data'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['data'] as int)
-          : null,
-      id: map['id'] != null ? map['id'] as int : null,
+      data: epoch != null ? DateTime.fromMillisecondsSinceEpoch(epoch) : null,
+      id: map['id'] ?? 0,
     );
   }
 

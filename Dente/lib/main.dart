@@ -9,13 +9,15 @@ import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await windowManager.ensureInitialized();
-  // WindowOptions windowOptions = WindowOptions(center: true);
-  // windowManager.waitUntilReadyToShow(windowOptions, () async {
-  //   await windowManager.maximize();
-  //   await windowManager.show();
-  //   await windowManager.focus();
-  // });
+  await windowManager.ensureInitialized();
+  WindowOptions windowOptions = WindowOptions(center: true);
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.maximize();
+    await windowManager.setResizable(true);
+    await windowManager.setMinimumSize(const Size(800, 600));
+    await windowManager.show();
+    await windowManager.focus();
+  });
   await initializeDateFormatting('pt_BR');
   await Env.env.load();
   HttpOverrides.global = MyHttp();

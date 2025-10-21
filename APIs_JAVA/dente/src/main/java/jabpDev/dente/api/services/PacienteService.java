@@ -2,7 +2,7 @@ package jabpDev.dente.api.services;
 
 
 import jabpDev.dente.api.dto.request.RegistrarPacienteDtoRequest;
-import jabpDev.dente.api.dto.response.PacienteCPFDtoResponse;
+import jabpDev.dente.api.dto.response.PacienteDtoResponse;
 import jabpDev.dente.api.entitys.Empresa;
 import jabpDev.dente.api.entitys.Paciente;
 import jabpDev.dente.api.exceptions.ErrorException;
@@ -13,10 +13,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,18 +26,22 @@ public class PacienteService {
     private final EmpresaRepository empresaRepository;
 
 
-//    public List<PacienteCPFDtoResponse> buscaPacientePorCPF(){
-//        String empresa = SecurityContextHolder.getContext().getAuthentication().getName();
-//        if (empresa.isEmpty()){
-//            throw new ErrorException("Não autenticado");
-//        }
-//        List<PacienteCPFDtoResponse> response = pacienteRepository.findByCpf();
-//        return response.stream().map( p -> {
-//            return new PacienteCPFDtoResponse(
-//                    p.cpfPaciente()
-//            );
-//        }).collect(Collectors.toList());
-//    }
+    public List<PacienteDtoResponse> buscaPacientePorCPF(){
+        String empresa = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (empresa.isEmpty()){
+            throw new ErrorException("Não autenticado");
+        }
+        Optional<Empresa> emp = empresaRepository.findByEmailClinica(empresa);
+        List<PacienteDtoResponse> response = pacienteRepository.findByEmpresaId(emp.get().getId());
+        return response.stream().map( p -> {
+            return new PacienteDtoResponse(
+                    p.nome(),
+                    p.telefone(),
+                    p.cpf(),
+                    p.email()
+            );
+        }).collect(Collectors.toList());
+    }
     @Transactional
     public Paciente registrarPaciente(RegistrarPacienteDtoRequest body){
         if (body.email().isEmpty()){

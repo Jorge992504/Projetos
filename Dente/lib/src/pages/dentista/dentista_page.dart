@@ -32,8 +32,10 @@ class _DentistaPageState extends BaseState<DentistaPage, DentistaController> {
 
   bool isPesquisa = true;
   bool isAtivo = true;
+  bool isVoltar = true;
 
   List<DentistaModel> dentistaModel = [];
+  List<DentistaModel> sugestoes = [];
 
   @override
   void initState() {
@@ -82,42 +84,56 @@ class _DentistaPageState extends BaseState<DentistaPage, DentistaController> {
                   alignment: Alignment.center,
                   child: Column(
                     children: [
-                      // Container(
-                      //   width: 500,
-                      //   height: 60,
-                      //   margin: EdgeInsets.only(top: 25),
-                      //   child: TextField(
-                      //     autofocus: true,
-                      //     cursorColor: ColorsConstants.appBarColor,
-                      //     cursorHeight: 15,
-                      //     decoration: InputDecoration(
-                      //       suffixIcon: IconButton(
-                      //         onPressed: () {},
-                      //         icon: Icon(
-                      //           Icons.search_outlined,
-                      //           size: 25,
-                      //           color: ColorsConstants.appBarColor,
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
+                      Container(
+                        width: 500,
+                        height: 60,
+                        margin: EdgeInsets.only(top: 25),
+                        child: TextField(
+                          autofocus: true,
+                          cursorColor: ColorsConstants.appBarColor,
+                          cursorHeight: 15,
+                          decoration: InputDecoration(
+                            suffixIcon: Icon(
+                              Icons.search_outlined,
+                              size: 25,
+                              color: ColorsConstants.appBarColor,
+                            ),
+                          ),
+                          onChanged: (value) {
+                            buscarDentistaPorNome(value);
+                          },
+                        ),
+                      ),
                       const SizedBox(height: 24),
                       SizedBox(
                         height: 450,
                         width: 900,
                         child: ListView.builder(
                           itemCount: state.dentistas != null
-                              ? state.dentistas!.length
+                              ?
+                                // state.dentistas!.length
+                                (sugestoes.isNotEmpty
+                                    ? sugestoes.length
+                                    : state.dentistas!.length)
                               : 0,
                           itemBuilder: (context, index) {
                             dentistaModel = state.dentistas ?? [];
-                            DentistaModel dentista = state.dentistas![index];
+                            DentistaModel dentista = sugestoes.isNotEmpty
+                                ? sugestoes[index]
+                                : state.dentistas![index];
+                            // state.dentistas![index];
                             return TableDentista(
-                              nome: dentista.nome ?? "",
-                              email: dentista.email ?? "",
-                              cro: dentista.cro ?? "",
-                              telefone: dentista.telefone ?? "",
+                              nome:
+                                  dentista.nome ?? sugestoes[index].nome ?? "",
+                              email:
+                                  dentista.email ??
+                                  sugestoes[index].email ??
+                                  "",
+                              cro: dentista.cro ?? sugestoes[index].cro ?? "",
+                              telefone:
+                                  dentista.telefone ??
+                                  sugestoes[index].telefone ??
+                                  "",
 
                               onTap: () {
                                 setState(() {
@@ -182,6 +198,9 @@ class _DentistaPageState extends BaseState<DentistaPage, DentistaController> {
                             autofocus: true,
                             onFieldSubmitted: (value) {
                               emailFocus.requestFocus();
+                              setState(() {
+                                isVoltar = !isVoltar;
+                              });
                             },
                           ),
                         ),
@@ -258,14 +277,21 @@ class _DentistaPageState extends BaseState<DentistaPage, DentistaController> {
                           width: 900,
                           child: ElevatedButton(
                             onPressed: () async {
-                              await registrarDentitsa();
-                              setState(() {
-                                isPesquisa = !isPesquisa;
-                              });
+                              if (isVoltar) {
+                                setState(() {
+                                  isPesquisa = !isPesquisa;
+                                });
+                              } else {
+                                await registrarDentitsa();
+                                setState(() {
+                                  isPesquisa = !isPesquisa;
+                                });
+                                refresh();
+                              }
                               // dentistaModel = await controller.buscarDentista();
                             },
                             child: Text(
-                              'Salvar dados',
+                              isVoltar ? "Voltar" : 'Salvar dados',
                               style: context.cusotomFontes.textItalic.copyWith(
                                 color: ColorsConstants.primaryColor,
                               ),
@@ -299,5 +325,20 @@ class _DentistaPageState extends BaseState<DentistaPage, DentistaController> {
       );
       await controller.registrarDentista(model);
     }
+  }
+
+  //! buscar dentistas por nome
+  void buscarDentistaPorNome(String value) {
+    String nome = value;
+    setState(() {
+      sugestoes = controller.state.dentistas!
+          .where((p) => p.nome!.toLowerCase().contains(nome.toLowerCase()))
+          .toList();
+    });
+  }
+
+  void refresh() async {
+    await controller.buscarDentista(); // recarrega a lista do backend
+    setState(() {}); // força a tela a rebuildar com os novos dados
   }
 }

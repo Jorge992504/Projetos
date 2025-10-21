@@ -34,4 +34,30 @@ class RegistrarPacienteController extends Cubit<RegistrarPacienteState> {
       );
     }
   }
+
+  Future<void> buscarPacientes() async {
+    try {
+      emit(
+        state.copyWith(status: RegistrarPacienteStatus.loading, pacientes: []),
+      );
+
+      final response = await _repository.buscarPacientes();
+
+      emit(
+        state.copyWith(
+          status: RegistrarPacienteStatus.loaded,
+          errorMessage: null,
+          pacientes: response,
+        ),
+      );
+    } on RepositoryException catch (e, s) {
+      log('$s');
+      emit(
+        state.copyWith(
+          status: RegistrarPacienteStatus.failure,
+          errorMessage: e.message,
+        ),
+      );
+    }
+  }
 }

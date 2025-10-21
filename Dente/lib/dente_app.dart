@@ -1,10 +1,10 @@
 import 'package:dente/core/providers/application_banding.dart';
 import 'package:dente/core/router/rotas.dart';
 import 'package:dente/core/ui/theme/config_theme.dart';
-import 'package:dente/src/pages/agendamento/agendamento_page.dart';
+import 'package:dente/src/pages/agendamento/agendamento_router.dart';
 import 'package:dente/src/pages/dentista/dentista_router.dart';
 import 'package:dente/src/pages/editar_empresa/editar_empresa_router.dart';
-import 'package:dente/src/pages/home/home_page.dart';
+import 'package:dente/src/pages/home/home_router.dart';
 import 'package:dente/src/pages/login/login_router.dart';
 import 'package:dente/src/pages/registrar_empresa/registrar_empresa_router.dart';
 import 'package:dente/src/pages/registrar_paciente/registrar_paciente_router.dart';
@@ -36,9 +36,9 @@ class DenteApp extends StatelessWidget {
           Rotas.login: (context) => LoginRouter.page(),
           Rotas.registrarEmpresa: (context) => RegistrarEmpresaRouter.page(),
           Rotas.resetPassword: (context) => ResetPasswordRouter.page(),
-          Rotas.home: (context) => HomePage(),
+          Rotas.home: (context) => HomeRouter.page(),
           Rotas.editarEmpresa: (context) => EditarEmpresaRouter.page(),
-          Rotas.agendamento: (context) => AgendamentoPage(),
+          Rotas.agendamento: (context) => AgendamentoRouter.page(),
           Rotas.registrarPaciente: (context) => RegistrarPacienteRouter.page(),
           Rotas.dentista: (context) => DentistaRouter.page(),
           Rotas.servicos: (context) => ServicosRouter.page(),

@@ -1,0 +1,35 @@
+package jabpDev.dente.api.controllers;
+
+
+import jabpDev.dente.api.dto.request.NovoAgendamentoDtoRequest;
+import jabpDev.dente.api.dto.response.BuscaAgendamentosDtoResponse;
+import jabpDev.dente.api.dto.response.ServicosDentistasDtoResponse;
+import jabpDev.dente.api.services.AgendamentoService;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@AllArgsConstructor
+
+@RequestMapping("/agendamentos")
+public class AgendamentoController {
+
+    private final AgendamentoService agendamentoService;
+
+    @GetMapping("/busca/dentistas-servicos")
+    public ServicosDentistasDtoResponse buscaDentistasESevicos(){
+        return agendamentoService.buscaDentistasESevicos();
+    }
+
+    @PostMapping("/novo")
+    public void criaNovoAgendamento(@RequestBody NovoAgendamentoDtoRequest body) {
+        agendamentoService.criaNovoAgendamento(body);
+    }
+
+    @GetMapping("/busca/todos")
+    public List<BuscaAgendamentosDtoResponse> buscaAgendamentos() {
+        return agendamentoService.buscaAgendamentos();
+    }
+}

@@ -32,7 +32,7 @@ class TableServicos extends StatelessWidget {
               TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: Text(
-                  valor ?? "0.0",
+                  'R\$ ${valor ?? "0.0"}',
                   textAlign: TextAlign.end,
                   style: TextStyle(
                     fontSize: 13,

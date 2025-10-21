@@ -28,13 +28,17 @@ class _ServicosPageState extends BaseState<ServicosPage, ServicosController> {
   final valorFocus = FocusNode();
 
   bool isPesquisa = true;
+  bool isVoltar = true;
 
   List<ServicosModel> servicosModel = [];
+  List<ServicosModel> sugestoes = [];
 
   @override
-  void onReady() async {
-    super.onReady();
-    servicosModel = await controller.buscarServicos();
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.buscarServicos();
+    });
   }
 
   @override
@@ -75,37 +79,49 @@ class _ServicosPageState extends BaseState<ServicosPage, ServicosController> {
                   alignment: Alignment.center,
                   child: Column(
                     children: [
-                      // Container(
-                      //   width: 500,
-                      //   height: 60,
-                      //   margin: EdgeInsets.only(top: 25),
-                      //   child: TextField(
-                      //     autofocus: true,
-                      //     cursorColor: ColorsConstants.appBarColor,
-                      //     cursorHeight: 15,
-                      //     decoration: InputDecoration(
-                      //       suffixIcon: IconButton(
-                      //         onPressed: () {},
-                      //         icon: Icon(
-                      //           Icons.search_outlined,
-                      //           size: 25,
-                      //           color: ColorsConstants.appBarColor,
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
+                      Container(
+                        width: 500,
+                        height: 60,
+                        margin: EdgeInsets.only(top: 25),
+                        child: TextField(
+                          autofocus: true,
+                          cursorColor: ColorsConstants.appBarColor,
+                          cursorHeight: 15,
+                          decoration: InputDecoration(
+                            suffixIcon: Icon(
+                              Icons.search_outlined,
+                              size: 25,
+                              color: ColorsConstants.appBarColor,
+                            ),
+                          ),
+                          onChanged: (value) {
+                            buscarServicoPorNome(value);
+                          },
+                        ),
+                      ),
                       const SizedBox(height: 24),
                       SizedBox(
                         height: 450,
                         width: 900,
                         child: ListView.builder(
-                          itemCount: servicosModel.length,
+                          itemCount: state.servicos != null
+                              ?
+                                // state.dentistas!.length
+                                (sugestoes.isNotEmpty
+                                    ? sugestoes.length
+                                    : state.servicos!.length)
+                              : 0,
                           itemBuilder: (context, index) {
-                            ServicosModel servicos = servicosModel[index];
+                            ServicosModel servicos = sugestoes.isNotEmpty
+                                ? sugestoes[index]
+                                : state.servicos![index];
+                            final valor = sugestoes.isNotEmpty
+                                ? sugestoes[index].vl
+                                : state.servicos![index].vl;
                             return TableServicos(
-                              title: servicos.nome,
-                              valor: formataVl(servicos.vl.toString()),
+                              title:
+                                  servicos.nome ?? sugestoes[index].nome ?? "",
+                              valor: formataVl(valor.toString()),
                             );
                           },
                         ),
@@ -119,6 +135,8 @@ class _ServicosPageState extends BaseState<ServicosPage, ServicosController> {
                             setState(() {
                               isPesquisa = !isPesquisa;
                             });
+                            valorController.clear();
+                            servicoController.clear();
                           },
                           child: Text(
                             'Registrar novo serviço',
@@ -159,6 +177,9 @@ class _ServicosPageState extends BaseState<ServicosPage, ServicosController> {
                             autofocus: true,
                             onFieldSubmitted: (value) {
                               valorFocus.requestFocus();
+                              setState(() {
+                                isVoltar = !isVoltar;
+                              });
                             },
                           ),
                         ),
@@ -186,14 +207,22 @@ class _ServicosPageState extends BaseState<ServicosPage, ServicosController> {
                           width: 900,
                           child: ElevatedButton(
                             onPressed: () async {
-                              await registrarServicos();
-                              setState(() {
-                                isPesquisa = !isPesquisa;
-                              });
-                              servicosModel = await controller.buscarServicos();
+                              if (isVoltar) {
+                                setState(() {
+                                  isPesquisa = !isPesquisa;
+                                });
+                              } else {
+                                await registrarServicos();
+                                setState(() {
+                                  isPesquisa = !isPesquisa;
+                                });
+                                refresh();
+                              }
+
+                              // servicosModel = await controller.buscarServicos();
                             },
                             child: Text(
-                              'Salvar dados',
+                              isVoltar ? "Voltar" : 'Salvar dados',
                               style: context.cusotomFontes.textItalic.copyWith(
                                 color: ColorsConstants.primaryColor,
                               ),
@@ -252,5 +281,20 @@ class _ServicosPageState extends BaseState<ServicosPage, ServicosController> {
   String formataVl(String value) {
     String texto = value.replaceAll('.', ',');
     return texto;
+  }
+
+  //! buscar serviços por nome
+  void buscarServicoPorNome(String value) {
+    String nome = value;
+    setState(() {
+      sugestoes = controller.state.servicos!
+          .where((p) => p.nome!.toLowerCase().contains(nome.toLowerCase()))
+          .toList();
+    });
+  }
+
+  void refresh() async {
+    await controller.buscarServicos(); // recarrega a lista do backend
+    setState(() {}); // força a tela a rebuildar com os novos dados
   }
 }

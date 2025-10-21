@@ -20,4 +20,16 @@ class RegistrarPacienteRepository {
       throw CreateException.dioException(e);
     }
   }
+
+  Future<List<PacienteModel>> buscarPacientes() async {
+    try {
+      final response = await restClient.auth.get("/paciente/buscar");
+      return response.data
+          .map<PacienteModel>((p) => PacienteModel.fromMap(p))
+          .toList();
+    } catch (e, s) {
+      log('Erro ao buscar os pacientes', error: e, stackTrace: s);
+      throw CreateException.dioException(e);
+    }
+  }
 }
