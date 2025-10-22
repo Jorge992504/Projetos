@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dente/core/router/rotas.dart';
 import 'package:dente/core/ui/base/base_state.dart';
 import 'package:dente/core/ui/style/custom_colors.dart';
@@ -5,11 +7,13 @@ import 'package:dente/core/ui/style/custom_images.dart';
 import 'package:dente/core/ui/style/fontes_letras.dart';
 import 'package:dente/core/ui/style/size_extension.dart';
 import 'package:dente/src/models/empresa_model.dart';
+import 'package:dente/src/models/request/agendamento_por_paciente_request.dart';
 import 'package:dente/src/models/response/agendamentos_model_response.dart';
 import 'package:dente/src/pages/home/home_controller.dart';
 import 'package:dente/src/pages/home/home_state.dart';
 import 'package:dente/src/pages/home/widgets/calendario.dart';
 import 'package:dente/src/providers/auth_provider.dart';
+import 'package:dente/src/widgets/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -26,6 +30,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
   late DateTime mesAtual;
   Map<DateTime, List<AgendamentosModelResponse>>? agendamentosPorData = {};
   List<AgendamentosModelResponse> agendamentos = [];
+  List<AgendamentosModelResponse> agendamentosSelecionados = [];
 
   int? diaSelecionado = 0;
   bool isSelecionado = false;
@@ -305,14 +310,28 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: GestureDetector(
-                                    onTap: () {
+                                    onTap: () async {
                                       setState(() {
                                         diaSelecionado = dia;
-                                        agendamentos.clear();
+                                        agendamentosSelecionados =
+                                            agendamentosDia; // apenas daquele dia
                                       });
-                                      if (agendamentosDia.isNotEmpty) {
-                                        agendamentos.addAll(agendamentosDia);
+
+                                      List<AgendamentoPorPacienteRequest>
+                                      request = [];
+                                      for (var agendamento in agendamentosDia) {
+                                        request.add(
+                                          AgendamentoPorPacienteRequest(
+                                            data: DateFormat(
+                                              'yyyy-MM-dd',
+                                            ).format(agendamento.data!),
+                                            id: agendamento.id,
+                                          ),
+                                        );
                                       }
+                                      log('Requisição: $request');
+                                      await controller
+                                          .buscarDadosDosAgendamentos(request);
                                     },
                                     child: CircleAvatar(
                                       maxRadius: 20,
@@ -355,6 +374,18 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                           },
                         ),
                       ),
+                    ),
+                    CustomCard(
+                      width: 1000,
+                      height: 100,
+                      padding: EdgeInsets.all(20),
+                      nome: 'Nome',
+                      servico: 'Serviço',
+                      horario: 'Horário',
+                      status: 'Confirmado',
+                      onPressed: () {
+                        log('clicou');
+                      },
                     ),
                   ],
                 ),

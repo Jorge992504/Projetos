@@ -3,6 +3,9 @@ package jabpDev.dente.api.services;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jabpDev.dente.api.entitys.Agendamento;
+import jabpDev.dente.api.entitys.Dentista;
+import jabpDev.dente.api.entitys.Paciente;
 import jabpDev.dente.api.exceptions.ErrorException;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +13,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -125,6 +129,60 @@ public class ServicesGerais {
                 Seja bem-vindo(a) à nossa equipe! 🦷💙
                 """;
         message.setText(text);
+        javaMailSender.send(message);
+    }
+
+    public void enviarEmailConfirmacaoAgendamento(Paciente paciente, Dentista dentista, Agendamento agendamento, String emailClinica) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(paciente.getEmail());
+        message.setFrom(emailClinica);
+        message.setSubject("Confirmação de Agendamento - 🦷 Dente Saúde");
+
+        String textoPaciente = String.format("""
+        Olá %s! 😁
+        
+        Seu agendamento foi confirmado com sucesso.
+        
+        📅 Data: %s
+        ⏰ Hora: %s
+        🦷 Dentista: Dr(a). %s
+        
+        Estamos ansiosos para recebê-lo(a) e cuidar do seu sorriso com toda atenção e carinho.
+        
+        Atenciosamente,
+        Equipe Dente Saúde 💙
+        """,
+        paciente.getNome(),
+        new SimpleDateFormat("dd/MM/yyyy").format(agendamento.getDataHora()),
+        new SimpleDateFormat("HH:mm").format(agendamento.getDataHora())
+        );
+        message.setText(textoPaciente);
+        javaMailSender.send(message);
+
+
+        message.setTo(dentista.getEmail());
+        message.setFrom(emailClinica);
+        message.setSubject("Novo Agendamento Confirmado - 🦷 Dente Saúde");
+
+        String textoDentista = String.format("""
+        Olá Dr(a). %s! 🦷
+        
+        Um novo agendamento foi realizado:
+        
+        📅 Data: %s
+        ⏰ Hora: %s
+        👤 Paciente: %s
+        
+        Prepare-se para atender e proporcionar a melhor experiência ao paciente.
+        
+        Atenciosamente,
+        Equipe Dente Saúde 💙
+        """,
+        new SimpleDateFormat("dd/MM/yyyy").format(agendamento.getDataHora()),
+        new SimpleDateFormat("HH:mm").format(agendamento.getDataHora())
+        );
+
+        message.setText(textoDentista);
         javaMailSender.send(message);
     }
 

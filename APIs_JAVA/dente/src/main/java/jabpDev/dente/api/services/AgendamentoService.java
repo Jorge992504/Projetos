@@ -1,6 +1,7 @@
 package jabpDev.dente.api.services;
 
 
+import jabpDev.dente.api.dto.request.BuscaAgendamentosDtoRequest;
 import jabpDev.dente.api.dto.request.NovoAgendamentoDtoRequest;
 import jabpDev.dente.api.dto.response.*;
 import jabpDev.dente.api.dto.response.sub_response.DentistasDtoResponse;
@@ -87,10 +88,10 @@ public class AgendamentoService {
         }
 
         Agendamento agendamento = Agendamento.builder()
-                .empresaId(empresa.get().getId())
-                .pacienteId(paciente.get().getId())
-                .dentistaId(dentista.get().getId())
-                .servicoId(servico.get().getId())
+                .empresa(empresa.get())
+                .paciente(paciente.get())
+                .servico(servico.get())
+                .dentista(dentista.get())
                 .dataHora(body.dataHora())
                 .observacoes(body.observacoes())
                 .build();
@@ -128,6 +129,44 @@ public class AgendamentoService {
                             a.id()
                     );
                     
+                }).collect(Collectors.toList());
+        return response;
+    }
+
+
+    public List<AgendamentoPorPacienteResponse> buscaAgendamentosPorDadosPaciente(List<BuscaAgendamentosDtoRequest> body) {
+
+        String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
+        if (empresa.isEmpty()){
+            throw new ErrorException("Sem permissão para cadastrar dentista.\nRealizar login novamente");
+        }
+        List<Long> idsAgendamentos = body.stream()
+                .map(BuscaAgendamentosDtoRequest::id)
+                .collect(Collectors.toList());
+
+        // Usa a data do primeiro item (assumindo todas do mesmo dia)
+        String dataIso = body.get(0).data(); // "2025-10-23"
+
+        // Converte para "dd/MM/yyyy"
+        LocalDate data = LocalDate.parse(dataIso, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        List<AgendamentoPorPacienteResponse> agendamentos = agendamentoRepository.findByEmpresaIdAndDataAndIds(
+                empresa.get().getId(),
+                dataFormatada,
+                idsAgendamentos
+        );
+
+        List<AgendamentoPorPacienteResponse> response = agendamentos.stream()
+                .map(a -> {
+                    return new AgendamentoPorPacienteResponse(
+                            a.agendamentoId(),
+                            a.status(),
+                            a.pacienteNome(),
+                            a.servico(),
+                            a.datahorario()
+                    );
                 }).collect(Collectors.toList());
         return response;
     }

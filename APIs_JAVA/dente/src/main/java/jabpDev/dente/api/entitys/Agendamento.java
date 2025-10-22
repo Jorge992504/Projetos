@@ -18,21 +18,40 @@ public class Agendamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "empresa_id")
-    private Long empresaId;
+//    @Column(name = "empresa_id")
+//    private Long empresaId;
+//
+//    @Column(name = "paciente_id")
+//    private Long pacienteId;
+//
+//    @Column(name = "dentista_id")
+//    private Long dentistaId;
+//
+//    @Column(name = "servico_id")
+//    private Long servicoId;
 
-    @Column(name = "paciente_id")
-    private Long pacienteId;
+    @ManyToOne
+    @JoinColumn(name = "paciente_id")
+    private Paciente paciente;
 
-    @Column(name = "dentista_id")
-    private Long dentistaId;
+    @ManyToOne
+    @JoinColumn(name = "servico_id")
+    private Servicos servico;
 
-    @Column(name = "servico_id")
-    private Long servicoId;
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
+    private Empresa empresa;
+
+    @ManyToOne
+    @JoinColumn(name = "dentista_id")
+    private Dentista dentista;
 
     @Column(name = "data_hora")
     private String dataHora;
 
     @Column(name = "observacoes")
     private String observacoes;
+
+    @Column(name = "status")
+    private String status;
 }

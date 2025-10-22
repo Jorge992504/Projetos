@@ -1,7 +1,9 @@
 package jabpDev.dente.api.controllers;
 
 
+import jabpDev.dente.api.dto.request.BuscaAgendamentosDtoRequest;
 import jabpDev.dente.api.dto.request.NovoAgendamentoDtoRequest;
+import jabpDev.dente.api.dto.response.AgendamentoPorPacienteResponse;
 import jabpDev.dente.api.dto.response.BuscaAgendamentosDtoResponse;
 import jabpDev.dente.api.dto.response.ServicosDentistasDtoResponse;
 import jabpDev.dente.api.services.AgendamentoService;
@@ -31,5 +33,10 @@ public class AgendamentoController {
     @GetMapping("/busca/todos")
     public List<BuscaAgendamentosDtoResponse> buscaAgendamentos() {
         return agendamentoService.buscaAgendamentos();
+    }
+
+    @PostMapping("/busca/dados-paciente")
+    public List<AgendamentoPorPacienteResponse> buscaAgendamentosPorDadosPaciente(@RequestBody List<BuscaAgendamentosDtoRequest> body) {
+        return agendamentoService.buscaAgendamentosPorDadosPaciente(body);
     }
 }
