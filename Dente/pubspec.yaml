@@ -35,6 +35,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   dropdown_button2: ^2.3.9
+  file_picker: ^10.3.3
 
 dev_dependencies:
   flutter_test:

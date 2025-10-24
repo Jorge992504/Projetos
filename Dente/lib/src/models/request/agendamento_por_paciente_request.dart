@@ -23,7 +23,8 @@ class AgendamentoPorPacienteRequest {
     );
   }
 
-  String toJson() => json.encode(toMap());
+  // String toJson() => json.encode(toMap());
+  Map<String, dynamic> toJson() => toMap();
 
   factory AgendamentoPorPacienteRequest.fromJson(String source) =>
       AgendamentoPorPacienteRequest.fromMap(

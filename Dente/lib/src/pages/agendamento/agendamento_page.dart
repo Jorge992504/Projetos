@@ -41,17 +41,25 @@ class _AgendamentoPageState
   int idDentista = 0;
   int idServico = 0;
 
+  String data = '';
+
   List<BuscaServicosAgendamentoResponse> servicosDisponiveis = [];
   List<BuscaDentistasAgendamentoResponse> dentistasDisponiveis = [];
 
   @override
   void initState() {
     super.initState();
-    dataController.text = DateFormat('dd/MM/yyyy', 'pt_BR').format(dataAtual);
+
     horaController.text = DateFormat('HH:mm').format(dataAtual);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.buscaDentistasServicos();
+      final route = ModalRoute.of(context);
+      final arguments =
+          (route!.settings.arguments ?? <String, dynamic>{}) as Map;
+      setState(() {
+        data = arguments['data'];
+      });
     });
   }
 
@@ -69,6 +77,9 @@ class _AgendamentoPageState
 
   @override
   Widget build(BuildContext context) {
+    dataController.text = data == ''
+        ? DateFormat('dd/MM/yyyy', 'pt_BR').format(dataAtual)
+        : data;
     return Scaffold(
       appBar: AppBar(title: const Text('Novo Agendamento')),
       body: BlocConsumer<AgendamentoController, AgendamentoState>(

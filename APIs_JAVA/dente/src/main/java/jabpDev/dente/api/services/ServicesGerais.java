@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -133,6 +134,15 @@ public class ServicesGerais {
     }
 
     public void enviarEmailConfirmacaoAgendamento(Paciente paciente, Dentista dentista, Agendamento agendamento, String emailClinica) {
+        String dataHoraStr = agendamento.getDataHora(); // exemplo: "24/10/2025 - 13:57"
+
+        DateTimeFormatter parser = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm");
+        LocalDateTime dataHora = LocalDateTime.parse(agendamento.getDataHora(), parser);
+
+        String dataFormatada = dataHora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        String horaFormatada = dataHora.format(DateTimeFormatter.ofPattern("HH:mm"));
+
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(paciente.getEmail());
         message.setFrom(emailClinica);
@@ -153,8 +163,9 @@ public class ServicesGerais {
         Equipe Dente Saúde 💙
         """,
         paciente.getNome(),
-        new SimpleDateFormat("dd/MM/yyyy").format(agendamento.getDataHora()),
-        new SimpleDateFormat("HH:mm").format(agendamento.getDataHora())
+        dataFormatada,
+        horaFormatada,
+        dentista.getNome()
         );
         message.setText(textoPaciente);
         javaMailSender.send(message);
@@ -178,8 +189,10 @@ public class ServicesGerais {
         Atenciosamente,
         Equipe Dente Saúde 💙
         """,
-        new SimpleDateFormat("dd/MM/yyyy").format(agendamento.getDataHora()),
-        new SimpleDateFormat("HH:mm").format(agendamento.getDataHora())
+                dentista.getNome(),
+                dataFormatada,
+                horaFormatada,
+                paciente.getNome()
         );
 
         message.setText(textoDentista);

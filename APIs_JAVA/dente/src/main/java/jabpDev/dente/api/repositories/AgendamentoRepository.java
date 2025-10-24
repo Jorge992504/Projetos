@@ -5,9 +5,11 @@ import jabpDev.dente.api.dto.response.AgendamentosDtoResponse;
 import jabpDev.dente.api.entitys.Agendamento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -15,26 +17,29 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
     List<AgendamentosDtoResponse> findByEmpresaId(Long empresaId);
 
 
-    @Query("""
-        SELECT new com.jorge.ws.model.response.AgendamentoPorPacienteResponse(
-            a.id,
-            a.status,
-            p.nome,
-            s.nome,
-            a.dataHora
-        )
-        FROM Agendamento a
-        JOIN a.paciente p
-        JOIN a.servico s
-        WHERE a.empresa.id = :empresaId
-          AND a.id IN :idsAgendamentos
-          AND a.dataHora LIKE CONCAT(:dataFormatada, '%')
-    """)
+    @Query(
+            value = """
+                    SELECT\s
+                        a.id,
+                        a.status,
+                        p.nome AS nome_paciente,
+                        s.nome AS nome_servico,
+                        a.data_hora,
+                        a.observacoes
+                    FROM agendamento a
+                    JOIN paciente p ON p.id = a.paciente_id
+                    JOIN servicos s ON s.id = a.servico_id
+                    WHERE a.empresa_id = :empresaId
+                      AND a.id IN (:ids)
+                      AND a.data_hora LIKE :data%;
+        """,
+            nativeQuery = true
+    )
     List<AgendamentoPorPacienteResponse> findByEmpresaIdAndDataAndIds(
-             Long empresaId,
-             String dataFormatada,
-             List<Long> idsAgendamentos
+            @Param("empresaId") Long empresaId,
+            @Param("ids") List<Long> ids,
+            @Param("data") String data
     );
 
-
+    Optional<Agendamento> findByIdAndEmpresaId(Long id, Long empresaId);
 }

@@ -13,7 +13,11 @@ class CustomCard extends StatelessWidget {
   final String? servico;
   final String? horario;
   final String? status;
-  final Function()? onPressed;
+  final Function()? onPressedCancelado;
+  final Function()? onPressedConfirmado;
+  final Function()? onPressedHisotorico;
+  final Function()? onPressedHisotoricoPaciente;
+  final bool? isAction;
 
   const CustomCard({
     super.key,
@@ -27,7 +31,11 @@ class CustomCard extends StatelessWidget {
     this.servico,
     this.horario,
     this.status,
-    this.onPressed,
+    this.onPressedCancelado,
+    this.onPressedConfirmado,
+    this.onPressedHisotorico,
+    this.onPressedHisotoricoPaciente,
+    this.isAction,
   });
 
   @override
@@ -48,6 +56,7 @@ class CustomCard extends StatelessWidget {
           padding: const EdgeInsets.all(15.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
+
             children: [
               Text(
                 nome ?? "",
@@ -70,31 +79,28 @@ class CustomCard extends StatelessWidget {
                   fontSize: 14,
                 ),
               ),
-              TextButton(
-                onPressed: onPressed,
 
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: BorderSide(
-                        color: status == 'Pendente'
-                            ? ColorsConstants.buttonColor
-                            : status == 'Confirmado'
-                            ? Colors.green
-                            : status == 'Cancelado'
-                            ? ColorsConstants.errorColor
-                            : ColorsConstants.focusColor,
-                      ),
-                    ),
+              Container(
+                alignment: Alignment.center,
+                width: 80,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: status == 'Pendente'
+                        ? ColorsConstants.buttonColor
+                        : status == 'Realizado'
+                        ? Colors.green
+                        : status == 'Cancelado'
+                        ? ColorsConstants.errorColor
+                        : ColorsConstants.focusColor,
                   ),
+                  borderRadius: BorderRadius.circular(18.0),
                 ),
                 child: Text(
                   status ?? "",
                   style: context.cusotomFontes.textBoldItalic.copyWith(
                     color: status == 'Pendente'
                         ? ColorsConstants.buttonColor
-                        : status == 'Confirmado'
+                        : status == 'Realizado'
                         ? Colors.green
                         : status == 'Cancelado'
                         ? ColorsConstants.errorColor
@@ -103,6 +109,111 @@ class CustomCard extends StatelessWidget {
                   ),
                 ),
               ),
+              Row(
+                children: [
+                  Visibility(
+                    visible: status == 'Pendente',
+                    child: IconButton(
+                      tooltip: 'Confirmar consulta',
+                      padding: EdgeInsets.zero, // remove o padding padrão
+                      constraints: BoxConstraints(),
+                      onPressed: onPressedConfirmado,
+                      style: ButtonStyle(
+                        overlayColor: WidgetStateProperty.resolveWith<Color?>((
+                          Set<WidgetState> states,
+                        ) {
+                          if (states.contains(WidgetState.hovered)) {
+                            return Colors.green.withOpacity(
+                              0.3,
+                            ); // cor de hover
+                          }
+                          return null; // cor padrão
+                        }),
+                      ),
+                      icon: Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
+                        size: 25,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 25),
+                  Visibility(
+                    visible: status == 'Pendente',
+                    child: IconButton(
+                      tooltip: 'Cancelar agendamento',
+                      padding: EdgeInsets.zero, // remove o padding padrão
+                      constraints: BoxConstraints(),
+                      onPressed: onPressedCancelado,
+                      style: ButtonStyle(
+                        overlayColor: WidgetStateProperty.resolveWith<Color?>((
+                          Set<WidgetState> states,
+                        ) {
+                          if (states.contains(WidgetState.hovered)) {
+                            return ColorsConstants.errorColor.withOpacity(
+                              0.3,
+                            ); // cor de hover
+                          }
+                          return null; // cor padrão
+                        }),
+                      ),
+                      icon: Icon(
+                        Icons.cancel,
+                        color: ColorsConstants.errorColor,
+                        size: 25,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 25),
+                  IconButton(
+                    tooltip: 'Historico de consultas',
+                    padding: EdgeInsets.zero, // remove o padding padrão
+                    constraints: BoxConstraints(),
+                    onPressed: onPressedHisotoricoPaciente,
+                    style: ButtonStyle(
+                      overlayColor: WidgetStateProperty.resolveWith<Color?>((
+                        Set<WidgetState> states,
+                      ) {
+                        if (states.contains(WidgetState.hovered)) {
+                          return ColorsConstants.appBarColor.withOpacity(
+                            0.3,
+                          ); // cor de hover
+                        }
+                        return null; // cor padrão
+                      }),
+                    ),
+                    icon: Icon(
+                      Icons.list_alt_outlined,
+                      color: ColorsConstants.appBarColor,
+                      size: 25,
+                    ),
+                  ),
+                  const SizedBox(width: 25),
+                  IconButton(
+                    tooltip: 'Historico do paciente',
+                    padding: EdgeInsets.zero, // remove o padding padrão
+                    constraints: BoxConstraints(),
+                    onPressed: onPressedHisotorico,
+                    style: ButtonStyle(
+                      overlayColor: WidgetStateProperty.resolveWith<Color?>((
+                        Set<WidgetState> states,
+                      ) {
+                        if (states.contains(WidgetState.hovered)) {
+                          return ColorsConstants.appBarColor.withOpacity(
+                            0.3,
+                          ); // cor de hover
+                        }
+                        return null; // cor padrão
+                      }),
+                    ),
+                    icon: Icon(
+                      Icons.filter_list_sharp,
+                      color: ColorsConstants.appBarColor,
+                      size: 25,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -110,3 +221,48 @@ class CustomCard extends StatelessWidget {
     );
   }
 }
+
+
+// TextButton(
+              //   onPressed: onPressed,
+
+              //   style: ButtonStyle(
+              //     overlayColor: WidgetStateProperty.resolveWith<Color?>((
+              //       Set<WidgetState> states,
+              //     ) {
+              //       if (states.contains(WidgetState.hovered)) {
+              //         return ColorsConstants.appBarColor.withOpacity(
+              //           0.3,
+              //         ); // cor de hover
+              //       }
+              //       return null; // cor padrão
+              //     }),
+              //     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+              //       RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(18.0),
+              //         side: BorderSide(
+              //           color: status == 'Pendente'
+              //               ? ColorsConstants.buttonColor
+              //               : status == 'Confirmado'
+              //               ? Colors.green
+              //               : status == 'Cancelado'
+              //               ? ColorsConstants.errorColor
+              //               : ColorsConstants.focusColor,
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              //   child: Text(
+              //     status ?? "",
+              //     style: context.cusotomFontes.textBoldItalic.copyWith(
+              //       color: status == 'Pendente'
+              //           ? ColorsConstants.buttonColor
+              //           : status == 'Confirmado'
+              //           ? Colors.green
+              //           : status == 'Cancelado'
+              //           ? ColorsConstants.errorColor
+              //           : ColorsConstants.focusColor,
+              //       fontSize: 14,
+              //     ),
+              //   ),
+              // ),

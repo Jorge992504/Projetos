@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -94,6 +95,7 @@ public class AgendamentoService {
                 .dentista(dentista.get())
                 .dataHora(body.dataHora())
                 .observacoes(body.observacoes())
+                .status("Pendente")
                 .build();
 
         Agendamento response =  agendamentoRepository.save(agendamento);
@@ -128,7 +130,7 @@ public class AgendamentoService {
                             localDate,
                             a.id()
                     );
-                    
+
                 }).collect(Collectors.toList());
         return response;
     }
@@ -154,8 +156,8 @@ public class AgendamentoService {
 
         List<AgendamentoPorPacienteResponse> agendamentos = agendamentoRepository.findByEmpresaIdAndDataAndIds(
                 empresa.get().getId(),
-                dataFormatada,
-                idsAgendamentos
+                idsAgendamentos,
+                dataFormatada
         );
 
         List<AgendamentoPorPacienteResponse> response = agendamentos.stream()
@@ -165,9 +167,46 @@ public class AgendamentoService {
                             a.status(),
                             a.pacienteNome(),
                             a.servico(),
-                            a.datahorario()
+                            a.datahorario(),
+                            a.observacoes()
                     );
                 }).collect(Collectors.toList());
         return response;
+    }
+
+    public void marcaAgendamentoComoRealizado(Long agendamentoId){
+        String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
+        if (empresa.isEmpty()){
+            throw new ErrorException("Sem permissão para cadastrar dentista.\nRealizar login novamente");
+        }
+
+        Optional<Agendamento> agendamento = agendamentoRepository.findByIdAndEmpresaId(agendamentoId, empresa.get().getId());
+        if (agendamento.isPresent()){
+            Agendamento agendamentoNew = agendamento.get();
+            agendamentoNew.setStatus("Realizado");
+            Agendamento agendamentoSet = agendamentoRepository.save(agendamentoNew);
+            if (!Objects.equals(agendamentoSet.getStatus(), "Realizado")){
+                throw new ErrorException("Erro ao marcar agendamento como realizado, tentar novamento");
+            }
+        }
+    }
+
+    public void marcaAgendamentoComoCancelado(Long agendamentoId){
+        String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
+        if (empresa.isEmpty()){
+            throw new ErrorException("Sem permissão para cadastrar dentista.\nRealizar login novamente");
+        }
+
+        Optional<Agendamento> agendamento = agendamentoRepository.findByIdAndEmpresaId(agendamentoId, empresa.get().getId());
+        if (agendamento.isPresent()){
+            Agendamento agendamentoNew = agendamento.get();
+            agendamentoNew.setStatus("Cancelado");
+            Agendamento agendamentoSet = agendamentoRepository.save(agendamentoNew);
+            if (!Objects.equals(agendamentoSet.getStatus(), "Cancelado")){
+                throw new ErrorException("Erro ao cancelar agenadamento, tentar novamento");
+            }
+        }
     }
 }

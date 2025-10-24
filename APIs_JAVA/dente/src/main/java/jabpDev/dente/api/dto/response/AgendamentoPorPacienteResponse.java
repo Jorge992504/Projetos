@@ -5,6 +5,7 @@ public record AgendamentoPorPacienteResponse(
         String status,
         String pacienteNome,
         String servico,
-        String datahorario
+        String datahorario,
+        String observacoes
 ) {
 }

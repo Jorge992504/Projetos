@@ -39,4 +39,14 @@ public class AgendamentoController {
     public List<AgendamentoPorPacienteResponse> buscaAgendamentosPorDadosPaciente(@RequestBody List<BuscaAgendamentosDtoRequest> body) {
         return agendamentoService.buscaAgendamentosPorDadosPaciente(body);
     }
+
+    @GetMapping("/marca/realizado")
+    public void marcaAgendamentoComoRealizado(@RequestParam Long agendamentoId){
+        agendamentoService.marcaAgendamentoComoRealizado(agendamentoId);
+    }
+
+    @GetMapping("/marca/cancelado")
+    public void marcaAgendamentoComoCancelado(@RequestParam Long agendamentoId){
+        agendamentoService.marcaAgendamentoComoCancelado(agendamentoId);
+    }
 }

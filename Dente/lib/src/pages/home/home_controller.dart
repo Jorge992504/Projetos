@@ -49,4 +49,30 @@ class HomeController extends Cubit<HomeState> {
       return [];
     }
   }
+
+  Future<void> marcaAgendamentoComoRealizado(int agendamentoId) async {
+    try {
+      emit(state.copyWith(status: HomeStatus.loading));
+
+      await _repository.marcaAgendamentoComoRealizado(agendamentoId);
+
+      emit(state.copyWith(status: HomeStatus.success, errorMessage: null));
+    } on RepositoryException catch (e, s) {
+      log('$s');
+      emit(state.copyWith(status: HomeStatus.failure, errorMessage: e.message));
+    }
+  }
+
+  Future<void> marcaAgendamentoComoCancelado(int agendamentoId) async {
+    try {
+      emit(state.copyWith(status: HomeStatus.loading));
+
+      await _repository.marcaAgendamentoComoCancelado(agendamentoId);
+
+      emit(state.copyWith(status: HomeStatus.success, errorMessage: null));
+    } on RepositoryException catch (e, s) {
+      log('$s');
+      emit(state.copyWith(status: HomeStatus.failure, errorMessage: e.message));
+    }
+  }
 }

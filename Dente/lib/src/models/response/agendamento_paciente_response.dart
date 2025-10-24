@@ -8,6 +8,7 @@ class AgendamentoPacienteResponse {
   String? pacienteNome;
   String? servico;
   String? datahorario;
+  String? observacoes;
   AgendamentoPacienteResponse({
     this.pacienteId,
     this.agendamentoId,
@@ -15,6 +16,7 @@ class AgendamentoPacienteResponse {
     this.pacienteNome,
     this.servico,
     this.datahorario,
+    this.observacoes,
   });
 
   AgendamentoPacienteResponse copyWith({
@@ -24,6 +26,7 @@ class AgendamentoPacienteResponse {
     String? pacienteNome,
     String? servico,
     String? datahorario,
+    String? observacoes,
   }) {
     return AgendamentoPacienteResponse(
       pacienteId: pacienteId ?? this.pacienteId,
@@ -32,6 +35,7 @@ class AgendamentoPacienteResponse {
       pacienteNome: pacienteNome ?? this.pacienteNome,
       servico: servico ?? this.servico,
       datahorario: datahorario ?? this.datahorario,
+      observacoes: observacoes ?? this.observacoes,
     );
   }
 
@@ -43,6 +47,7 @@ class AgendamentoPacienteResponse {
       'pacienteNome': pacienteNome,
       'servico': servico,
       'datahorario': datahorario,
+      'observacoes': observacoes,
     };
   }
 
@@ -54,6 +59,7 @@ class AgendamentoPacienteResponse {
       pacienteNome: map['pacienteNome'] ?? "",
       servico: map['servico'] ?? "",
       datahorario: map['datahorario'] ?? "",
+      observacoes: map['observacoes'] ?? "",
     );
   }
 
@@ -66,7 +72,7 @@ class AgendamentoPacienteResponse {
 
   @override
   String toString() {
-    return 'AgendamentoPacienteResponse(pacienteId: $pacienteId, agendamentoId: $agendamentoId, status: $status, pacienteNome: $pacienteNome, servico: $servico, datahorario: $datahorario)';
+    return 'AgendamentoPacienteResponse(pacienteId: $pacienteId, agendamentoId: $agendamentoId, status: $status, pacienteNome: $pacienteNome, servico: $servico, datahorario: $datahorario, observacoes: $observacoes)';
   }
 
   @override
@@ -78,7 +84,8 @@ class AgendamentoPacienteResponse {
         other.status == status &&
         other.pacienteNome == pacienteNome &&
         other.servico == servico &&
-        other.datahorario == datahorario;
+        other.datahorario == datahorario &&
+        other.observacoes == observacoes;
   }
 
   @override
@@ -88,6 +95,7 @@ class AgendamentoPacienteResponse {
         status.hashCode ^
         pacienteNome.hashCode ^
         servico.hashCode ^
-        datahorario.hashCode;
+        datahorario.hashCode ^
+        observacoes.hashCode;
   }
 }

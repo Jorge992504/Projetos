@@ -8,6 +8,7 @@ import 'package:dente/core/ui/style/fontes_letras.dart';
 import 'package:dente/core/ui/style/size_extension.dart';
 import 'package:dente/src/models/empresa_model.dart';
 import 'package:dente/src/models/request/agendamento_por_paciente_request.dart';
+import 'package:dente/src/models/response/agendamento_paciente_response.dart';
 import 'package:dente/src/models/response/agendamentos_model_response.dart';
 import 'package:dente/src/pages/home/home_controller.dart';
 import 'package:dente/src/pages/home/home_state.dart';
@@ -31,6 +32,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
   Map<DateTime, List<AgendamentosModelResponse>>? agendamentosPorData = {};
   List<AgendamentosModelResponse> agendamentos = [];
   List<AgendamentosModelResponse> agendamentosSelecionados = [];
+  List<AgendamentoPacienteResponse> agendamentosDetalhes = [];
 
   int? diaSelecionado = 0;
   bool isSelecionado = false;
@@ -107,7 +109,16 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                           onPressed: () {
                             Navigator.of(
                               context,
-                            ).pushNamed(Rotas.editarEmpresa);
+                            ).pushNamed(Rotas.editarEmpresa).then((_) {
+                              // Aqui você faz o refresh da Home
+                              setState(() {
+                                // Chame sua função de recarregar os dados
+                                Provider.of(
+                                  context,
+                                  listen: false,
+                                ).authProvider.carregarDadosEmpresa();
+                              });
+                            });
                           },
                           child: Text(
                             "Editar",
@@ -190,7 +201,15 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                       style: context.cusotomFontes.textBoldItalic,
                     ),
                     onTap: () async {
-                      Navigator.of(context).pushNamed(Rotas.agendamento);
+                      Navigator.of(context).pushNamed(Rotas.agendamento).then((
+                        _,
+                      ) {
+                        // Aqui você faz o refresh da Home
+                        setState(() {
+                          // Chame sua função de recarregar os dados
+                          controller.buscaAgendamentos();
+                        });
+                      });
                     },
                   ),
                   ListTile(
@@ -228,6 +247,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
             loaded: hideLoader,
             failure: () {
               showError(state.errorMessage ?? 'INTERNAL_ERROR');
+
               hideLoader();
             },
             success: () async {
@@ -329,9 +349,37 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                           ),
                                         );
                                       }
-                                      log('Requisição: $request');
-                                      await controller
-                                          .buscarDadosDosAgendamentos(request);
+                                      if (request.isNotEmpty) {
+                                        agendamentosDetalhes = await controller
+                                            .buscarDadosDosAgendamentos(
+                                              request,
+                                            );
+                                      } else {
+                                        agendamentosDetalhes = [];
+                                      }
+                                    },
+                                    onDoubleTap: () {
+                                      String data =
+                                          '$dia/${mesAtual.month}/${mesAtual.year}';
+                                      log('double tap $data');
+                                      if (dia < mesAtual.day) {
+                                        showInfo(
+                                          "Não pode realizar agendametos em datas passadas.",
+                                        );
+                                        return;
+                                      }
+                                      Navigator.of(context)
+                                          .pushNamed(
+                                            Rotas.agendamento,
+                                            arguments: {'data': data},
+                                          )
+                                          .then((_) {
+                                            // Aqui você faz o refresh da Home
+                                            setState(() {
+                                              // Chame sua função de recarregar os dados
+                                              controller.buscaAgendamentos();
+                                            });
+                                          });
                                     },
                                     child: CircleAvatar(
                                       maxRadius: 20,
@@ -375,17 +423,88 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                         ),
                       ),
                     ),
-                    CustomCard(
-                      width: 1000,
-                      height: 100,
-                      padding: EdgeInsets.all(20),
-                      nome: 'Nome',
-                      servico: 'Serviço',
-                      horario: 'Horário',
-                      status: 'Confirmado',
-                      onPressed: () {
-                        log('clicou');
-                      },
+                    SizedBox(
+                      height: 200,
+                      child: ListView.builder(
+                        itemCount: agendamentosDetalhes.length,
+                        itemBuilder: (context, index) {
+                          AgendamentoPacienteResponse agendamentoDetalhe =
+                              agendamentosDetalhes[index];
+
+                          return Tooltip(
+                            message:
+                                agendamentoDetalhe.status != 'Cancelado' &&
+                                    agendamentoDetalhe.status != 'Realizado'
+                                ? 'Começar o atendimento'
+                                : '',
+                            child: InkWell(
+                              overlayColor:
+                                  agendamentoDetalhe.status != 'Cancelado' &&
+                                      agendamentoDetalhe.status != 'Realizado'
+                                  ? WidgetStateProperty.all(
+                                      ColorsConstants.focusColor.withOpacity(
+                                        0.2,
+                                      ),
+                                    )
+                                  : WidgetStateProperty.all(Colors.transparent),
+
+                              onTap: () {
+                                if (agendamentoDetalhe.status != 'Cancelado' &&
+                                    agendamentoDetalhe.status != 'Realizado') {
+                                  Navigator.of(context).pushNamed(
+                                    Rotas.atendimento,
+                                    arguments: {
+                                      'agendamentoDetalhe': agendamentoDetalhe,
+                                    },
+                                  );
+                                }
+                              },
+                              child: CustomCard(
+                                width: 1000,
+                                height: 80,
+                                padding: EdgeInsets.only(
+                                  top: 20,
+                                  left: 25,
+                                  right: 25,
+                                ),
+                                nome: agendamentoDetalhe.pacienteNome,
+                                servico: agendamentoDetalhe.servico,
+                                horario: agendamentoDetalhe.datahorario,
+
+                                onPressedCancelado: () async {
+                                  await controller
+                                      .marcaAgendamentoComoCancelado(
+                                        agendamentoDetalhe.agendamentoId!,
+                                      );
+                                  await refreshPage(agendamentosSelecionados);
+                                  setState(() {});
+                                },
+                                onPressedConfirmado: () async {
+                                  await controller
+                                      .marcaAgendamentoComoRealizado(
+                                        agendamentoDetalhe.agendamentoId!,
+                                      );
+                                  await refreshPage(agendamentosSelecionados);
+                                  setState(() {});
+                                },
+                                onPressedHisotorico: () {
+                                  // Navigator.of(context).pushNamed(
+                                  //   Rotas.historicoConsultas,
+                                  //   arguments: agendamentoDetalhe.pacienteId,
+                                  // );
+                                },
+                                onPressedHisotoricoPaciente: () {
+                                  Navigator.of(context).pushNamed(
+                                    Rotas.historicoConsultas,
+                                    arguments: agendamentoDetalhe.pacienteId,
+                                  );
+                                },
+                                status: agendamentoDetalhe.status,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -415,5 +534,26 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
       mapa.putIfAbsent(dataNormalizada, () => []).add(ag);
     }
     return mapa;
+  }
+
+  Future<void> refreshPage(
+    List<AgendamentosModelResponse> agendamentosDia,
+  ) async {
+    List<AgendamentoPorPacienteRequest> request = [];
+    for (var agendamento in agendamentosDia) {
+      request.add(
+        AgendamentoPorPacienteRequest(
+          data: DateFormat('yyyy-MM-dd').format(agendamento.data!),
+          id: agendamento.id,
+        ),
+      );
+    }
+    if (request.isNotEmpty) {
+      agendamentosDetalhes = await controller.buscarDadosDosAgendamentos(
+        request,
+      );
+    } else {
+      agendamentosDetalhes = [];
+    }
   }
 }

@@ -29,7 +29,7 @@ class HomeRepository {
     try {
       final response = await restClient.auth.post(
         "/agendamentos/busca/dados-paciente",
-        data: agendamentosDoDia.map((e) => e.toJson()),
+        data: agendamentosDoDia.map((e) => e.toJson()).toList(),
       );
 
       return response.data
@@ -39,6 +39,30 @@ class HomeRepository {
           .toList();
     } catch (e, s) {
       log('Erro ao buscar dados', error: e, stackTrace: s);
+      throw CreateException.dioException(e);
+    }
+  }
+
+  Future<void> marcaAgendamentoComoRealizado(int agendamentoId) async {
+    try {
+      await restClient.auth.get(
+        "/agendamentos/marca/realizado",
+        queryParameters: {"agendamentoId": agendamentoId},
+      );
+    } catch (e, s) {
+      log('Erro ao marcar agendamento como realizado', error: e, stackTrace: s);
+      throw CreateException.dioException(e);
+    }
+  }
+
+  Future<void> marcaAgendamentoComoCancelado(int agendamentoId) async {
+    try {
+      await restClient.auth.get(
+        "/agendamentos/marca/cancelado",
+        queryParameters: {"agendamentoId": agendamentoId},
+      );
+    } catch (e, s) {
+      log('Erro ao marcar agendamento como cancelado', error: e, stackTrace: s);
       throw CreateException.dioException(e);
     }
   }
