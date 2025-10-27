@@ -58,7 +58,7 @@ public class ServicesGerais {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
-            throw new ErrorException("Token expirado");
+            throw new ErrorException("Token expirado\nRealizar login novamente");
         } catch (JwtException e) {
             throw new ErrorException("Token inválido");
         }

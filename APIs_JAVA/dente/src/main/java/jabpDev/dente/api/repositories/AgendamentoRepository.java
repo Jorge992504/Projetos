@@ -2,6 +2,7 @@ package jabpDev.dente.api.repositories;
 
 import jabpDev.dente.api.dto.response.AgendamentoPorPacienteResponse;
 import jabpDev.dente.api.dto.response.AgendamentosDtoResponse;
+import jabpDev.dente.api.dto.response.HistoricoAgendamentosResponse;
 import jabpDev.dente.api.entitys.Agendamento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,7 +26,8 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
                         p.nome AS nome_paciente,
                         s.nome AS nome_servico,
                         a.data_hora,
-                        a.observacoes
+                        a.observacoes,
+                        a.paciente_id
                     FROM agendamento a
                     JOIN paciente p ON p.id = a.paciente_id
                     JOIN servicos s ON s.id = a.servico_id
@@ -41,5 +43,26 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
             @Param("data") String data
     );
 
+
     Optional<Agendamento> findByIdAndEmpresaId(Long id, Long empresaId);
+
+
+    @Query(
+            value = """
+                    SELECT
+                    a.data_hora,
+                    p.nome AS nome_paciente,
+                    a.status,
+                    s.nome AS servico,
+                    at.atendimento
+                    FROM agendamento a
+                    LEFT JOIN paciente p ON p.id = a.paciente_id
+                    LEFT JOIN servicos s ON s.id = a.servico_id
+                    LEFT JOIN atendimento at ON a.id = at.agendamento_id
+                    WHERE a.empresa_id = :empresaId
+                      AND a.paciente_id = :pacienteId;
+        """,
+            nativeQuery = true
+    )
+    List<HistoricoAgendamentosResponse> findByPacienteIdAndEmpresaId(Long pacienteId, Long empresaId);
 }

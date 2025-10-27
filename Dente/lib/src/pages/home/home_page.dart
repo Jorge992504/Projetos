@@ -29,10 +29,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends BaseState<HomePage, HomeController> {
   late DateTime mesAtual;
-  Map<DateTime, List<AgendamentosModelResponse>>? agendamentosPorData = {};
+  Map<String, List<AgendamentosModelResponse>>? agendamentosPorData = {};
   List<AgendamentosModelResponse> agendamentos = [];
   List<AgendamentosModelResponse> agendamentosSelecionados = [];
   List<AgendamentoPacienteResponse> agendamentosDetalhes = [];
+  List<AgendamentosModelResponse> agendamentosDiaRefresh = [];
+  List<AgendamentosModelResponse> agendamentosDia = [];
 
   int? diaSelecionado = 0;
   bool isSelecionado = false;
@@ -41,8 +43,30 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
   void initState() {
     super.initState();
     mesAtual = DateTime.now();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.buscaAgendamentos();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // controller.buscaAgendamentos();
+      // agendamentosPorData = agruparPorData();
+      await refreshAgendamentos();
+
+      // if (controller.state.agendamentos!.isNotEmpty) {
+      //   List<AgendamentoPorPacienteRequest> request = [];
+
+      //   for (var agendamento in agendamentosDia) {
+      //     request.add(
+      //       AgendamentoPorPacienteRequest(
+      //         data: DateFormat('yyyy-MM-dd').format(agendamento.data!),
+      //         id: agendamento.id,
+      //       ),
+      //     );
+      //   }
+      //   if (request.isNotEmpty) {
+      //     agendamentosDetalhes = await controller.buscarDadosDosAgendamentos(
+      //       request,
+      //     );
+      //   } else {
+      //     agendamentosDetalhes = [];
+      //   }
+      // }
     });
   }
 
@@ -54,6 +78,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
     final fimMes = DateTime(mesAtual.year, mesAtual.month + 1, 0);
     final diasMes = fimMes.day;
     final totalDias = diasMes + primeiroDiaSemana;
+
     EmpresaModel empresaModel = Provider.of<AuthProvider>(
       context,
       listen: false,
@@ -258,8 +283,6 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
           );
         },
         builder: (context, state) {
-          agendamentos = state.agendamentos ?? [];
-          agendamentosPorData = agruparPorData();
           return LayoutBuilder(
             builder: (context, tamanho) {
               return SingleChildScrollView(
@@ -314,14 +337,15 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                               mesAtual.month,
                               dia,
                             );
+                            final chave = DateFormat(
+                              'yyyy-MM-dd',
+                            ).format(dataAtual);
+                            agendamentosDia = agendamentosPorData![chave] ?? [];
 
                             final isHoje =
                                 dataAtual.day == agora.day &&
                                 dataAtual.month == agora.month &&
                                 dataAtual.year == agora.year;
-
-                            final agendamentosDia =
-                                agendamentosPorData![dataAtual] ?? [];
 
                             isSelecionado = dia == diaSelecionado;
 
@@ -331,14 +355,31 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: GestureDetector(
                                     onTap: () async {
+                                      final dataAtual = DateTime(
+                                        mesAtual.year,
+                                        mesAtual.month,
+                                        dia,
+                                      );
+                                      final chave = DateFormat(
+                                        'yyyy-MM-dd',
+                                      ).format(dataAtual);
+
+                                      // Pega os agendamentos do dia
+                                      agendamentosDia =
+                                          agendamentosPorData![chave] ?? [];
+                                      log('click ${agendamentosDia.length}');
                                       setState(() {
                                         diaSelecionado = dia;
                                         agendamentosSelecionados =
                                             agendamentosDia; // apenas daquele dia
+                                        agendamentosDiaRefresh =
+                                            agendamentosDia;
+                                        log('set');
                                       });
 
                                       List<AgendamentoPorPacienteRequest>
                                       request = [];
+
                                       for (var agendamento in agendamentosDia) {
                                         request.add(
                                           AgendamentoPorPacienteRequest(
@@ -423,8 +464,10 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    Container(
+                      width: 1000,
                       height: 200,
+                      padding: EdgeInsets.only(top: 20, left: 20, right: 20),
                       child: ListView.builder(
                         itemCount: agendamentosDetalhes.length,
                         itemBuilder: (context, index) {
@@ -451,22 +494,52 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                               onTap: () {
                                 if (agendamentoDetalhe.status != 'Cancelado' &&
                                     agendamentoDetalhe.status != 'Realizado') {
-                                  Navigator.of(context).pushNamed(
-                                    Rotas.atendimento,
-                                    arguments: {
-                                      'agendamentoDetalhe': agendamentoDetalhe,
-                                    },
-                                  );
+                                  // Navigator.of(context).pushNamed(
+                                  //   Rotas.atendimento,
+                                  //   arguments: {
+                                  //     'agendamentoDetalhe': agendamentoDetalhe,
+                                  //   },
+                                  // );
+
+                                  Navigator.of(context)
+                                      .pushNamed(
+                                        Rotas.atendimento,
+                                        arguments: {
+                                          'agendamentoDetalhe':
+                                              agendamentoDetalhe,
+                                        },
+                                      )
+                                      .then((_) {
+                                        List<AgendamentoPorPacienteRequest>
+                                        request = [];
+                                        for (var agendamento
+                                            in agendamentosDiaRefresh) {
+                                          request.add(
+                                            AgendamentoPorPacienteRequest(
+                                              data: DateFormat(
+                                                'yyyy-MM-dd',
+                                              ).format(agendamento.data!),
+                                              id: agendamento.id,
+                                            ),
+                                          );
+                                        }
+                                        if (request.isNotEmpty) {
+                                          setState(() async {
+                                            agendamentosDetalhes =
+                                                await controller
+                                                    .buscarDadosDosAgendamentos(
+                                                      request,
+                                                    );
+                                          });
+                                        } else {
+                                          agendamentosDetalhes = [];
+                                        }
+                                      });
                                 }
                               },
                               child: CustomCard(
-                                width: 1000,
-                                height: 80,
-                                padding: EdgeInsets.only(
-                                  top: 20,
-                                  left: 25,
-                                  right: 25,
-                                ),
+                                // width: 1000,
+                                // height: 80,
                                 nome: agendamentoDetalhe.pacienteNome,
                                 servico: agendamentoDetalhe.servico,
                                 horario: agendamentoDetalhe.datahorario,
@@ -496,7 +569,10 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                 onPressedHisotoricoPaciente: () {
                                   Navigator.of(context).pushNamed(
                                     Rotas.historicoConsultas,
-                                    arguments: agendamentoDetalhe.pacienteId,
+                                    arguments: {
+                                      "agendamentoDetalhe":
+                                          agendamentoDetalhe.pacienteId,
+                                    },
                                   );
                                 },
                                 status: agendamentoDetalhe.status,
@@ -523,15 +599,23 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
   }
 
   //! Agrupa os agendamentos por data (sem considerar a hora)
-  Map<DateTime, List<AgendamentosModelResponse>>? agruparPorData() {
-    final Map<DateTime, List<AgendamentosModelResponse>> mapa = {};
-    for (final ag in agendamentos) {
-      final dataNormalizada = DateTime(
-        ag.data!.year,
-        ag.data!.month,
-        ag.data!.day,
-      );
-      mapa.putIfAbsent(dataNormalizada, () => []).add(ag);
+  // Map<DateTime, List<AgendamentosModelResponse>>? agruparPorData() {
+  //   final Map<DateTime, List<AgendamentosModelResponse>> mapa = {};
+  //   for (final ag in controller.state.agendamentos ?? []) {
+  //     final dataNormalizada = DateTime(
+  //       ag.data!.year,
+  //       ag.data!.month,
+  //       ag.data!.day,
+  //     );
+  //     mapa.putIfAbsent(dataNormalizada, () => []).add(ag);
+  //   }
+  //   return mapa;
+  // }
+  Map<String, List<AgendamentosModelResponse>> agruparPorData() {
+    final Map<String, List<AgendamentosModelResponse>> mapa = {};
+    for (final ag in controller.state.agendamentos ?? []) {
+      final chave = DateFormat('yyyy-MM-dd').format(ag.data!);
+      mapa.putIfAbsent(chave, () => []).add(ag);
     }
     return mapa;
   }
@@ -554,6 +638,41 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
       );
     } else {
       agendamentosDetalhes = [];
+    }
+  }
+
+  Future<void> refreshAgendamentos() async {
+    await controller.buscaAgendamentos();
+
+    agendamentosPorData = agruparPorData();
+
+    final hoje = DateTime.now();
+    final chaveHoje = DateFormat('yyyy-MM-dd').format(hoje);
+    final agendamentosHoje = agendamentosPorData?[chaveHoje] ?? [];
+
+    if (agendamentosHoje.isNotEmpty) {
+      setState(() {
+        diaSelecionado = hoje.day;
+        agendamentosDia = agendamentosHoje;
+        agendamentosSelecionados = agendamentosHoje;
+        agendamentosDiaRefresh = agendamentosHoje;
+      });
+
+      final request = agendamentosHoje.map((ag) {
+        return AgendamentoPorPacienteRequest(
+          data: DateFormat('yyyy-MM-dd').format(ag.data!),
+          id: ag.id,
+        );
+      }).toList();
+
+      final detalhes = await controller.buscarDadosDosAgendamentos(request);
+      setState(() {
+        agendamentosDetalhes = detalhes;
+      });
+    } else {
+      setState(() {
+        agendamentosDetalhes = [];
+      });
     }
   }
 }

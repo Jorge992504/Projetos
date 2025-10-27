@@ -29,6 +29,8 @@ class _AtendimentoPageState
 
   final atendimendoController = TextEditingController();
 
+  bool isFinalizado = false;
+
   @override
   void initState() {
     super.initState();
@@ -137,6 +139,7 @@ class _AtendimentoPageState
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextField(
+                            enabled: !isFinalizado,
                             cursorHeight: 15,
                             cursorColor: ColorsConstants.appBarColor,
                             decoration: InputDecoration(
@@ -148,29 +151,32 @@ class _AtendimentoPageState
                           ),
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: IconButton(
-                          tooltip: 'Anexar documentos',
-                          padding: EdgeInsets.zero, // remove o padding padrão
-                          constraints: BoxConstraints(),
-                          onPressed: _selecionarArquivos,
-                          style: ButtonStyle(
-                            overlayColor:
-                                WidgetStateProperty.resolveWith<Color?>((
-                                  Set<WidgetState> states,
-                                ) {
-                                  if (states.contains(WidgetState.hovered)) {
-                                    return ColorsConstants.appBarColor
-                                        .withOpacity(0.3); // cor de hover
-                                  }
-                                  return null; // cor padrão
-                                }),
-                          ),
-                          icon: Icon(
-                            Icons.add_card_outlined,
-                            color: ColorsConstants.appBarColor,
-                            size: 25,
+                      Visibility(
+                        visible: !isFinalizado,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: IconButton(
+                            tooltip: 'Anexar documentos',
+                            padding: EdgeInsets.zero, // remove o padding padrão
+                            constraints: BoxConstraints(),
+                            onPressed: _selecionarArquivos,
+                            style: ButtonStyle(
+                              overlayColor:
+                                  WidgetStateProperty.resolveWith<Color?>((
+                                    Set<WidgetState> states,
+                                  ) {
+                                    if (states.contains(WidgetState.hovered)) {
+                                      return ColorsConstants.appBarColor
+                                          .withOpacity(0.3); // cor de hover
+                                    }
+                                    return null; // cor padrão
+                                  }),
+                            ),
+                            icon: Icon(
+                              Icons.add_card_outlined,
+                              color: ColorsConstants.appBarColor,
+                              size: 25,
+                            ),
                           ),
                         ),
                       ),
@@ -198,30 +204,38 @@ class _AtendimentoPageState
                                   arquivo.name,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                trailing: IconButton(
-                                  tooltip: 'Remover arquivo',
-                                  icon: const Icon(Icons.delete_outline),
-                                  color: Colors.red,
-                                  onPressed: () {
-                                    setState(() {
-                                      arquivosSelecionados.removeAt(index);
-                                    });
-                                  },
+                                trailing: Visibility(
+                                  visible: !isFinalizado,
+                                  child: IconButton(
+                                    tooltip: 'Remover arquivo',
+                                    icon: const Icon(Icons.delete_outline),
+                                    color: Colors.red,
+                                    onPressed: () {
+                                      setState(() {
+                                        arquivosSelecionados.removeAt(index);
+                                      });
+                                    },
+                                  ),
                                 ),
                               );
                             },
                           ),
                         ),
                       ],
-                      Container(
-                        alignment: Alignment.centerRight,
-                        margin: EdgeInsets.only(top: 15),
-                        child: ElevatedButton(
-                          onPressed: finalizarAgendamento,
-                          child: Text(
-                            'Finalizar atendimento',
-                            style: context.cusotomFontes.textBoldItalic
-                                .copyWith(color: ColorsConstants.primaryColor),
+                      Visibility(
+                        visible: !isFinalizado,
+                        child: Container(
+                          alignment: Alignment.centerRight,
+                          margin: EdgeInsets.only(top: 15),
+                          child: ElevatedButton(
+                            onPressed: finalizarAgendamento,
+                            child: Text(
+                              'Finalizar atendimento',
+                              style: context.cusotomFontes.textBoldItalic
+                                  .copyWith(
+                                    color: ColorsConstants.primaryColor,
+                                  ),
+                            ),
                           ),
                         ),
                       ),
@@ -282,9 +296,15 @@ class _AtendimentoPageState
 
     formData.fields.add(MapEntry("atendimento", atendimendoController.text));
     formData.fields.add(
+      MapEntry("pacienteId", agendamentoDetalhe.pacienteId.toString()),
+    );
+    formData.fields.add(
       MapEntry("agendamentoId", agendamentoDetalhe.agendamentoId!.toString()),
     );
 
     await controller.terminarAtendimento(formData);
+    setState(() {
+      isFinalizado = !isFinalizado;
+    });
   }
 }

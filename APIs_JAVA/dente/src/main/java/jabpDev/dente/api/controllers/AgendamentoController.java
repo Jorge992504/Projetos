@@ -5,6 +5,7 @@ import jabpDev.dente.api.dto.request.BuscaAgendamentosDtoRequest;
 import jabpDev.dente.api.dto.request.NovoAgendamentoDtoRequest;
 import jabpDev.dente.api.dto.response.AgendamentoPorPacienteResponse;
 import jabpDev.dente.api.dto.response.BuscaAgendamentosDtoResponse;
+import jabpDev.dente.api.dto.response.HistoricoAgendamentosResponse;
 import jabpDev.dente.api.dto.response.ServicosDentistasDtoResponse;
 import jabpDev.dente.api.services.AgendamentoService;
 import lombok.AllArgsConstructor;
@@ -48,5 +49,10 @@ public class AgendamentoController {
     @GetMapping("/marca/cancelado")
     public void marcaAgendamentoComoCancelado(@RequestParam Long agendamentoId){
         agendamentoService.marcaAgendamentoComoCancelado(agendamentoId);
+    }
+
+    @GetMapping("/busca/consultas-paciente")
+    public List<HistoricoAgendamentosResponse> buscaHistoricoAgendamentos(@RequestParam Long pacienteId){
+        return agendamentoService.buscaHistoricoAgendamentos(pacienteId);
     }
 }

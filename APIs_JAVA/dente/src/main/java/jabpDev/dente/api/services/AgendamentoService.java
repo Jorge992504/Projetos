@@ -168,7 +168,8 @@ public class AgendamentoService {
                             a.pacienteNome(),
                             a.servico(),
                             a.datahorario(),
-                            a.observacoes()
+                            a.observacoes(),
+                            a.pacienteId()
                     );
                 }).collect(Collectors.toList());
         return response;
@@ -208,5 +209,28 @@ public class AgendamentoService {
                 throw new ErrorException("Erro ao cancelar agenadamento, tentar novamento");
             }
         }
+    }
+
+
+    public List<HistoricoAgendamentosResponse> buscaHistoricoAgendamentos(Long pacienteId){
+        String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
+        if (empresa.isEmpty()){
+            throw new ErrorException("Sem permissão para cadastrar dentista.\nRealizar login novamente");
+        }
+
+        List<HistoricoAgendamentosResponse> agendamento = agendamentoRepository.findByPacienteIdAndEmpresaId(pacienteId, empresa.get().getId());
+//        List<HistoricoAgendamentosResponse> response = agendamento.stream()
+//                .map(c -> {
+//                    return new HistoricoAgendamentosResponse(
+//                            c.dataHora(),
+//                            c.nomePaciente(),
+//                            c.status(),
+//                            c.servico(),
+//                            c.atendimento()
+//
+//                    );
+//                }).collect(Collectors.toList());
+        return agendamento;
     }
 }

@@ -18,10 +18,10 @@ public class AtendimentoController {
     private final AtendimentoService atendimentoService;
 
     @PostMapping(path = "/finalizar",consumes = {"multipart/form-data"})
-    public void finalizarAtendimento(@RequestParam("files")MultipartFile[] files,
-                                     @RequestParam("atendimento") String atendimento,
-                                     @RequestParam("agendamentoId") Long agendamentoId,
-                                     @RequestParam("pacienteId") Long pacienteId){
+    public void finalizarAtendimento(@RequestParam(value = "files", required = false)MultipartFile[] files,
+                                     @RequestParam(value = "atendimento", required = false) String atendimento,
+                                     @RequestParam(value = "agendamentoId",required = false) Long agendamentoId,
+                                     @RequestParam(value = "pacienteId", required = false) Long pacienteId){
         atendimentoService.finalizarAtendimento(files, atendimento, agendamentoId,pacienteId);
     }
 }

@@ -40,142 +40,108 @@ class CustomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      padding: padding,
-      margin: margin,
-      decoration: decoration,
-      alignment: alignment,
-      child: Card(
-        elevation: 8,
-        color: ColorsConstants.primaryColor,
-        shadowColor: ColorsConstants.appBarColor,
+    return Card(
+      elevation: 8,
+      color: ColorsConstants.primaryColor,
+      shadowColor: ColorsConstants.appBarColor,
 
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
 
-            children: [
-              Text(
-                nome ?? "",
+          children: [
+            Text(
+              nome ?? "",
+              style: context.cusotomFontes.textBoldItalic.copyWith(
+                color: ColorsConstants.letrasColor,
+                fontSize: 14,
+              ),
+            ),
+            Text(
+              servico ?? "",
+              style: context.cusotomFontes.textBoldItalic.copyWith(
+                color: ColorsConstants.letrasColor,
+                fontSize: 14,
+              ),
+            ),
+            Text(
+              horario ?? "",
+              style: context.cusotomFontes.textBoldItalic.copyWith(
+                color: ColorsConstants.letrasColor,
+                fontSize: 14,
+              ),
+            ),
+
+            Container(
+              alignment: Alignment.center,
+              width: 80,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: status == 'Pendente'
+                      ? ColorsConstants.buttonColor
+                      : status == 'Realizado'
+                      ? Colors.green
+                      : status == 'Cancelado'
+                      ? ColorsConstants.errorColor
+                      : ColorsConstants.focusColor,
+                ),
+                borderRadius: BorderRadius.circular(18.0),
+              ),
+              child: Text(
+                status ?? "",
                 style: context.cusotomFontes.textBoldItalic.copyWith(
-                  color: ColorsConstants.letrasColor,
+                  color: status == 'Pendente'
+                      ? ColorsConstants.buttonColor
+                      : status == 'Realizado'
+                      ? Colors.green
+                      : status == 'Cancelado'
+                      ? ColorsConstants.errorColor
+                      : ColorsConstants.focusColor,
                   fontSize: 14,
                 ),
               ),
-              Text(
-                servico ?? "",
-                style: context.cusotomFontes.textBoldItalic.copyWith(
-                  color: ColorsConstants.letrasColor,
-                  fontSize: 14,
-                ),
-              ),
-              Text(
-                horario ?? "",
-                style: context.cusotomFontes.textBoldItalic.copyWith(
-                  color: ColorsConstants.letrasColor,
-                  fontSize: 14,
-                ),
-              ),
-
-              Container(
-                alignment: Alignment.center,
-                width: 80,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: status == 'Pendente'
-                        ? ColorsConstants.buttonColor
-                        : status == 'Realizado'
-                        ? Colors.green
-                        : status == 'Cancelado'
-                        ? ColorsConstants.errorColor
-                        : ColorsConstants.focusColor,
-                  ),
-                  borderRadius: BorderRadius.circular(18.0),
-                ),
-                child: Text(
-                  status ?? "",
-                  style: context.cusotomFontes.textBoldItalic.copyWith(
-                    color: status == 'Pendente'
-                        ? ColorsConstants.buttonColor
-                        : status == 'Realizado'
-                        ? Colors.green
-                        : status == 'Cancelado'
-                        ? ColorsConstants.errorColor
-                        : ColorsConstants.focusColor,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-              Row(
-                children: [
-                  Visibility(
-                    visible: status == 'Pendente',
-                    child: IconButton(
-                      tooltip: 'Confirmar consulta',
-                      padding: EdgeInsets.zero, // remove o padding padrão
-                      constraints: BoxConstraints(),
-                      onPressed: onPressedConfirmado,
-                      style: ButtonStyle(
-                        overlayColor: WidgetStateProperty.resolveWith<Color?>((
-                          Set<WidgetState> states,
-                        ) {
-                          if (states.contains(WidgetState.hovered)) {
-                            return Colors.green.withOpacity(
-                              0.3,
-                            ); // cor de hover
-                          }
-                          return null; // cor padrão
-                        }),
-                      ),
-                      icon: Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                        size: 25,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 25),
-                  Visibility(
-                    visible: status == 'Pendente',
-                    child: IconButton(
-                      tooltip: 'Cancelar agendamento',
-                      padding: EdgeInsets.zero, // remove o padding padrão
-                      constraints: BoxConstraints(),
-                      onPressed: onPressedCancelado,
-                      style: ButtonStyle(
-                        overlayColor: WidgetStateProperty.resolveWith<Color?>((
-                          Set<WidgetState> states,
-                        ) {
-                          if (states.contains(WidgetState.hovered)) {
-                            return ColorsConstants.errorColor.withOpacity(
-                              0.3,
-                            ); // cor de hover
-                          }
-                          return null; // cor padrão
-                        }),
-                      ),
-                      icon: Icon(
-                        Icons.cancel,
-                        color: ColorsConstants.errorColor,
-                        size: 25,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 25),
-                  IconButton(
-                    tooltip: 'Historico de consultas',
+            ),
+            Row(
+              children: [
+                Visibility(
+                  visible: status == 'Pendente',
+                  child: IconButton(
+                    tooltip: 'Confirmar consulta',
                     padding: EdgeInsets.zero, // remove o padding padrão
                     constraints: BoxConstraints(),
-                    onPressed: onPressedHisotoricoPaciente,
+                    onPressed: onPressedConfirmado,
                     style: ButtonStyle(
                       overlayColor: WidgetStateProperty.resolveWith<Color?>((
                         Set<WidgetState> states,
                       ) {
                         if (states.contains(WidgetState.hovered)) {
-                          return ColorsConstants.appBarColor.withOpacity(
+                          return Colors.green.withOpacity(0.3); // cor de hover
+                        }
+                        return null; // cor padrão
+                      }),
+                    ),
+                    icon: Icon(
+                      Icons.check_circle,
+                      color: Colors.green,
+                      size: 25,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 25),
+                Visibility(
+                  visible: status == 'Pendente',
+                  child: IconButton(
+                    tooltip: 'Cancelar agendamento',
+                    padding: EdgeInsets.zero, // remove o padding padrão
+                    constraints: BoxConstraints(),
+                    onPressed: onPressedCancelado,
+                    style: ButtonStyle(
+                      overlayColor: WidgetStateProperty.resolveWith<Color?>((
+                        Set<WidgetState> states,
+                      ) {
+                        if (states.contains(WidgetState.hovered)) {
+                          return ColorsConstants.errorColor.withOpacity(
                             0.3,
                           ); // cor de hover
                         }
@@ -183,39 +149,63 @@ class CustomCard extends StatelessWidget {
                       }),
                     ),
                     icon: Icon(
-                      Icons.list_alt_outlined,
-                      color: ColorsConstants.appBarColor,
+                      Icons.cancel,
+                      color: ColorsConstants.errorColor,
                       size: 25,
                     ),
                   ),
-                  const SizedBox(width: 25),
-                  IconButton(
-                    tooltip: 'Historico do paciente',
-                    padding: EdgeInsets.zero, // remove o padding padrão
-                    constraints: BoxConstraints(),
-                    onPressed: onPressedHisotorico,
-                    style: ButtonStyle(
-                      overlayColor: WidgetStateProperty.resolveWith<Color?>((
-                        Set<WidgetState> states,
-                      ) {
-                        if (states.contains(WidgetState.hovered)) {
-                          return ColorsConstants.appBarColor.withOpacity(
-                            0.3,
-                          ); // cor de hover
-                        }
-                        return null; // cor padrão
-                      }),
-                    ),
-                    icon: Icon(
-                      Icons.filter_list_sharp,
-                      color: ColorsConstants.appBarColor,
-                      size: 25,
-                    ),
+                ),
+                const SizedBox(width: 25),
+                IconButton(
+                  tooltip: 'Historico de consultas',
+                  padding: EdgeInsets.zero, // remove o padding padrão
+                  constraints: BoxConstraints(),
+                  onPressed: onPressedHisotoricoPaciente,
+                  style: ButtonStyle(
+                    overlayColor: WidgetStateProperty.resolveWith<Color?>((
+                      Set<WidgetState> states,
+                    ) {
+                      if (states.contains(WidgetState.hovered)) {
+                        return ColorsConstants.appBarColor.withOpacity(
+                          0.3,
+                        ); // cor de hover
+                      }
+                      return null; // cor padrão
+                    }),
                   ),
-                ],
-              ),
-            ],
-          ),
+                  icon: Icon(
+                    Icons.list_alt_outlined,
+                    color: ColorsConstants.appBarColor,
+                    size: 25,
+                  ),
+                ),
+                const SizedBox(width: 25),
+                IconButton(
+                  tooltip: 'Historico do paciente',
+                  padding: EdgeInsets.zero, // remove o padding padrão
+                  constraints: BoxConstraints(),
+                  onPressed: onPressedHisotorico,
+                  style: ButtonStyle(
+                    overlayColor: WidgetStateProperty.resolveWith<Color?>((
+                      Set<WidgetState> states,
+                    ) {
+                      if (states.contains(WidgetState.hovered)) {
+                        return ColorsConstants.appBarColor.withOpacity(
+                          0.3,
+                        ); // cor de hover
+                      }
+                      return null; // cor padrão
+                    }),
+                  ),
+                  icon: Icon(
+                    Icons.filter_list_sharp,
+                    color: ColorsConstants.appBarColor,
+                    size: 25,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
