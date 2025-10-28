@@ -2,8 +2,10 @@ package jabpDev.dente.api.controllers;
 
 
 import jabpDev.dente.api.dto.request.RegistrarPacienteDtoRequest;
+import jabpDev.dente.api.dto.response.HistoricoDocumentosResponse;
 import jabpDev.dente.api.dto.response.PacienteDtoResponse;
 import jabpDev.dente.api.services.PacienteService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,11 @@ public class PacienteController {
     @PostMapping("/registrar")
     public ResponseEntity<?> registrarPaciente(@RequestBody RegistrarPacienteDtoRequest body){
         return ResponseEntity.ok(pacienteService.registrarPaciente(body));
+    }
+
+    @GetMapping("/busca-historico")
+    public ResponseEntity<?> buscaDocumentos(@RequestParam Long pacienteId, HttpServletRequest request){
+        return pacienteService.buscaDocumentos(pacienteId, request);
     }
 
 }

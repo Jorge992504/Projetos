@@ -11,5 +11,6 @@ mixin Rotas {
   static const String dentista = "/dentista";
   static const String servicos = "/servicos";
   static const String historicoConsultas = "/historicoConultas";
+  static const String historicoPaciente = "/historicoPaciente";
   static const String atendimento = "/atendimento";
 }

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dente/core/router/rotas.dart';
 import 'package:dente/core/ui/base/base_state.dart';
 import 'package:dente/core/ui/style/custom_colors.dart';
@@ -38,6 +36,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
 
   int? diaSelecionado = 0;
   bool isSelecionado = false;
+  bool isHovering = false;
 
   @override
   void initState() {
@@ -105,164 +104,189 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Agendamentos')),
-      endDrawer: SafeArea(
-        child: Drawer(
-          backgroundColor: ColorsConstants.primaryColor,
-          child: Stack(
-            children: [
-              ListView(
+      endDrawer: BlocConsumer<HomeController, HomeState>(
+        listener: (context, state) {
+          state.status.matchAny(
+            any: hideLoader,
+            loading: showLoader,
+            loaded: hideLoader,
+            failure: () {
+              showError(state.errorMessage ?? 'INTERNAL_ERROR');
+
+              hideLoader();
+            },
+            success: () async {
+              // showSuccess("Sucesso ao realizar cadastro.");
+              // Navigator.of(context).pop();
+              hideLoader();
+            },
+          );
+        },
+
+        builder: (context, state) {
+          return SafeArea(
+            child: Drawer(
+              backgroundColor: ColorsConstants.primaryColor,
+              child: Stack(
                 children: [
-                  UserAccountsDrawerHeader(
-                    accountName: Text(
-                      empresaModel.nomeClinica ?? "",
-                      style: context.cusotomFontes.textBoldItalic.copyWith(
-                        color: ColorsConstants.primaryColor,
-                        height: 1,
-                      ),
-                    ),
-                    accountEmail: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          empresaModel.emailClinica ?? "",
-                          style: context.cusotomFontes.textRegular.copyWith(
+                  ListView(
+                    children: [
+                      UserAccountsDrawerHeader(
+                        accountName: Text(
+                          empresaModel.nomeClinica ?? "",
+                          style: context.cusotomFontes.textBoldItalic.copyWith(
                             color: ColorsConstants.primaryColor,
                             height: 1,
                           ),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(
-                              context,
-                            ).pushNamed(Rotas.editarEmpresa).then((_) {
-                              // Aqui você faz o refresh da Home
-                              setState(() {
-                                // Chame sua função de recarregar os dados
-                                Provider.of(
-                                  context,
-                                  listen: false,
-                                ).authProvider.carregarDadosEmpresa();
-                              });
-                            });
-                          },
-                          child: Text(
-                            "Editar",
-                            style: context.cusotomFontes.textItalic.copyWith(
-                              fontSize: 13,
-                              height: 1,
+                        accountEmail: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              empresaModel.emailClinica ?? "",
+                              style: context.cusotomFontes.textRegular.copyWith(
+                                color: ColorsConstants.primaryColor,
+                                height: 1,
+                              ),
                             ),
-                          ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(
+                                  context,
+                                ).pushNamed(Rotas.editarEmpresa).then((_) {
+                                  // Aqui você faz o refresh da Home
+                                  setState(() {
+                                    // Chame sua função de recarregar os dados
+                                    Provider.of(
+                                      context,
+                                      listen: false,
+                                    ).authProvider.carregarDadosEmpresa();
+                                  });
+                                });
+                              },
+                              child: Text(
+                                "Editar",
+                                style: context.cusotomFontes.textItalic
+                                    .copyWith(fontSize: 13, height: 1),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    decoration: BoxDecoration(
-                      color: ColorsConstants.appBarColor,
-                    ),
-                    currentAccountPicture: CircleAvatar(
-                      radius: 40, // ou maxRadius
-                      backgroundColor: ColorsConstants.focusColor,
-                      backgroundImage: empresaModel.foto != null
-                          ? NetworkImage(empresaModel.foto!)
-                          : null,
+                        decoration: BoxDecoration(
+                          color: ColorsConstants.appBarColor,
+                        ),
+                        currentAccountPicture: CircleAvatar(
+                          radius: 40, // ou maxRadius
+                          backgroundColor: ColorsConstants.focusColor,
+                          backgroundImage: empresaModel.foto != null
+                              ? NetworkImage(empresaModel.foto!)
+                              : null,
 
-                      child: empresaModel.foto == null ? Text(getNome()) : null,
-                    ),
-                    currentAccountPictureSize: const Size.square(70),
-                  ),
-                  ListTile(
-                    leading: Image.asset(
-                      ImageConstants.dentista,
-                      width: 25,
-                      height: 25,
-                      fit: BoxFit.cover,
-                    ),
-                    title: Text(
-                      "Dentistas",
-                      style: context.cusotomFontes.textBoldItalic,
-                    ),
-                    onTap: () async {
-                      Navigator.of(context).pushNamed(Rotas.dentista);
-                    },
-                  ),
-                  ListTile(
-                    leading: Image.asset(
-                      ImageConstants.servicos,
-                      width: 25,
-                      height: 25,
-                      fit: BoxFit.cover,
-                    ),
-                    title: Text(
-                      "Serviços",
-                      style: context.cusotomFontes.textBoldItalic,
-                    ),
-                    onTap: () async {
-                      Navigator.of(context).pushNamed(Rotas.servicos);
-                    },
-                  ),
-                  ListTile(
-                    leading: Image.asset(
-                      ImageConstants.cliente,
-                      width: 25,
-                      height: 25,
-                      fit: BoxFit.cover,
-                    ),
-                    title: Text(
-                      "Pacientes",
-                      style: context.cusotomFontes.textBoldItalic,
-                    ),
-                    onTap: () async {
-                      Navigator.of(context).pushNamed(Rotas.registrarPaciente);
-                    },
-                  ),
-                  ListTile(
-                    leading: Image.asset(
-                      ImageConstants.calendario,
-                      width: 25,
-                      height: 25,
-                      fit: BoxFit.cover,
-                    ),
-                    title: Text(
-                      "Novo agendamento",
-                      style: context.cusotomFontes.textBoldItalic,
-                    ),
-                    onTap: () async {
-                      Navigator.of(context).pushNamed(Rotas.agendamento).then((
-                        _,
-                      ) {
-                        // Aqui você faz o refresh da Home
-                        setState(() {
-                          // Chame sua função de recarregar os dados
-                          controller.buscaAgendamentos();
-                        });
-                      });
-                    },
-                  ),
-                  ListTile(
-                    leading: Image.asset(
-                      ImageConstants.logout,
-                      width: 25,
-                      height: 25,
-                      fit: BoxFit.cover,
-                    ),
-                    title: Text(
-                      "Sair",
-                      style: context.cusotomFontes.textBoldItalic,
-                    ),
-                    onTap: () async {
-                      Provider.of<AuthProvider>(
-                        context,
-                        listen: false,
-                      ).logout();
-                      Navigator.of(
-                        context,
-                      ).pushNamedAndRemoveUntil(Rotas.login, (route) => false);
-                    },
+                          child: empresaModel.foto == null
+                              ? Text(getNome())
+                              : null,
+                        ),
+                        currentAccountPictureSize: const Size.square(70),
+                      ),
+                      ListTile(
+                        leading: Image.asset(
+                          ImageConstants.dentista,
+                          width: 25,
+                          height: 25,
+                          fit: BoxFit.cover,
+                        ),
+                        title: Text(
+                          "Dentistas",
+                          style: context.cusotomFontes.textBoldItalic,
+                        ),
+                        onTap: () async {
+                          Navigator.of(context).pushNamed(Rotas.dentista);
+                        },
+                      ),
+                      ListTile(
+                        leading: Image.asset(
+                          ImageConstants.servicos,
+                          width: 25,
+                          height: 25,
+                          fit: BoxFit.cover,
+                        ),
+                        title: Text(
+                          "Serviços",
+                          style: context.cusotomFontes.textBoldItalic,
+                        ),
+                        onTap: () async {
+                          Navigator.of(context).pushNamed(Rotas.servicos);
+                        },
+                      ),
+                      ListTile(
+                        leading: Image.asset(
+                          ImageConstants.cliente,
+                          width: 25,
+                          height: 25,
+                          fit: BoxFit.cover,
+                        ),
+                        title: Text(
+                          "Pacientes",
+                          style: context.cusotomFontes.textBoldItalic,
+                        ),
+                        onTap: () async {
+                          Navigator.of(
+                            context,
+                          ).pushNamed(Rotas.registrarPaciente);
+                        },
+                      ),
+                      ListTile(
+                        leading: Image.asset(
+                          ImageConstants.calendario,
+                          width: 25,
+                          height: 25,
+                          fit: BoxFit.cover,
+                        ),
+                        title: Text(
+                          "Novo agendamento",
+                          style: context.cusotomFontes.textBoldItalic,
+                        ),
+                        onTap: () async {
+                          Navigator.of(
+                            context,
+                          ).pushNamed(Rotas.agendamento).then((_) {
+                            // Aqui você faz o refresh da Home
+                            setState(() {
+                              // Chame sua função de recarregar os dados
+                              controller.buscaAgendamentos();
+                            });
+                          });
+                        },
+                      ),
+                      ListTile(
+                        leading: Image.asset(
+                          ImageConstants.logout,
+                          width: 25,
+                          height: 25,
+                          fit: BoxFit.cover,
+                        ),
+                        title: Text(
+                          "Sair",
+                          style: context.cusotomFontes.textBoldItalic,
+                        ),
+                        onTap: () async {
+                          Provider.of<AuthProvider>(
+                            context,
+                            listen: false,
+                          ).logout();
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            Rotas.login,
+                            (route) => false,
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
       body: BlocConsumer<HomeController, HomeState>(
         listener: (context, state) {
@@ -353,91 +377,93 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: GestureDetector(
-                                    onTap: () async {
-                                      final dataAtual = DateTime(
-                                        mesAtual.year,
-                                        mesAtual.month,
-                                        dia,
-                                      );
-                                      final chave = DateFormat(
-                                        'yyyy-MM-dd',
-                                      ).format(dataAtual);
-
-                                      // Pega os agendamentos do dia
-                                      agendamentosDia =
-                                          agendamentosPorData![chave] ?? [];
-                                      log('click ${agendamentosDia.length}');
-                                      setState(() {
-                                        diaSelecionado = dia;
-                                        agendamentosSelecionados =
-                                            agendamentosDia; // apenas daquele dia
-                                        agendamentosDiaRefresh =
-                                            agendamentosDia;
-                                        log('set');
-                                      });
-
-                                      List<AgendamentoPorPacienteRequest>
-                                      request = [];
-
-                                      for (var agendamento in agendamentosDia) {
-                                        request.add(
-                                          AgendamentoPorPacienteRequest(
-                                            data: DateFormat(
-                                              'yyyy-MM-dd',
-                                            ).format(agendamento.data!),
-                                            id: agendamento.id,
-                                          ),
+                                  child: MouseRegion(
+                                    cursor: SystemMouseCursors.click,
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        final dataAtual = DateTime(
+                                          mesAtual.year,
+                                          mesAtual.month,
+                                          dia,
                                         );
-                                      }
-                                      if (request.isNotEmpty) {
-                                        agendamentosDetalhes = await controller
-                                            .buscarDadosDosAgendamentos(
-                                              request,
-                                            );
-                                      } else {
-                                        agendamentosDetalhes = [];
-                                      }
-                                    },
-                                    onDoubleTap: () {
-                                      String data =
-                                          '$dia/${mesAtual.month}/${mesAtual.year}';
-                                      log('double tap $data');
-                                      if (dia < mesAtual.day) {
-                                        showInfo(
-                                          "Não pode realizar agendametos em datas passadas.",
-                                        );
-                                        return;
-                                      }
-                                      Navigator.of(context)
-                                          .pushNamed(
-                                            Rotas.agendamento,
-                                            arguments: {'data': data},
-                                          )
-                                          .then((_) {
-                                            // Aqui você faz o refresh da Home
-                                            setState(() {
-                                              // Chame sua função de recarregar os dados
-                                              controller.buscaAgendamentos();
+                                        final chave = DateFormat(
+                                          'yyyy-MM-dd',
+                                        ).format(dataAtual);
+
+                                        // Pega os agendamentos do dia
+                                        agendamentosDia =
+                                            agendamentosPorData![chave] ?? [];
+                                        setState(() {
+                                          diaSelecionado = dia;
+                                          agendamentosSelecionados =
+                                              agendamentosDia; // apenas daquele dia
+                                          agendamentosDiaRefresh =
+                                              agendamentosDia;
+                                        });
+
+                                        List<AgendamentoPorPacienteRequest>
+                                        request = [];
+
+                                        for (var agendamento
+                                            in agendamentosDia) {
+                                          request.add(
+                                            AgendamentoPorPacienteRequest(
+                                              data: DateFormat(
+                                                'yyyy-MM-dd',
+                                              ).format(agendamento.data!),
+                                              id: agendamento.id,
+                                            ),
+                                          );
+                                        }
+                                        if (request.isNotEmpty) {
+                                          agendamentosDetalhes =
+                                              await controller
+                                                  .buscarDadosDosAgendamentos(
+                                                    request,
+                                                  );
+                                        } else {
+                                          agendamentosDetalhes = [];
+                                        }
+                                      },
+                                      onDoubleTap: () {
+                                        String data =
+                                            '$dia/${mesAtual.month}/${mesAtual.year}';
+                                        if (dia < mesAtual.day) {
+                                          showInfo(
+                                            "Não pode realizar agendametos em datas passadas.",
+                                          );
+                                          return;
+                                        }
+                                        Navigator.of(context)
+                                            .pushNamed(
+                                              Rotas.agendamento,
+                                              arguments: {'data': data},
+                                            )
+                                            .then((_) {
+                                              // Aqui você faz o refresh da Home
+                                              setState(() {
+                                                // Chame sua função de recarregar os dados
+                                                controller.buscaAgendamentos();
+                                              });
                                             });
-                                          });
-                                    },
-                                    child: CircleAvatar(
-                                      maxRadius: 20,
-                                      minRadius: 20,
-                                      backgroundColor: isSelecionado
-                                          ? ColorsConstants.focusColor
-                                          : isHoje
-                                          ? ColorsConstants.appBarColor
-                                          : ColorsConstants.primaryColor,
-                                      child: Text(
-                                        '$dia',
-                                        style: TextStyle(
-                                          color: isSelecionado
-                                              ? ColorsConstants.primaryColor
-                                              : isHoje
-                                              ? ColorsConstants.primaryColor
-                                              : ColorsConstants.appBarColor,
+                                      },
+                                      child: CircleAvatar(
+                                        maxRadius: 20,
+                                        minRadius: 20,
+                                        backgroundColor: isSelecionado
+                                            ? ColorsConstants.focusColor
+                                            : isHoje
+                                            ? ColorsConstants.appBarColor
+                                            : ColorsConstants.primaryColor,
+                                        child: Text(
+                                          '$dia',
+                                          style: TextStyle(
+                                            color: isSelecionado
+                                                ? ColorsConstants.primaryColor
+                                                : isHoje
+                                                ? ColorsConstants.primaryColor
+                                                : ColorsConstants.appBarColor,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -561,17 +587,24 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                   setState(() {});
                                 },
                                 onPressedHisotorico: () {
-                                  // Navigator.of(context).pushNamed(
-                                  //   Rotas.historicoConsultas,
-                                  //   arguments: agendamentoDetalhe.pacienteId,
-                                  // );
+                                  Navigator.of(context).pushNamed(
+                                    Rotas.historicoPaciente,
+                                    arguments: {
+                                      "pacienteId":
+                                          agendamentoDetalhe.pacienteId,
+                                      "pacienteNm":
+                                          agendamentoDetalhe.pacienteNome,
+                                    },
+                                  );
                                 },
                                 onPressedHisotoricoPaciente: () {
                                   Navigator.of(context).pushNamed(
                                     Rotas.historicoConsultas,
                                     arguments: {
-                                      "agendamentoDetalhe":
+                                      "pacienteId":
                                           agendamentoDetalhe.pacienteId,
+                                      "pacienteNm":
+                                          agendamentoDetalhe.pacienteNome,
                                     },
                                   );
                                 },

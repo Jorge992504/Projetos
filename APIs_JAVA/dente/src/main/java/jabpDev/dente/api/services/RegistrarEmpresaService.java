@@ -26,7 +26,28 @@ public class RegistrarEmpresaService {
     public String registrarEmpresa(RegistrarEmpresaDtoRequest body)  {
 
         String password = passwordEncoder.encode(body.passowrd());
-        String uploadDir = new File("src/main/resources/static/public/" + body.nomeClinica()).getAbsolutePath();
+
+        if (!servicesGerais.isValid(body.cnpj())){
+            throw new ErrorException("CNPJ não é valido");
+        }
+
+
+        Empresa empresa = Empresa.builder()
+                .nomeClinica(body.nomeClinica())
+                .emailClinica(body.emailClinica())
+                .cnpj(body.cnpj())
+                .endereco(body.endereco())
+                .telefone(body.telefone())
+                .password(password)
+//                .foto(body.foto() != null ? nomeFoto : null)
+                .build();
+        Empresa response = empresaRepository.save(empresa);
+        if (response.getId() < 0 ){
+            throw new ErrorException("Erro ao realizar cadastro");
+        }
+
+
+        String uploadDir = new File("src/main/resources/static/public/" + response.getId()).getAbsolutePath();
         File directory = new File(uploadDir);
         if (!directory.exists()) {
             boolean created = directory.mkdirs();
@@ -35,7 +56,7 @@ public class RegistrarEmpresaService {
             }
         }
 
-        String nomeFoto = body.nomeClinica().replaceAll("\\s+", "_") + ".png";
+        String nomeFoto = response.getId() + ".png";
         File destino = new File(directory, nomeFoto);
 
         if (body.foto() != null && !body.foto().isEmpty()) {
@@ -53,27 +74,10 @@ public class RegistrarEmpresaService {
             }
         }
 
-        if (!servicesGerais.isValid(body.cnpj())){
-            throw new ErrorException("CNPJ não é valido");
-        }
+        response.setFoto(body.foto() != null ? nomeFoto : null);
+        empresaRepository.save(response);
 
-
-        Empresa empresa = Empresa.builder()
-                .nomeClinica(body.nomeClinica())
-                .emailClinica(body.emailClinica())
-                .cnpj(body.cnpj())
-                .endereco(body.endereco())
-                .telefone(body.telefone())
-                .password(password)
-                .foto(body.foto() != null ? nomeFoto : null)
-                .build();
-        Empresa response = empresaRepository.save(empresa);
-        if (response.getId() > 0 ){
-            servicesGerais.enviarEmailCadastro(response.getEmailClinica(), response.getNomeClinica());
-            return servicesGerais.geraToken(response.getEmailClinica());
-
-        }else{
-            throw new ErrorException("Erro ao realizar cadastro");
-        }
+        servicesGerais.enviarEmailCadastro(response.getEmailClinica(), response.getNomeClinica());
+        return servicesGerais.geraToken(response.getEmailClinica());
     }
 }

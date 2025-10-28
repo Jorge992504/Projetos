@@ -6,6 +6,7 @@ import 'package:dente/src/pages/atendimento/atendimento_router.dart';
 import 'package:dente/src/pages/dentista/dentista_router.dart';
 import 'package:dente/src/pages/editar_empresa/editar_empresa_router.dart';
 import 'package:dente/src/pages/historico_consultas/historico_consultas_router.dart';
+import 'package:dente/src/pages/historico_paciente/historico_paciente_router.dart';
 import 'package:dente/src/pages/home/home_router.dart';
 import 'package:dente/src/pages/login/login_router.dart';
 import 'package:dente/src/pages/registrar_empresa/registrar_empresa_router.dart';
@@ -47,6 +48,7 @@ class DenteApp extends StatelessWidget {
           Rotas.atendimento: (context) => AtendimentoRouter.page(),
           Rotas.historicoConsultas: (context) =>
               HistoricoConsultasRouter.page(),
+          Rotas.historicoPaciente: (context) => HistoricoPacienteRouter.page(),
         },
       ),
     );

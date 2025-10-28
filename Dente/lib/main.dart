@@ -12,7 +12,7 @@ void main() async {
   await windowManager.ensureInitialized();
   WindowOptions windowOptions = WindowOptions(center: true);
   windowManager.waitUntilReadyToShow(windowOptions, () async {
-    // await windowManager.maximize();
+    await windowManager.maximize();
     await windowManager.setResizable(true);
     await windowManager.setMinimumSize(const Size(1024, 800));
     await windowManager.show();

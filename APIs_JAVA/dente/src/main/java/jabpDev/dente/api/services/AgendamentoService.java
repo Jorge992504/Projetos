@@ -220,17 +220,7 @@ public class AgendamentoService {
         }
 
         List<HistoricoAgendamentosResponse> agendamento = agendamentoRepository.findByPacienteIdAndEmpresaId(pacienteId, empresa.get().getId());
-//        List<HistoricoAgendamentosResponse> response = agendamento.stream()
-//                .map(c -> {
-//                    return new HistoricoAgendamentosResponse(
-//                            c.dataHora(),
-//                            c.nomePaciente(),
-//                            c.status(),
-//                            c.servico(),
-//                            c.atendimento()
-//
-//                    );
-//                }).collect(Collectors.toList());
+
         return agendamento;
     }
 }
