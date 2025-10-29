@@ -97,12 +97,12 @@ public class AgendamentoService {
 
         Agendamento response =  agendamentoRepository.save(agendamento);
         if (response.getId() > 0){
-//            servicesGerais.enviarEmailConfirmacaoAgendamento(
-//                    paciente.get(),
-//                    dentista.get(),
-//                    response,
-//                    empresa.get().getEmailClinica()
-//            );
+            servicesGerais.enviarEmailConfirmacaoAgendamento(
+                    paciente.get(),
+                    dentista.get(),
+                    response,
+                    empresa.get().getEmailClinica()
+            );
             return;
         } else {
             throw new ErrorException("Erro ao criar agendamento.");
