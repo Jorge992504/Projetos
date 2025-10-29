@@ -156,8 +156,12 @@ class _DentistaPageState extends BaseState<DentistaPage, DentistaController> {
                         child: ElevatedButton(
                           onPressed: () async {
                             setState(() {
-                              isPesquisa = !isPesquisa;
+                              isPesquisa = false;
                             });
+                            emailController.clear();
+                            nmController.clear();
+                            croController.clear();
+                            telefoneController.clear();
                           },
                           child: Text(
                             'Registrar novo dentista',
@@ -199,7 +203,7 @@ class _DentistaPageState extends BaseState<DentistaPage, DentistaController> {
                             onFieldSubmitted: (value) {
                               emailFocus.requestFocus();
                               setState(() {
-                                isVoltar = !isVoltar;
+                                isVoltar = isPesquisa;
                               });
                             },
                           ),
@@ -283,9 +287,9 @@ class _DentistaPageState extends BaseState<DentistaPage, DentistaController> {
                                 });
                               } else {
                                 await registrarDentitsa();
-                                setState(() {
-                                  isPesquisa = !isPesquisa;
-                                });
+                                // setState(() {
+                                //   isPesquisa = !isPesquisa;
+                                // });
                                 refresh();
                               }
                               // dentistaModel = await controller.buscarDentista();
@@ -339,6 +343,9 @@ class _DentistaPageState extends BaseState<DentistaPage, DentistaController> {
 
   void refresh() async {
     await controller.buscarDentista(); // recarrega a lista do backend
-    setState(() {}); // força a tela a rebuildar com os novos dados
+    setState(() {
+      isPesquisa = true;
+      isVoltar = isPesquisa;
+    }); // força a tela a rebuildar com os novos dados
   }
 }

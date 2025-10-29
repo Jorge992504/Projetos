@@ -133,7 +133,7 @@ class _ServicosPageState extends BaseState<ServicosPage, ServicosController> {
                         child: ElevatedButton(
                           onPressed: () async {
                             setState(() {
-                              isPesquisa = !isPesquisa;
+                              isPesquisa = false;
                             });
                             valorController.clear();
                             servicoController.clear();
@@ -178,7 +178,8 @@ class _ServicosPageState extends BaseState<ServicosPage, ServicosController> {
                             onFieldSubmitted: (value) {
                               valorFocus.requestFocus();
                               setState(() {
-                                isVoltar = !isVoltar;
+                                // isVoltar = !isVoltar;
+                                isVoltar = isPesquisa;
                               });
                             },
                           ),
@@ -213,9 +214,9 @@ class _ServicosPageState extends BaseState<ServicosPage, ServicosController> {
                                 });
                               } else {
                                 await registrarServicos();
-                                setState(() {
-                                  isPesquisa = !isPesquisa;
-                                });
+                                // setState(() {
+                                //   isPesquisa = !isPesquisa;
+                                // });
                                 refresh();
                               }
 
@@ -269,8 +270,14 @@ class _ServicosPageState extends BaseState<ServicosPage, ServicosController> {
   Future<void> registrarServicos() async {
     final valid = formKey.currentState?.validate() ?? false;
     if (valid) {
-      String texto = valorController.text.replaceAll(',', '.');
-      num vl = num.tryParse(texto) ?? 0;
+      String texto = valorController.text
+          .replaceAll(
+            RegExp(r'[^0-9,\.]'),
+            '',
+          ) // remove tudo que não é número, vírgula ou ponto
+          .replaceAll('.', '')
+          .replaceAll(',', '.');
+      num? vl = num.tryParse(texto);
       ServicosModel model = ServicosModel(nome: servicoController.text, vl: vl);
 
       await controller.registrarServicos(model);
@@ -295,6 +302,9 @@ class _ServicosPageState extends BaseState<ServicosPage, ServicosController> {
 
   void refresh() async {
     await controller.buscarServicos(); // recarrega a lista do backend
-    setState(() {}); // força a tela a rebuildar com os novos dados
+    setState(() {
+      isPesquisa = true;
+      isVoltar = isPesquisa;
+    }); // força a tela a rebuildar com os novos dados
   }
 }

@@ -35,7 +35,7 @@ public class EmpresaService {
 
                     foto = servicesGerais.baseUrl + "logoGeral.png";
                 }else{
-                    foto = servicesGerais.baseUrl + optionalEmpresa.get().getNomeClinica() + "/" + optionalEmpresa.get().getFoto();
+                    foto = servicesGerais.baseUrl + optionalEmpresa.get().getId() + "/" + optionalEmpresa.get().getFoto();
                 }
                 return new EmpresaDtoResponse(foto,
                         optionalEmpresa.get().getNomeClinica(),
@@ -86,9 +86,9 @@ public class EmpresaService {
                 }
             }
 
-//            if (!servicesGerais.isValid(body.cnpj())){
-//                throw new ErrorException("CNPJ não é valido");
-//            }
+            if (!servicesGerais.isValid(body.cnpj())){
+                throw new ErrorException("CNPJ não é valido");
+            }
 
 
             Empresa empresaNew = empresa.get();

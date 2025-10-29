@@ -137,8 +137,14 @@ class _RegistrarPacientePageState
                         child: ElevatedButton(
                           onPressed: () async {
                             setState(() {
-                              isPesquisa = !isPesquisa;
+                              isPesquisa = false;
                             });
+                            emailController.clear();
+                            nmController.clear();
+                            cpfController.clear();
+                            rgController.clear();
+                            enderecoController.clear();
+                            telefoneController.clear();
                           },
                           child: Text(
                             'Registrar novo paciente',
@@ -179,7 +185,7 @@ class _RegistrarPacientePageState
                             onFieldSubmitted: (value) {
                               emailFocus.requestFocus();
                               setState(() {
-                                isVoltar = !isVoltar;
+                                isVoltar = isPesquisa;
                               });
                             },
                           ),
@@ -304,9 +310,9 @@ class _RegistrarPacientePageState
                                 });
                               } else {
                                 await registrarPaciente();
-                                setState(() {
-                                  isPesquisa = !isPesquisa;
-                                });
+                                // setState(() {
+                                //   isPesquisa = !isPesquisa;
+                                // });
                                 refresh();
                               }
                             },
@@ -356,7 +362,10 @@ class _RegistrarPacientePageState
 
   void refresh() async {
     await controller.buscarPacientes(); // recarrega a lista do backend
-    setState(() {}); // força a tela a rebuildar com os novos dados
+    setState(() {
+      isPesquisa = true;
+      isVoltar = isPesquisa;
+    }); // força a tela a rebuildar com os novos dados
   }
 
   //! buscar paciente por nome
