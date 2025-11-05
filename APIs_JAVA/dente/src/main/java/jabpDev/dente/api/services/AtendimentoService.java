@@ -27,6 +27,7 @@ public class AtendimentoService {
     private final EmpresaRepository empresaRepository;
     private final HistoricoRepository historicoRepository;
     private final PacienteRepository pacienteRepository;
+    private final ServicesGerais servicesGerais;
 
     @Transactional
     public void finalizarAtendimento(MultipartFile[] files,String atendimento,Long agendamentoId,Long pacienteId){
