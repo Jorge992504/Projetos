@@ -259,12 +259,8 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                         onTap: () async {
                           Navigator.of(
                             context,
-                          ).pushNamed(Rotas.agendamento).then((_) {
-                            // Aqui você faz o refresh da Home
-                            setState(() {
-                              // Chame sua função de recarregar os dados
-                              controller.buscaAgendamentos();
-                            });
+                          ).pushNamed(Rotas.agendamento).then((_) async {
+                            await refreshAgendamentos(); // método que já atualiza tudo corretamente
                           });
                         },
                       ),
@@ -337,7 +333,11 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                       width: 950,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pushNamed(Rotas.agendamento);
+                          Navigator.of(
+                            context,
+                          ).pushNamed(Rotas.agendamento).then((_) async {
+                            await refreshAgendamentos(); // método que já atualiza tudo corretamente
+                          });
                         },
                         child: Text(
                           'Novo agendamento',
@@ -445,24 +445,22 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                       },
                                       onDoubleTap: () {
                                         String data =
-                                            '$dia/${mesAtual.month}/${mesAtual.year}';
+                                            '${dia.toString().padLeft(2, '0')}/${mesAtual.month.toString().padLeft(2, '0')}/${mesAtual.year}';
+
                                         if (dia < mesAtual.day) {
                                           showInfo(
                                             "Não pode realizar agendametos em datas passadas.",
                                           );
                                           return;
                                         }
+
                                         Navigator.of(context)
                                             .pushNamed(
                                               Rotas.agendamento,
                                               arguments: {'data': data},
                                             )
-                                            .then((_) {
-                                              // Aqui você faz o refresh da Home
-                                              setState(() {
-                                                // Chame sua função de recarregar os dados
-                                                controller.buscaAgendamentos();
-                                              });
+                                            .then((_) async {
+                                              await refreshAgendamentos(); // método que já atualiza tudo corretamente
                                             });
                                       },
                                       child: CircleAvatar(
