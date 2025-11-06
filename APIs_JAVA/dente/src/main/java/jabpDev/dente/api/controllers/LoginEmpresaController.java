@@ -19,7 +19,7 @@ public class LoginEmpresaController {
     private final LoginEmpresaService loginEmpresaService;
 
     @GetMapping
-    public TokenDtoResponse login(@RequestParam String email, @RequestParam String password) throws IOException {
+    public TokenDtoResponse login(@RequestParam String email, @RequestParam String password) {
         return new TokenDtoResponse(loginEmpresaService.login(email, password));
     }
 }

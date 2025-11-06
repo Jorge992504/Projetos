@@ -1,0 +1,8 @@
+# Dependências do projeto
+#python -m pip install yfinance pandas numpy
+
+
+yfinance
+pandas
+numpy
+requests

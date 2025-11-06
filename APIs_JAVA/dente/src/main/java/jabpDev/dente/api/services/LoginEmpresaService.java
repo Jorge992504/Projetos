@@ -18,7 +18,7 @@ public class LoginEmpresaService {
     private final ServicesGerais servicesGerais;
     private final PasswordEncoder passwordEncoder;
 
-    public String login(String email, String password) throws IOException {
+    public String login(String email, String password) {
         if (email.isEmpty()){
             throw new ErrorException("Informe o usuário");
         }

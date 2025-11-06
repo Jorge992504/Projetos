@@ -1,0 +1,169 @@
+// ProfitScript - Robô Scalping Tendência (WIN)
+// Aplicar no gráfico 1-min do contrato MINI-ÍNDICE (WIN)
+// Regras:
+// - Horários ativos: 10:00-12:00 e 14:00-17:00
+// - Tendência definida em 5-min: EMA50(5m) / EMA200(5m)
+// - Entrada: pullback até EMA21(1m) ou VWAP, com candle de confirmação
+// - Filtrar dias laterais: ignorar dia se ATR(14,1m) média do dia < 40 pts
+// - TP = 1 * ATR(14,1m) no momento da entrada
+// - SL = max(15 pts, 0.5 * ATR(14,1m))
+// - Contratos fixos: 5
+// - Custos: assumidos zero (ajustar se necessário na corretora)
+// Observação: adapte funções de ordem (Buy/Sell) conforme a versão do seu ProfitChart/ProfitScript.
+
+// ====== CONFIGURAÇÕES ======
+input Contracts = 5;                      // Quantidade de contratos por operação
+input MinSL = 15;                         // SL mínimo em pontos
+input ATRPeriod = 14;                     // Período ATR
+input EMA21Period = 21;                   // EMA de pullback (1m)
+input EMA50Period = 50;                   // EMA tendência (5m)
+input EMA200Period = 200;                 // EMA tendência (5m)
+input ActiveMorningStart = 1000;          // 10:00 (HHMM)
+input ActiveMorningEnd   = 1200;          // 12:00
+input ActiveAfternoonStart = 1400;        // 14:00
+input ActiveAfternoonEnd   = 1700;        // 17:00
+input ATRThresholdDay = 40;               // Se ATR médio do dia < 40 -> dia lateral
+
+// ====== FUNÇÕES AUXILIARES ======
+// Nota: se ProfitScript tiver função de timeframe múltiplo, prefira usar direto. Aqui usamos aproximação.
+function IsInTradingWindow(curHHMM) {
+    return (curHHMM >= ActiveMorningStart and curHHMM <= ActiveMorningEnd) or
+           (curHHMM >= ActiveAfternoonStart and curHHMM <= ActiveAfternoonEnd);
+}
+
+// ====== INDICADORES ======
+// Rodar no gráfico 1-min. Para obter EMA50/EMA200 de 5-min, usamos agrupamento por blocos de 5 candles.
+// Se sua versão do ProfitScript suportar 'security' para higher timeframe, substitua por ela.
+
+vars:
+    curMinIndex(0),
+    curHHMM(0),
+    ema21(0),
+    ema50_5m(0),
+    ema200_5m(0),
+    vwap_intraday(0),
+    atr1m(0),
+    atrDayMean(0),
+    blockClose5(0),
+    blockClose5Arr(0),
+    tradesToday(0);
+
+// --- calcular EMA21 no 1-min
+ema21 = EMA(Close, EMA21Period);
+
+// --- construir fechamento 5-min simples (último close de cada bloco) e calcular EMA50/EMA200 sobre esses closes
+// Implementação: a cada novo candle, se (Minute mod 5 == 0) registra lastClose5 = Close
+if Minute mod 5 = 0 then
+    blockClose5 = Close;
+
+// acumulador simplificado: usar série de rolling values se ProfitScript permitir arrays. Caso contrário, recomendo usar função de timeframe superior nativa.
+// Para compatibilidade, se houver função 'HigherTimeframe' substitua este bloco por: ema50_5m = EMA(close, EMA50Period) on 5m
+
+// --- VWAP intraday (reset diário)
+// VWAP = cumulative(price*volume)/cumulative(volume) — se volume disponível
+if Date <> Date[1] then begin
+    vwap_intraday = 0;
+    // inicializa acumuladores (depende de suporte da linguagem)
+end;
+// Exemplo simplificado: usar preço médio cumulativo (se volume não disponível)
+vwap_intraday = (vwap_intraday * (BarNumber-1) + Close) / BarNumber; // aproximação
+
+// --- ATR(14) 1-min
+atr1m = ATR(ATRPeriod); // usar função nativa se disponível
+
+// --- média ATR do dia (para filtrar dias laterais)
+// calcular média intradiária: acumulador simples
+if Date <> Date[1] then begin
+    atrDayMean = 0;
+    tradesToday = 0;
+end;
+atrDayMean = (atrDayMean * tradesToday + atr1m) / (tradesToday + 1);
+tradesToday = tradesToday + 1;
+
+// ====== LÓGICA DE ENTRADA E SAÍDA ======
+vars:
+    inPosition(false),
+    positionSide("") ,
+    entryPrice(0),
+    tpPoints(0),
+    slPoints(0);
+
+// Verifica condições de trade apenas dentro das janelas e se dia não é lateral
+curHHMM = Hour * 100 + Minute;
+if not IsInTradingWindow(curHHMM) then begin
+    // Fora do horário permitido -> não operar
+    // Se estiver posicionado, considerar gerenciamento (opcional fechar ao fim da janela)
+end else begin
+    // Se ATR médio do dia ainda não calculado totalmente, espera algumas barras (por exemplo 30 minutos)
+    if atrDayMean < ATRThresholdDay then begin
+        // dia lateral -> nao operar
+    end else begin
+        // sinal de tendência (aqui assumimos disponibilidade de EMA50/EMA200 5m corretos)
+        // Se sua versão suportar 'HigherTimeframe', pegue EMA50 e EMA200 diretamente
+        // Exemplo: trendUp = ema50_5m > ema200_5m
+        vars: trendUp(false), trendDown(false);
+        trendUp = ema50_5m > ema200_5m;
+        trendDown = ema50_5m < ema200_5m;
+
+        // Condição de Pullback e confirmação no candle atual:
+        // Compra: tendência alta, preço tocou/ficou abaixo de EMA21 no candle anterior e candle atual fecha acima de EMA21
+        if not inPosition and trendUp then begin
+            if Close[1] <= ema21[1] and Close > ema21 then begin
+                // Entrar LONG no próximo tick/bar (market) — pode usar ordem limit em Close se quiser
+                entryPrice = Close;
+                tpPoints = atr1m; // TP dinâmico = 1x ATR
+                slPoints = maxlist(MinSL, 0.5 * atr1m);
+                // Executar ordem (ajuste função conforme ProfitScript)
+                Buy ("LONG_Pullback") Contracts shares next bar at market;
+                inPosition = true;
+                positionSide = "long";
+            end;
+        end;
+
+        // Venda (short) simétrica
+        if not inPosition and trendDown then begin
+            if Close[1] >= ema21[1] and Close < ema21 then begin
+                entryPrice = Close;
+                tpPoints = atr1m;
+                slPoints = maxlist(MinSL, 0.5 * atr1m);
+                SellShort ("SHORT_Pullback") Contracts shares next bar at market;
+                inPosition = true;
+                positionSide = "short";
+            end;
+        end;
+
+        // Gerenciamento de posição: TP e SL
+        if inPosition then begin
+            if positionSide = "long" then begin
+                // TP
+                if High >= entryPrice + tpPoints then begin
+                    Sell ("Exit_LONG_TP") Contracts shares next bar at market;
+                    inPosition = false;
+                end;
+                // SL
+                if Low <= entryPrice - slPoints then begin
+                    Sell ("Exit_LONG_SL") Contracts shares next bar at market;
+                    inPosition = false;
+                end;
+            end else begin
+                // short
+                if Low <= entryPrice - tpPoints then begin
+                    BuyToCover ("Exit_SHORT_TP") Contracts shares next bar at market;
+                    inPosition = false;
+                end;
+                if High >= entryPrice + slPoints then begin
+                    BuyToCover ("Exit_SHORT_SL") Contracts shares next bar at market;
+                    inPosition = false;
+                end;
+            end;
+        end;
+    end;
+end;
+
+// ====== FINAL ======
+// 1) Ajuste: substituir blocos de timeframe por funções nativas do ProfitChart caso existam (ex.: request.security).
+// 2) Teste em paper-trade primeiro com 1 contrato antes de operar 5 contratos.
+// 3) Ajuste o cálculo do VWAP se quiser entrada por VWAP ao invés de EMA21.
+// 4) Logs: imprima/registre entradas, SL, TP e ATR no log do Profit para análise.
+
+// Boa prática: habilitar "Kill Switch" (parar o robô) ao atingir X perdas consecutivas.

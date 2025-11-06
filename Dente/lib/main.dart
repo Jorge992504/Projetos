@@ -14,7 +14,7 @@ void main() async {
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.maximize();
     await windowManager.setResizable(true);
-    await windowManager.setMinimumSize(const Size(800, 600));
+    await windowManager.setMinimumSize(const Size(1024, 800));
     await windowManager.show();
     await windowManager.focus();
   });

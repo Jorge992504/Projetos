@@ -16,4 +16,6 @@ public interface PacienteRepository extends JpaRepository<Paciente, Long> {
 
 //    @Query("SELECT p FROM Paciente p WHERE p.cpf = :cpf AND p.empresa_id = :empresaId")
     Optional<Paciente> findByCpfAndEmpresaId(String cpf, Long empresaId);
+
+    Optional<Paciente> findByIdAndEmpresaId(Long id, Long empresaId);
 }
