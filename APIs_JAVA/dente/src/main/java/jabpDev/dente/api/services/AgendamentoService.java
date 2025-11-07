@@ -87,7 +87,6 @@ public class AgendamentoService {
         if (servico.isEmpty()){
             throw new ErrorException("Serviço não encontrado para a clinica.");
         }
-
         Agendamento agendamento = Agendamento.builder()
                 .empresa(empresa.get())
                 .paciente(paciente.get())

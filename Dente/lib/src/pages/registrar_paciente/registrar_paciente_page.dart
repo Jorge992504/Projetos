@@ -52,7 +52,9 @@ class _RegistrarPacientePageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Cadastrar paciente')),
+      appBar: AppBar(
+        title: Text(isPesquisa == true ? 'Pacientes' : 'Cadastrar paciente'),
+      ),
       body: BlocConsumer<RegistrarPacienteController, RegistrarPacienteState>(
         listener: (context, state) {
           state.status.matchAny(

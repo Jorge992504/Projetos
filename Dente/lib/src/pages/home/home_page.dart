@@ -427,7 +427,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                       },
                                       onDoubleTap: () {
                                         String data =
-                                            '$dia/${mesAtual.month}/${mesAtual.year}';
+                                            '${dia.toString().padLeft(2, '0')}/${mesAtual.month.toString().padLeft(2, '0')}/${mesAtual.year}';
                                         if (dia < mesAtual.day) {
                                           showInfo(
                                             "Não pode realizar agendametos em datas passadas.",
