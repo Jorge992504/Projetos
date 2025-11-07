@@ -87,6 +87,8 @@ vars:
     entryPrice(0),
     tpPoints(0),
     slPoints(0);
+    
+
 
 // Verifica condições de trade apenas dentro das janelas e se dia não é lateral
 curHHMM = Hour * 100 + Minute;

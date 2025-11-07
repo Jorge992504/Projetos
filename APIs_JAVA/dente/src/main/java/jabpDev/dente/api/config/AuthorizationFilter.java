@@ -10,11 +10,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -38,7 +36,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         if (path.equals(filter.getLogin()) ||
                 path.equals(filter.getRegister()) ||
                 path.startsWith(filter.getRedefine()) ||
-                path.startsWith(filter.getPublicResource())){
+                path.startsWith("/api/public")){
             filterChain.doFilter(request,response);
             return;
         }
@@ -49,7 +47,11 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         }
         try {
             String token = header.substring(7);
-            Claims claims = servicesGerais.validarToken(token);
+            Claims claims = servicesGerais.validarToken(token, response);
+            if (claims.isEmpty()){
+                writeErrorResponse(response, "Token invalido, realizar login");
+                return;
+            }
             String email = claims.get("email", String.class);
             var userDetail = empresaRepository.findByEmailClinica(email).orElseThrow(() -> new ErrorException("Empresa não encontrada"));
 
@@ -59,7 +61,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(auth);
 
             filterChain.doFilter(request,response);
-        } catch (ErrorException e){
+        } catch (IOException e){
             writeErrorResponse(response, e.getMessage());
         }
 

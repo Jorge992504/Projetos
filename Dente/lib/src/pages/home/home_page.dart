@@ -112,7 +112,6 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
             loaded: hideLoader,
             failure: () {
               showError(state.errorMessage ?? 'INTERNAL_ERROR');
-
               hideLoader();
             },
             success: () async {
@@ -132,21 +131,31 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                   ListView(
                     children: [
                       UserAccountsDrawerHeader(
-                        accountName: Text(
-                          empresaModel.nomeClinica ?? "",
-                          style: context.cusotomFontes.textBoldItalic.copyWith(
-                            color: ColorsConstants.primaryColor,
-                            height: 1,
+                        accountName: SizedBox(
+                          width: 250,
+                          child: Text(
+                            empresaModel.nomeClinica ?? "",
+                            style: context.cusotomFontes.textBoldItalic
+                                .copyWith(
+                                  color: ColorsConstants.primaryColor,
+                                  height: 1,
+                                ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         accountEmail: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              empresaModel.emailClinica ?? "",
-                              style: context.cusotomFontes.textRegular.copyWith(
-                                color: ColorsConstants.primaryColor,
-                                height: 1,
+                            Flexible(
+                              child: Text(
+                                empresaModel.emailClinica ?? "",
+                                style: context.cusotomFontes.textRegular
+                                    .copyWith(
+                                      color: ColorsConstants.primaryColor,
+                                      height: 1.5,
+                                    ),
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
                               ),
                             ),
                             TextButton(
@@ -168,6 +177,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                 "Editar",
                                 style: context.cusotomFontes.textItalic
                                     .copyWith(fontSize: 13, height: 1),
+                                overflow: TextOverflow.visible,
                               ),
                             ),
                           ],
@@ -249,12 +259,8 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                         onTap: () async {
                           Navigator.of(
                             context,
-                          ).pushNamed(Rotas.agendamento).then((_) {
-                            // Aqui você faz o refresh da Home
-                            setState(() {
-                              // Chame sua função de recarregar os dados
-                              controller.buscaAgendamentos();
-                            });
+                          ).pushNamed(Rotas.agendamento).then((_) async {
+                            await refreshAgendamentos(); // método que já atualiza tudo corretamente
                           });
                         },
                       ),
@@ -296,6 +302,14 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
             loaded: hideLoader,
             failure: () {
               showError(state.errorMessage ?? 'INTERNAL_ERROR');
+              if (state.errorMessage == "Token invalido, realizar login") {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    Rotas.login,
+                    (route) => false, // remove todas as rotas anteriores
+                  );
+                });
+              }
 
               hideLoader();
             },
@@ -319,7 +333,11 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                       width: 950,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pushNamed(Rotas.agendamento);
+                          Navigator.of(
+                            context,
+                          ).pushNamed(Rotas.agendamento).then((_) async {
+                            await refreshAgendamentos(); // método que já atualiza tudo corretamente
+                          });
                         },
                         child: Text(
                           'Novo agendamento',
@@ -428,23 +446,21 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                       onDoubleTap: () {
                                         String data =
                                             '${dia.toString().padLeft(2, '0')}/${mesAtual.month.toString().padLeft(2, '0')}/${mesAtual.year}';
+
                                         if (dia < mesAtual.day) {
                                           showInfo(
                                             "Não pode realizar agendametos em datas passadas.",
                                           );
                                           return;
                                         }
+
                                         Navigator.of(context)
                                             .pushNamed(
                                               Rotas.agendamento,
                                               arguments: {'data': data},
                                             )
-                                            .then((_) {
-                                              // Aqui você faz o refresh da Home
-                                              setState(() {
-                                                // Chame sua função de recarregar os dados
-                                                controller.buscaAgendamentos();
-                                              });
+                                            .then((_) async {
+                                              await refreshAgendamentos(); // método que já atualiza tudo corretamente
                                             });
                                       },
                                       child: CircleAvatar(

@@ -1,0 +1,3 @@
+py -m pip install pyinstaller
+pyinstaller --onefile --name="miniBot" main.py
+dentro da pasta dist esta o .exe
