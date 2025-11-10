@@ -25,6 +25,7 @@ public class EmpresaService {
 
     public EmpresaDtoResponse buscaInfoEmpresa(){
         String foto;
+        String path = "rc/main/resources/static/public/";
         String empresa = SecurityContextHolder.getContext().getAuthentication().getName();
         if (empresa.isEmpty()){
             throw new ErrorException("Não autenticado");
@@ -35,7 +36,8 @@ public class EmpresaService {
 
                     foto = servicesGerais.baseUrl + "logoGeral.png";
                 }else{
-                    foto = servicesGerais.baseUrl + optionalEmpresa.get().getId() + "/" + optionalEmpresa.get().getFoto();
+//                    foto = servicesGerais.baseUrl + optionalEmpresa.get().getId() + "/" + optionalEmpresa.get().getFoto();
+                    foto = path + optionalEmpresa.get().getId() + "/" + optionalEmpresa.get().getFoto();
                 }
                 return new EmpresaDtoResponse(foto,
                         optionalEmpresa.get().getNomeClinica(),
