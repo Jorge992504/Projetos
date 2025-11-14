@@ -52,6 +52,9 @@ class _AgendamentoPageState
 
     horaController.text = DateFormat('HH:mm').format(dataAtual);
 
+    // Inicializa dataController aqui, não no build
+    dataController.text = DateFormat('dd/MM/yyyy', 'pt_BR').format(dataAtual);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.buscaDentistasServicos();
       final route = ModalRoute.of(context);
@@ -59,6 +62,9 @@ class _AgendamentoPageState
           (route!.settings.arguments ?? <String, dynamic>{}) as Map;
       setState(() {
         data = arguments['data'];
+        if (data.isNotEmpty) {
+          dataController.text = data;
+        }
       });
     });
   }
@@ -77,9 +83,6 @@ class _AgendamentoPageState
 
   @override
   Widget build(BuildContext context) {
-    dataController.text = data == ''
-        ? DateFormat('dd/MM/yyyy', 'pt_BR').format(dataAtual)
-        : data;
     return Scaffold(
       appBar: AppBar(title: const Text('Novo Agendamento')),
       body: BlocConsumer<AgendamentoController, AgendamentoState>(

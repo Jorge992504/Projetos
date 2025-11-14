@@ -47,7 +47,9 @@ public class RegistrarEmpresaService {
         }
 
 
-        String uploadDir = new File("src/main/resources/static/public/" + response.getId()).getAbsolutePath();
+//        String uploadDir = new File("src/main/resources/static/public/" + response.getId()).getAbsolutePath();
+        String uploadDir = new File("/home/ec2-user/dente/uploads/public/" + response.getId()).getAbsolutePath();
+
         File directory = new File(uploadDir);
         if (!directory.exists()) {
             boolean created = directory.mkdirs();

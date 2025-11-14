@@ -25,7 +25,6 @@ public class EmpresaService {
 
     public EmpresaDtoResponse buscaInfoEmpresa(){
         String foto;
-        String path = "rc/main/resources/static/public/";
         String empresa = SecurityContextHolder.getContext().getAuthentication().getName();
         if (empresa.isEmpty()){
             throw new ErrorException("Não autenticado");
@@ -34,10 +33,9 @@ public class EmpresaService {
             if (optionalEmpresa.isPresent()){
                 if (optionalEmpresa.get().getFoto() == null){
 
-                    foto = servicesGerais.baseUrl + "logoGeral.png";
+                    foto = servicesGerais.httpRemote + "logoGeral.png";
                 }else{
-//                    foto = servicesGerais.baseUrl + optionalEmpresa.get().getId() + "/" + optionalEmpresa.get().getFoto();
-                    foto = path + optionalEmpresa.get().getId() + "/" + optionalEmpresa.get().getFoto();
+                    foto = servicesGerais.httpRemote + optionalEmpresa.get().getId() + "/" + optionalEmpresa.get().getFoto();
                 }
                 return new EmpresaDtoResponse(foto,
                         optionalEmpresa.get().getNomeClinica(),
@@ -60,7 +58,7 @@ public class EmpresaService {
         if (!empresa.isPresent()){
             throw new ErrorException("Clinica não cadastrada");
         }else{
-            String uploadDir = new File("src/main/resources/static/public/" + body.nomeClinica()).getAbsolutePath();
+            String uploadDir = new File("/home/ec2-user/dente/uploads/public/" + empresa.get().getId()).getAbsolutePath();
             File directory = new File(uploadDir);
             if (!directory.exists()) {
                 boolean created = directory.mkdirs();
@@ -68,9 +66,9 @@ public class EmpresaService {
                     throw new ErrorException("Não foi possível criar o diretório: " + uploadDir);
                 }
             }
-            String nomeFoto = body.nomeClinica().replaceAll("\\s+", "_") + ".png";
+            String nomeFoto = empresa.get().getId() + ".png";
             File destino = new File(directory, nomeFoto);
-            String fotoBD = servicesGerais.baseUrl + empresa.get().getNomeClinica() + "/" + empresa.get().getFoto();
+            String fotoBD = servicesGerais.httpRemote + empresa.get().getId() + "/" + empresa.get().getFoto();
             if ( !body.foto().equals(fotoBD)){
                 if (body.foto() != null && !body.foto().isEmpty()) {
                     String fotoBase64 = body.foto();

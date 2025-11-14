@@ -3,6 +3,7 @@ import 'package:dente/core/router/rotas.dart';
 import 'package:dente/core/ui/theme/config_theme.dart';
 import 'package:dente/src/pages/agendamento/agendamento_router.dart';
 import 'package:dente/src/pages/atendimento/atendimento_router.dart';
+import 'package:dente/src/pages/dashboard/dashboard_router.dart';
 import 'package:dente/src/pages/dentista/dentista_router.dart';
 import 'package:dente/src/pages/editar_empresa/editar_empresa_router.dart';
 import 'package:dente/src/pages/historico_consultas/historico_consultas_router.dart';
@@ -11,6 +12,7 @@ import 'package:dente/src/pages/home/home_router.dart';
 import 'package:dente/src/pages/login/login_router.dart';
 import 'package:dente/src/pages/registrar_empresa/registrar_empresa_router.dart';
 import 'package:dente/src/pages/registrar_paciente/registrar_paciente_router.dart';
+import 'package:dente/src/pages/relatorio/relatorio_router.dart';
 import 'package:dente/src/pages/reset_password/reset_password_router.dart';
 import 'package:dente/src/pages/servicos/servicos_router.dart';
 import 'package:dente/src/pages/splash/splash_page.dart';
@@ -49,6 +51,8 @@ class DenteApp extends StatelessWidget {
           Rotas.historicoConsultas: (context) =>
               HistoricoConsultasRouter.page(),
           Rotas.historicoPaciente: (context) => HistoricoPacienteRouter.page(),
+          Rotas.dashboard: (context) => DashboardRouter.page(),
+          Rotas.relatorio: (context) => RelatorioRouter.page(),
         },
       ),
     );

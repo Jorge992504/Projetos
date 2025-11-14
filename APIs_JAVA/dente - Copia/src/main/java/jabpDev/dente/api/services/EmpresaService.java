@@ -33,9 +33,9 @@ public class EmpresaService {
             if (optionalEmpresa.isPresent()){
                 if (optionalEmpresa.get().getFoto() == null){
 
-                    foto = servicesGerais.baseUrl + "logoGeral.png";
+                    foto = servicesGerais.httpRemote + "logoGeral.png";
                 }else{
-                    foto = servicesGerais.baseUrl + optionalEmpresa.get().getId() + "/" + optionalEmpresa.get().getFoto();
+                    foto = servicesGerais.httpRemote + optionalEmpresa.get().getId() + "/" + optionalEmpresa.get().getFoto();
                 }
                 return new EmpresaDtoResponse(foto,
                         optionalEmpresa.get().getNomeClinica(),
@@ -58,7 +58,7 @@ public class EmpresaService {
         if (!empresa.isPresent()){
             throw new ErrorException("Clinica não cadastrada");
         }else{
-            String uploadDir = new File("src/main/resources/static/public/" + body.nomeClinica()).getAbsolutePath();
+            String uploadDir = new File("/home/ec2-user/dente/uploads/public/" + body.nomeClinica()).getAbsolutePath();
             File directory = new File(uploadDir);
             if (!directory.exists()) {
                 boolean created = directory.mkdirs();

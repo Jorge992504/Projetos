@@ -31,12 +31,11 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
         String header = request.getHeader("Authorization");
+        
 
-        IO.println("Path que entra no filter: "+ path);
         if (path.equals(filter.getLogin()) ||
                 path.equals(filter.getRegister()) ||
-                path.startsWith(filter.getRedefine()) ||
-                path.startsWith("/api/public")){
+                path.startsWith(filter.getRedefine()) || path.startsWith("/public/")){
             filterChain.doFilter(request,response);
             return;
         }
@@ -75,5 +74,4 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                 String.format("{\"message\": \"%s\"}", message)
         );
     }
-
 }

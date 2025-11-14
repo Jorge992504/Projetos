@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:dente/core/rest_client/rest_client.dart';
 import 'package:dente/core/router/rotas.dart';
 import 'package:dente/core/ui/base/base_state.dart';
 import 'package:dente/core/ui/style/custom_colors.dart';
@@ -33,10 +36,14 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
   List<AgendamentoPacienteResponse> agendamentosDetalhes = [];
   List<AgendamentosModelResponse> agendamentosDiaRefresh = [];
   List<AgendamentosModelResponse> agendamentosDia = [];
+  EmpresaModel empresaModel = EmpresaModel();
+  String token = '';
 
   int? diaSelecionado = 0;
   bool isSelecionado = false;
   bool isHovering = false;
+
+  RestClient restClient = RestClient();
 
   @override
   void initState() {
@@ -45,6 +52,12 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // controller.buscaAgendamentos();
       // agendamentosPorData = agruparPorData();
+      empresaModel = Provider.of<AuthProvider>(
+        context,
+        listen: false,
+      ).empresaModel;
+      token = Provider.of<AuthProvider>(context, listen: false).token;
+      log(token);
       await refreshAgendamentos();
 
       // if (controller.state.agendamentos!.isNotEmpty) {
@@ -77,11 +90,6 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
     final fimMes = DateTime(mesAtual.year, mesAtual.month + 1, 0);
     final diasMes = fimMes.day;
     final totalDias = diasMes + primeiroDiaSemana;
-
-    EmpresaModel empresaModel = Provider.of<AuthProvider>(
-      context,
-      listen: false,
-    ).empresaModel;
 
     String getNome() {
       if (empresaModel.nomeClinica!.isEmpty ||
@@ -189,7 +197,10 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                           radius: 40, // ou maxRadius
                           backgroundColor: ColorsConstants.focusColor,
                           backgroundImage: empresaModel.foto != null
-                              ? NetworkImage(empresaModel.foto!)
+                              ? NetworkImage(
+                                  empresaModel.foto!,
+                                  headers: {"Authorization": "Bearer $token"},
+                                )
                               : null,
 
                           child: empresaModel.foto == null
@@ -259,12 +270,8 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                         onTap: () async {
                           Navigator.of(
                             context,
-                          ).pushNamed(Rotas.agendamento).then((_) {
-                            // Aqui você faz o refresh da Home
-                            setState(() {
-                              // Chame sua função de recarregar os dados
-                              controller.buscaAgendamentos();
-                            });
+                          ).pushNamed(Rotas.agendamento).then((_) async {
+                            await refreshAgendamentos(); // método que já atualiza tudo corretamente
                           });
                         },
                       ),
@@ -306,7 +313,8 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
             loaded: hideLoader,
             failure: () {
               showError(state.errorMessage ?? 'INTERNAL_ERROR');
-              if (state.errorMessage == "Token invalido, realizar login") {
+              if (state.errorMessage == "Token invalido, realizar login" ||
+                  state.errorMessage == "Entrar em contato com suporte") {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     Rotas.login,
@@ -337,7 +345,11 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                       width: 950,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pushNamed(Rotas.agendamento);
+                          Navigator.of(
+                            context,
+                          ).pushNamed(Rotas.agendamento).then((_) async {
+                            await refreshAgendamentos(); // método que já atualiza tudo corretamente
+                          });
                         },
                         child: Text(
                           'Novo agendamento',
@@ -445,24 +457,22 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                       },
                                       onDoubleTap: () {
                                         String data =
-                                            '$dia/${mesAtual.month}/${mesAtual.year}';
+                                            '${dia.toString().padLeft(2, '0')}/${mesAtual.month.toString().padLeft(2, '0')}/${mesAtual.year}';
+
                                         if (dia < mesAtual.day) {
                                           showInfo(
                                             "Não pode realizar agendametos em datas passadas.",
                                           );
                                           return;
                                         }
+
                                         Navigator.of(context)
                                             .pushNamed(
                                               Rotas.agendamento,
                                               arguments: {'data': data},
                                             )
-                                            .then((_) {
-                                              // Aqui você faz o refresh da Home
-                                              setState(() {
-                                                // Chame sua função de recarregar os dados
-                                                controller.buscaAgendamentos();
-                                              });
+                                            .then((_) async {
+                                              await refreshAgendamentos(); // método que já atualiza tudo corretamente
                                             });
                                       },
                                       child: CircleAvatar(

@@ -34,6 +34,9 @@ public class ServicesGerais {
     @Getter
     @Value("${app.base-url}")
     public String baseUrl;
+    @Getter
+    @Value("${app.remote-url}")
+    public String httpRemote;
 
     private final JavaMailSender javaMailSender;
 

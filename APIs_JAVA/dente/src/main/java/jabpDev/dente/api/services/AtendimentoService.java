@@ -56,7 +56,7 @@ public class AtendimentoService {
         String data = formatoSaida.format(dataConvertida);
 
         if (files != null){
-            String uploadDir = new File("src/main/resources/static/public/" + empresa.get().getId()).getAbsolutePath();
+            String uploadDir = new File("/home/ec2-user/dente/uploads/public/" + empresa.get().getId()).getAbsolutePath();
             File directory = new File(uploadDir);
             if (!directory.exists()) {
                 boolean created = directory.mkdirs();

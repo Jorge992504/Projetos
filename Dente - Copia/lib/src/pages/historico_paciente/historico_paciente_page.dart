@@ -1,5 +1,6 @@
+import 'dart:developer';
 import 'dart:io';
-
+import 'package:dente/core/rest_client/rest_client.dart';
 import 'package:dente/core/ui/base/base_state.dart';
 import 'package:dente/core/ui/style/custom_colors.dart';
 import 'package:dente/core/ui/style/fontes_letras.dart';
@@ -7,8 +8,6 @@ import 'package:dente/core/ui/style/size_extension.dart';
 import 'package:dente/src/models/response/historico_arquivos_response.dart';
 import 'package:dente/src/pages/historico_paciente/historico_paciente_controller.dart';
 import 'package:dente/src/pages/historico_paciente/historico_paciente_state.dart';
-// import 'package:dente/src/pages/historico_paciente/widgets/image_viewer_page.dart';
-// import 'package:dente/src/pages/historico_paciente/widgets/pdf_viewer_page.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +27,7 @@ class _HistoricoPacientePageState
   int pacienteId = 0;
   String pacienteNm = '';
   List<HistoricoArquivosResponse> historicos = [];
+  RestClient restClient = RestClient();
 
   @override
   void initState() {
@@ -184,8 +184,12 @@ class _HistoricoPacientePageState
     final file = File(localPath);
 
     // Baixa o arquivo se não existir
+
+    log(url);
     if (!await file.exists()) {
-      final response = await Dio().get(
+      log("url---->  $url");
+
+      final response = await restClient.auth.get(
         url,
         options: Options(responseType: ResponseType.bytes),
       );

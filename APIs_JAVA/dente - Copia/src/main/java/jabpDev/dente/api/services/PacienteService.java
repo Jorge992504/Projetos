@@ -83,7 +83,8 @@ public class PacienteService {
     }
 
     public ResponseEntity<?> buscaDocumentos(Long pacienteId, HttpServletRequest request){
-        String basePath = "src/main/resources/static/public";
+        
+        String basePath = "/home/ec2-user/dente/uploads/public/";
         String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
         if (empresa.isEmpty()){
@@ -94,7 +95,6 @@ public class PacienteService {
         if (paciente.isEmpty()){
             throw new ErrorException("Paciente não encontrado");
         }
-
 
         File pastaPaciente = new File(basePath + "/" + empresa.get().getId() + "/" + paciente.get().getId());
         if (!pastaPaciente.exists() || !pastaPaciente.isDirectory()) {
@@ -111,7 +111,7 @@ public class PacienteService {
                 List<String> arquivos = new ArrayList<>();
                 for (File arquivo : Objects.requireNonNull(pastaData.listFiles())) {
                     if (arquivo.isFile()) {
-                        String url = servicesGerais.baseUrl + empresa.get().getId() + "/" + paciente.get().getId() + "/" +
+                        String url = servicesGerais.httpRemote + empresa.get().getId() + "/" + paciente.get().getId() + "/" +
                                 pastaData.getName() + "/" + arquivo.getName();
                         arquivos.add(url);
                     }
@@ -123,6 +123,7 @@ public class PacienteService {
         }
 
         resultado.sort((a, b) -> ((String) b.get("data")).compareTo((String) a.get("data")));
+
         return ResponseEntity.ok(resultado);
 
     }

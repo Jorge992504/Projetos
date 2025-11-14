@@ -65,4 +65,21 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
             nativeQuery = true
     )
     List<HistoricoAgendamentosResponse> findByPacienteIdAndEmpresaId(Long pacienteId, Long empresaId);
+
+
+
+    @Query("""
+        SELECT a FROM Agendamento a
+        JOIN FETCH a.servico s
+        WHERE a.empresa.id = :empresaId
+        AND a.status = 'Realizado'
+        """)
+    List<Agendamento> findByEmpresaIdAndStatus(@Param("empresaId") Long empresaId);
+
+    @Query("""
+        SELECT a FROM Agendamento a
+        JOIN FETCH a.servico s
+        WHERE a.empresa.id = :empresaId
+        """)
+    List<Agendamento> findTodosByEmpresa(@Param("empresaId") Long empresaId);
 }

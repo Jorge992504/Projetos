@@ -116,7 +116,7 @@ public class AgendamentoService {
         String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
         if (empresa.isEmpty()){
-            throw new ErrorException("Sem permissão para cadastrar dentista.\nRealizar login novamente");
+            throw new ErrorException("Token nao encontrado.\nRealizar login novamente");
         }
         List<AgendamentosDtoResponse> agendamentos = agendamentoRepository.findByEmpresaId(empresa.get().getId());
         List<BuscaAgendamentosDtoResponse> response = agendamentos.stream()

@@ -5,8 +5,11 @@ import 'package:dio/dio.dart';
 class CreateException {
   static RepositoryException dioException(Object dio) {
     if (dio is DioException) {
-      if (dio.type == DioExceptionType.badResponse) {
+      log('----dio---> $dio');
+      if (dio.type == DioExceptionType.badResponse ||
+          dio.type == DioExceptionType.unknown) {
         final data = dio.response?.data;
+        log('----data---> $data');
 
         String message;
 
@@ -21,7 +24,7 @@ class CreateException {
             message = data;
           }
         } else {
-          message = "Erro não informado";
+          message = "Entrar em contato com suporte";
         }
 
         log('-------> $message');

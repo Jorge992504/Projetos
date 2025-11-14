@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:dente/core/rest_client/rest_client.dart';
 import 'package:dente/core/ui/base/base_state.dart';
@@ -183,6 +184,8 @@ class _HistoricoPacientePageState
     final file = File(localPath);
 
     // Baixa o arquivo se não existir
+
+    log(url);
     if (!await file.exists()) {
       final response = await restClient.auth.get(
         url,

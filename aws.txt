@@ -1,0 +1,17 @@
+deixar a api rodando java => -jar nome_api.jar &
+listar os arquivos no ec2 => ls
+ver os processos q estoa rodando => ps -aux | grep java
+parar um processor => kill -9 numero tid
+ver o funcionamento da cpu => htop
+conetar meu not com a aws => ssh ec2-user@ec2-3-128-31-51.us-east-2.compute.amazonaws.com
+
+buildar a api => mvn clean install -DskipTests
+seta  o java 21 => set JAVA_HOME="C:\java\jdk-21"
+                   set PATH=%JAVA_HOME%\bin;%PATH%
+copiar o .jar para a aws => scp dente-0.0.1-SNAPSHOT.jar ec2-user@3.128.31.51:/home/ec2-user
+
+acessar ao banco => psql -h pg-jabpdev.cv2m40igmifd.us-east-2.rds.amazonaws.com -U postgres
+
+para de rodar o script => sudo systemctl stop dente
+inicia o script => sudo systemctl stop dente
+verifica o status da api => sudo systemctl status dente

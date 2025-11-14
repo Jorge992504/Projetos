@@ -5,4 +5,5 @@ sealed class ImageConstants {
   static const servicos = 'assets/image/servicos.png';
   static const calendario = 'assets/image/Calendario.png';
   static const cliente = 'assets/image/Cliente.png';
+  static const dashboard = 'assets/image/dashboard.png';
 }
