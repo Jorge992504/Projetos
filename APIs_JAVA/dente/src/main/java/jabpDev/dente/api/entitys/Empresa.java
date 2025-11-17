@@ -24,7 +24,7 @@ public class Empresa implements UserDetails {
     @Column(name = "nomeClinica")
     private String nomeClinica;
 
-    @Column(name = "emailClinica", unique = true, nullable = false)
+    @Column(name = "emailClinica", nullable = false)
     private String emailClinica;
 
     @Column(name = "telefone")

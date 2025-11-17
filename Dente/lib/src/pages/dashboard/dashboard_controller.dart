@@ -9,14 +9,22 @@ class DashboardController extends Cubit<DashboardState> {
 
   DashboardController(this._repository) : super(DashboardState.initial());
 
-  Future<void> buscaRelatorios() async {
+  Future<void> buscaProcedimentosRealizados(String? filtro) async {
     try {
-      emit(state.copyWith(status: DashboardStatus.loading, relatorios: []));
+      emit(
+        state.copyWith(
+          status: DashboardStatus.loading,
+          procedimentosRealizados: [],
+        ),
+      );
 
-      final response = await _repository.buscaRelatorios();
+      final response = await _repository.buscaProcedimentosRealizados(filtro);
 
       emit(
-        state.copyWith(status: DashboardStatus.loaded, relatorios: response),
+        state.copyWith(
+          status: DashboardStatus.loaded,
+          procedimentosRealizados: response,
+        ),
       );
     } on RepositoryException catch (e, s) {
       log('$s');
@@ -24,7 +32,36 @@ class DashboardController extends Cubit<DashboardState> {
         state.copyWith(
           status: DashboardStatus.failure,
           errorMessage: e.message,
-          relatorios: [],
+          procedimentosRealizados: [],
+        ),
+      );
+    }
+  }
+
+  Future<void> buscaRelatoriosAgendamentos(String? filtro) async {
+    try {
+      emit(
+        state.copyWith(
+          status: DashboardStatus.loading,
+          relatoriosAgendamentos: [],
+        ),
+      );
+
+      final response = await _repository.buscaRelatoriosAgendamentos(filtro);
+
+      emit(
+        state.copyWith(
+          status: DashboardStatus.loaded,
+          relatoriosAgendamentos: response,
+        ),
+      );
+    } on RepositoryException catch (e, s) {
+      log('$s');
+      emit(
+        state.copyWith(
+          status: DashboardStatus.failure,
+          errorMessage: e.message,
+          relatoriosAgendamentos: [],
         ),
       );
     }
