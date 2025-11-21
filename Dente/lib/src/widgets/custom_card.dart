@@ -13,10 +13,13 @@ class CustomCard extends StatelessWidget {
   final String? servico;
   final String? horario;
   final String? status;
+  final String? sala;
+  final String? statusPayment;
   final Function()? onPressedCancelado;
   final Function()? onPressedConfirmado;
   final Function()? onPressedHisotorico;
   final Function()? onPressedHisotoricoPaciente;
+  final Function()? onPressedPagamento;
   final bool? isAction;
 
   const CustomCard({
@@ -36,6 +39,9 @@ class CustomCard extends StatelessWidget {
     this.onPressedHisotorico,
     this.onPressedHisotoricoPaciente,
     this.isAction,
+    this.sala,
+    this.onPressedPagamento,
+    this.statusPayment,
   });
 
   @override
@@ -67,6 +73,13 @@ class CustomCard extends StatelessWidget {
             ),
             Text(
               horario ?? "",
+              style: context.cusotomFontes.textBoldItalic.copyWith(
+                color: ColorsConstants.letrasColor,
+                fontSize: 14,
+              ),
+            ),
+            Text(
+              sala ?? "Sala 01",
               style: context.cusotomFontes.textBoldItalic.copyWith(
                 color: ColorsConstants.letrasColor,
                 fontSize: 14,
@@ -201,6 +214,33 @@ class CustomCard extends StatelessWidget {
                     Icons.filter_list_sharp,
                     color: ColorsConstants.appBarColor,
                     size: 25,
+                  ),
+                ),
+                const SizedBox(width: 25),
+                Visibility(
+                  visible: status == 'Realizado' && statusPayment == 'Pendente',
+                  child: IconButton(
+                    tooltip: 'Concluir pagamento',
+                    padding: EdgeInsets.zero, // remove o padding padrão
+                    constraints: BoxConstraints(),
+                    onPressed: onPressedPagamento,
+                    style: ButtonStyle(
+                      overlayColor: MaterialStateProperty.resolveWith<Color?>((
+                        Set<MaterialState> states,
+                      ) {
+                        if (states.contains(MaterialState.hovered)) {
+                          return ColorsConstants.appBarColor.withOpacity(
+                            0.3,
+                          ); // cor de hover
+                        }
+                        return null; // cor padrão
+                      }),
+                    ),
+                    icon: Icon(
+                      Icons.payments_outlined,
+                      color: ColorsConstants.appBarColor,
+                      size: 25,
+                    ),
                   ),
                 ),
               ],

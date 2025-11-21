@@ -43,6 +43,10 @@ public class Agendamento {
     private Empresa empresa;
 
     @ManyToOne
+    @JoinColumn(name = "convenio_id")
+    private Convenio convenio;
+
+    @ManyToOne
     @JoinColumn(name = "dentista_id")
     private Dentista dentista;
 
@@ -54,4 +58,7 @@ public class Agendamento {
 
     @Column(name = "status")
     private String status;
+
+    @Column(name = "sala")
+    private String sala;
 }

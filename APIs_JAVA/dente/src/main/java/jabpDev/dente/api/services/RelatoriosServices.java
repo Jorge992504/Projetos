@@ -4,15 +4,14 @@ package jabpDev.dente.api.services;
 import jabpDev.dente.api.dto.response.AgendamentoCabecaResponse;
 import jabpDev.dente.api.dto.response.RelatorioAgendamentoResponse;
 import jabpDev.dente.api.dto.response.RelatorioClinicoProcedimentosResponse;
+import jabpDev.dente.api.dto.response.RelatorioFinanceiroResponse;
 import jabpDev.dente.api.entitys.Agendamento;
 import jabpDev.dente.api.entitys.Empresa;
 import jabpDev.dente.api.exceptions.ErrorException;
-import jabpDev.dente.api.repositories.AgendamentoRepository;
-import jabpDev.dente.api.repositories.EmpresaRepository;
-import jabpDev.dente.api.repositories.RelatoriosRepository;
-import jabpDev.dente.api.repositories.ServicosRepository;
+import jabpDev.dente.api.repositories.*;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +31,7 @@ public class RelatoriosServices {
     private final RelatoriosRepository relatoriosRepository;
     private final ServicosRepository servicosRepository;
     private final AgendamentoRepository agendamentoRepository;
+    private final PagamentoRepository pagamentoRepository;
 
 
 
@@ -204,5 +204,40 @@ public class RelatoriosServices {
                 cancelados,
                 itens
         );
+    }
+
+
+    public RelatorioFinanceiroResponse buscarelatoriosFinanciero(String filtro){
+        String nmEmpresa = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
+
+        if (empresa.isEmpty()){
+            throw new ErrorException("Sem permissão.\nRealizar login novamente");
+        }
+
+        List<Object[]> bruto = pagamentoRepository.faturamentoDiario(empresa.get().getId());
+        if (bruto.isEmpty()){
+            return null;
+        }
+        Object[] linha = bruto.get(0);
+        LocalDate data = ((java.sql.Date) linha[0]).toLocalDate();
+
+        Double total = (Double) linha[1];
+
+        RelatorioFinanceiroResponse.Cabecalho cab = new RelatorioFinanceiroResponse.Cabecalho();
+        cab.setPeriodo(data.toString());
+        cab.setValorTotal(total);
+
+        List<Object[]> detalhesBrutos = pagamentoRepository.detalhesDiariosPorServico(empresa.get().getId(),data);
+        List<RelatorioFinanceiroResponse.ItemDetalhe> detalhes = detalhesBrutos.stream().map(row -> {
+            RelatorioFinanceiroResponse.ItemDetalhe item = new RelatorioFinanceiroResponse.ItemDetalhe();
+            item.setDescricao((String) row[0]);
+            item.setValor((Double) row[1]);
+            return item;
+        }).toList();
+        RelatorioFinanceiroResponse response = new RelatorioFinanceiroResponse();
+        response.setCabecalho(cab);
+        response.setDetalhes(detalhes);
+        return response;
     }
 }

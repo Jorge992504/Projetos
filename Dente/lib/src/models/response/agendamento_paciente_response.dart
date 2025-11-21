@@ -4,11 +4,13 @@ import 'dart:convert';
 class AgendamentoPacienteResponse {
   int? pacienteId;
   int? agendamentoId;
+  int? servicoId;
   String? status;
   String? pacienteNome;
   String? servico;
   String? datahorario;
   String? observacoes;
+  num? vl;
   AgendamentoPacienteResponse({
     this.pacienteId,
     this.agendamentoId,
@@ -17,6 +19,8 @@ class AgendamentoPacienteResponse {
     this.servico,
     this.datahorario,
     this.observacoes,
+    this.vl,
+    this.servicoId,
   });
 
   AgendamentoPacienteResponse copyWith({
@@ -27,6 +31,8 @@ class AgendamentoPacienteResponse {
     String? servico,
     String? datahorario,
     String? observacoes,
+    num? vl,
+    int? servicoId,
   }) {
     return AgendamentoPacienteResponse(
       pacienteId: pacienteId ?? this.pacienteId,
@@ -36,6 +42,8 @@ class AgendamentoPacienteResponse {
       servico: servico ?? this.servico,
       datahorario: datahorario ?? this.datahorario,
       observacoes: observacoes ?? this.observacoes,
+      vl: vl ?? this.vl,
+      servicoId: servicoId ?? this.servicoId,
     );
   }
 
@@ -48,6 +56,8 @@ class AgendamentoPacienteResponse {
       'servico': servico,
       'datahorario': datahorario,
       'observacoes': observacoes,
+      'vl': vl,
+      'servicoId': servicoId,
     };
   }
 
@@ -60,6 +70,8 @@ class AgendamentoPacienteResponse {
       servico: map['servico'] ?? "",
       datahorario: map['datahorario'] ?? "",
       observacoes: map['observacoes'] ?? "",
+      vl: map['vl'] ?? 0.0,
+      servicoId: map['servicoId'] ?? 0,
     );
   }
 
@@ -72,7 +84,7 @@ class AgendamentoPacienteResponse {
 
   @override
   String toString() {
-    return 'AgendamentoPacienteResponse(pacienteId: $pacienteId, agendamentoId: $agendamentoId, status: $status, pacienteNome: $pacienteNome, servico: $servico, datahorario: $datahorario, observacoes: $observacoes)';
+    return 'AgendamentoPacienteResponse(pacienteId: $pacienteId, agendamentoId: $agendamentoId, status: $status, pacienteNome: $pacienteNome, servico: $servico, datahorario: $datahorario, observacoes: $observacoes, vl: $vl, servicoId: $servicoId)';
   }
 
   @override
@@ -85,7 +97,9 @@ class AgendamentoPacienteResponse {
         other.pacienteNome == pacienteNome &&
         other.servico == servico &&
         other.datahorario == datahorario &&
-        other.observacoes == observacoes;
+        other.observacoes == observacoes &&
+        other.vl == vl &&
+        other.servicoId == servicoId;
   }
 
   @override
@@ -96,6 +110,8 @@ class AgendamentoPacienteResponse {
         pacienteNome.hashCode ^
         servico.hashCode ^
         datahorario.hashCode ^
-        observacoes.hashCode;
+        observacoes.hashCode ^
+        vl.hashCode ^
+        servicoId.hashCode;
   }
 }

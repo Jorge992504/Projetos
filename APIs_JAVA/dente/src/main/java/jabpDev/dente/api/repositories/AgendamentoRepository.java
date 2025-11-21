@@ -27,7 +27,9 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
                         s.nome AS nome_servico,
                         a.data_hora,
                         a.observacoes,
-                        a.paciente_id
+                        a.paciente_id,
+                        s.vl,
+                        s.id
                     FROM agendamento a
                     JOIN paciente p ON p.id = a.paciente_id
                     JOIN servicos s ON s.id = a.servico_id
@@ -90,6 +92,8 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
             order by data_hora ASC
             """, nativeQuery = true)
     List<Agendamento> buscaTodos(Long empresaId);
+
+    Optional<Agendamento> findByEmpresaIdAndId(Long empresaId, Long id);
 
 
 }

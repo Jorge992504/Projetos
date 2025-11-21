@@ -15,4 +15,6 @@ mixin Rotas {
   static const String atendimento = "/atendimento";
   static const String dashboard = "/dashboard";
   static const String relatorio = "/relatorio";
+  static const String payment = "/payment";
+  static const String convenio = "/convenio";
 }

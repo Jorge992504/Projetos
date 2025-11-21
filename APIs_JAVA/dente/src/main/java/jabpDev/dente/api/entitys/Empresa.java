@@ -42,6 +42,9 @@ public class Empresa implements UserDetails {
     @Column(name = "foto")
     private String foto;
 
+    @Column(name = "tipo")
+    private String tipo;
+
 
 
     @Override

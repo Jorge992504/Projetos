@@ -54,6 +54,15 @@ class _RegistrarPacientePageState
     return Scaffold(
       appBar: AppBar(
         title: Text(isPesquisa == true ? 'Pacientes' : 'Cadastrar paciente'),
+        leading: Visibility(
+          visible: isPesquisa,
+          child: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back),
+          ),
+        ),
       ),
       body: BlocConsumer<RegistrarPacienteController, RegistrarPacienteState>(
         listener: (context, state) {

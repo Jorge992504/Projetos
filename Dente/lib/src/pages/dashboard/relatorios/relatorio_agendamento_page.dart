@@ -25,7 +25,7 @@ class _RelatorioAgendamentoPageState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.buscaRelatoriosAgendamentos('mes');
+      controller.buscaRelatoriosAgendamentos('semana');
     });
   }
 

@@ -7,6 +7,8 @@ public record AgendamentoPorPacienteResponse(
         String servico,
         String datahorario,
         String observacoes,
-        Long pacienteId
+        Long pacienteId,
+        Float vl,
+        Long servicoId
 ) {
 }

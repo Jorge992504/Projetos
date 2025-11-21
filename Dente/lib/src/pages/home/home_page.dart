@@ -40,6 +40,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
   int? diaSelecionado = 0;
   bool isSelecionado = false;
   bool isHovering = false;
+  bool statusPayment = false;
 
   RestClient restClient = RestClient();
 
@@ -247,6 +248,21 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                       ),
                       ListTile(
                         leading: Image.asset(
+                          ImageConstants.convenio,
+                          width: 25,
+                          height: 25,
+                          fit: BoxFit.cover,
+                        ),
+                        title: Text(
+                          "Convenios",
+                          style: context.cusotomFontes.textBoldItalic,
+                        ),
+                        onTap: () async {
+                          Navigator.of(context).pushNamed(Rotas.convenio);
+                        },
+                      ),
+                      ListTile(
+                        leading: Image.asset(
                           ImageConstants.calendario,
                           width: 25,
                           height: 25,
@@ -317,15 +333,17 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
             loaded: hideLoader,
             failure: () {
               showError(state.errorMessage ?? 'INTERNAL_ERROR');
-              if (state.errorMessage == "Token invalido, realizar login" ||
-                  state.errorMessage == "Entrar em contato com suporte") {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    Rotas.login,
-                    (route) => false, // remove todas as rotas anteriores
-                  );
-                });
-              }
+              // if (state.errorMessage == "Token invalido, realizar login"
+              // ||
+              //     state.errorMessage == "Entrar em contato com suporte"
+              //     ) {
+              //   WidgetsBinding.instance.addPostFrameCallback((_) {
+              //     Navigator.of(context).pushNamedAndRemoveUntil(
+              //       Rotas.login,
+              //       (route) => false, // remove todas as rotas anteriores
+              //     );
+              //   });
+              // }
 
               hideLoader();
             },
@@ -601,6 +619,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                 nome: agendamentoDetalhe.pacienteNome,
                                 servico: agendamentoDetalhe.servico,
                                 horario: agendamentoDetalhe.datahorario,
+                                statusPayment: "Pendente",
 
                                 onPressedCancelado: () async {
                                   await controller
@@ -641,6 +660,22 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                   );
                                 },
                                 status: agendamentoDetalhe.status,
+                                onPressedPagamento: () async {
+                                  await Navigator.of(context)
+                                      .pushNamed(
+                                        Rotas.payment,
+                                        arguments: {
+                                          "agendamentoDetalhe":
+                                              agendamentoDetalhe,
+                                        },
+                                      )
+                                      .then((_) async {
+                                        await refreshPage(
+                                          agendamentosSelecionados,
+                                        );
+                                        setState(() {});
+                                      });
+                                },
                               ),
                             ),
                           );

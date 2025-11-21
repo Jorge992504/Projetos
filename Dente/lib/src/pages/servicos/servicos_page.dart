@@ -53,7 +53,16 @@ class _ServicosPageState extends BaseState<ServicosPage, ServicosController> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          isPesquisa == true ? 'Serviços oferecidos' : 'Serviços oferecidos',
+          isPesquisa == true ? 'Serviços oferecidos' : 'Incluir serviço',
+        ),
+        leading: Visibility(
+          visible: isPesquisa,
+          child: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back),
+          ),
         ),
       ),
       body: BlocConsumer<ServicosController, ServicosState>(

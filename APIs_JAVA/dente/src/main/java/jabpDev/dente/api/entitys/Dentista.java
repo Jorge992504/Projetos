@@ -34,4 +34,10 @@ public class Dentista {
 
     @Column(name = "ativo")
     private boolean ativo;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "tipo")
+    private String tipo;
 }

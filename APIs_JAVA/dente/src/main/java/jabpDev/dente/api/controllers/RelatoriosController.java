@@ -5,8 +5,10 @@ package jabpDev.dente.api.controllers;
 import jabpDev.dente.api.dto.response.AgendamentoCabecaResponse;
 import jabpDev.dente.api.dto.response.RelatorioAgendamentoResponse;
 import jabpDev.dente.api.dto.response.RelatorioClinicoProcedimentosResponse;
+import jabpDev.dente.api.dto.response.RelatorioFinanceiroResponse;
 import jabpDev.dente.api.services.RelatoriosServices;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +28,11 @@ public class RelatoriosController {
     @GetMapping("/agendamentos")
     public List<AgendamentoCabecaResponse> buscaRelatoriosAgendamentos(@RequestParam String filtro){
         return relatoriosServices.buscaRelatoriosAgendamentos(filtro);
+    }
+
+    @GetMapping("/financiero")
+    public RelatorioFinanceiroResponse buscarelatoriosFinanciero(@RequestParam String filtro){
+        return relatoriosServices.buscarelatoriosFinanciero(filtro);
     }
 
 }

@@ -168,7 +168,10 @@ public class AgendamentoService {
                             a.servico(),
                             a.datahorario(),
                             a.observacoes(),
-                            a.pacienteId()
+                            a.pacienteId(),
+                            a.vl(),
+                            a.servicoId()
+
                     );
                 }).collect(Collectors.toList());
         return response;

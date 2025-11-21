@@ -6,6 +6,7 @@ import 'package:dente/src/pages/dashboard/dashboard_controller.dart';
 import 'package:dente/src/pages/dashboard/dashboard_state.dart';
 import 'package:dente/src/pages/dashboard/relatorios/relatorio_agendamento_page.dart';
 import 'package:dente/src/pages/dashboard/relatorios/relatorio_clinico_page.dart';
+import 'package:dente/src/pages/dashboard/relatorios/relatorio_financiero_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -132,10 +133,7 @@ class _DashboardPageState
                       height: 100,
                       child: InkWell(
                         onTap: () {
-                          Navigator.of(context).pushNamed(
-                            Rotas.relatorio,
-                            // arguments: {'id': relatoriosModel.id},
-                          );
+                          navegarRelatoriosFinancieros();
                         },
                         child: Card(
                           color: ColorsConstants.primaryColor,
@@ -283,6 +281,17 @@ class _DashboardPageState
         builder: (ctx) => Provider.value(
           value: Provider.of<DashboardController>(context, listen: false),
           child: RelatorioAgendamentoPage(),
+        ),
+      ),
+    );
+  }
+
+  void navegarRelatoriosFinancieros() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => Provider.value(
+          value: Provider.of<DashboardController>(context, listen: false),
+          child: RelatorioFinancieroPage(),
         ),
       ),
     );

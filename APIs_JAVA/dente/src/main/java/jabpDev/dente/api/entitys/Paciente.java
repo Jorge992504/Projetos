@@ -38,4 +38,10 @@ public class Paciente {
     @Column(name = "empresa_id")
     private Long empresaId;
 
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "tipo")
+    private String tipo;
+
 }

@@ -59,6 +59,15 @@ class _DentistaPageState extends BaseState<DentistaPage, DentistaController> {
     return Scaffold(
       appBar: AppBar(
         title: Text(isPesquisa == true ? 'Dentistas' : 'Cadastrar dentista'),
+        leading: Visibility(
+          visible: isPesquisa,
+          child: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back),
+          ),
+        ),
       ),
       body: BlocConsumer<DentistaController, DentistaState>(
         listener: (context, state) {
