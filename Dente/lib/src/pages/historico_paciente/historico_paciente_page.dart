@@ -57,9 +57,8 @@ class _HistoricoPacientePageState
             loading: showLoader,
             loaded: hideLoader,
             failure: () {
-              showError(state.errorMessage ?? 'INTERNAL_ERROR');
-
               hideLoader();
+              showError(state.errorMessage ?? 'INTERNAL_ERROR');
             },
             success: () {
               hideLoader();

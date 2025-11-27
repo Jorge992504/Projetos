@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:dente/core/router/rotas.dart';
+import 'package:dente/core/ui/style/custom_colors.dart';
 import 'package:dente/core/ui/style/custom_images.dart';
+import 'package:dente/core/ui/style/fontes_letras.dart';
 import 'package:dente/core/ui/style/size_extension.dart';
 import 'package:dente/src/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
@@ -59,6 +61,14 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> loading() async {
+    bool isPremium = await Provider.of<AuthProvider>(
+      context,
+      listen: false,
+    ).verificarAcessoPremium();
+    if (!isPremium) {
+      await showPeriodoTesteDialog();
+      return;
+    }
     bool isAuth = Provider.of<AuthProvider>(context, listen: false).isAuth;
     if (isAuth) {
       await Provider.of<AuthProvider>(
@@ -73,5 +83,43 @@ class _SplashPageState extends State<SplashPage> {
     }
     // Provider.of<AuthProvider>(context, listen: false).logout();
     // Navigator.of(context).popAndPushNamed(Rotas.login);
+  }
+
+  Future<void> showPeriodoTesteDialog() async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            'Mensalidade Premium Inativada',
+            style: context.cusotomFontes.textBold.copyWith(
+              color: ColorsConstants.appBarColor,
+            ),
+          ),
+          content: Text(
+            'Seu plano premium expirou. Para continuar aproveitando os\nbenefícios do plano Premium, por favor, realize a assinatura.',
+            style: context.cusotomFontes.textRegular.copyWith(
+              color: ColorsConstants.appBarColor,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Provider.of<AuthProvider>(context, listen: false).logout();
+                Navigator.of(
+                  context,
+                ).pushNamedAndRemoveUntil(Rotas.premium, (route) => false);
+              },
+              child: Text(
+                'OK',
+                style: context.cusotomFontes.textBoldItalic.copyWith(
+                  color: ColorsConstants.appBarColor,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

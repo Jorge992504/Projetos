@@ -116,9 +116,8 @@ class _PaymentPageState extends BaseState<PaymentPage, PaymentController> {
             loading: showLoader,
             loaded: hideLoader,
             failure: () {
-              showError(state.errorMessage ?? 'INTERNAL_ERROR');
-
               hideLoader();
+              showError(state.errorMessage ?? 'INTERNAL_ERROR');
             },
             success: () {
               hideLoader();
@@ -636,7 +635,22 @@ class _PaymentPageState extends BaseState<PaymentPage, PaymentController> {
                             aplicarDesconto();
                             valorRecebidoFocus.requestFocus();
                           } else {
-                            valorCobrarFocus.requestFocus();
+                            num valorAtual =
+                                num.tryParse(
+                                  valorAtualController.text.replaceAll(
+                                    ',',
+                                    '.',
+                                  ),
+                                ) ??
+                                0.0;
+
+                            setState(() {
+                              valorCobrarController.text = valorAtual
+                                  .toStringAsFixed(2);
+                              valorRecebidoController.text = valorAtual
+                                  .toStringAsFixed(2);
+                            });
+                            valorRecebidoFocus.requestFocus();
                             setState(() {
                               isCobrar = true;
                             });

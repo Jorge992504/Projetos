@@ -43,8 +43,8 @@ class _LoginPageState extends BaseState<LoginPage, LoginController> {
             loading: showLoader,
             loaded: hideLoader,
             failure: () {
-              showError(state.errorMessage ?? 'Login ou senha inválidos');
               hideLoader();
+              showError(state.errorMessage ?? 'Login ou senha inválidos');
             },
             sucess: () async {
               hideLoader(); // <- Primeiro esconde o loading

@@ -72,12 +72,10 @@ class _ServicosPageState extends BaseState<ServicosPage, ServicosController> {
             loading: showLoader,
             loaded: hideLoader,
             failure: () {
-              showError(state.errorMessage ?? 'INTERNAL_ERROR');
               hideLoader();
+              showError(state.errorMessage ?? 'INTERNAL_ERROR');
             },
-            success: () async {
-              // showSuccess("Sucesso");
-              // Navigator.of(context).pop();
+            success: () {
               hideLoader();
             },
           );

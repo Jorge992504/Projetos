@@ -9,6 +9,7 @@ class EmpresaModel {
   String? endereco;
   String? passowrd;
   String? cnpj;
+
   EmpresaModel({
     this.foto,
     this.nomeClinica,
@@ -70,7 +71,7 @@ class EmpresaModel {
 
   @override
   String toString() {
-    return 'EmpresaModel(foto: $foto, nomeClinica: $nomeClinica, emailClinica: $emailClinica, telefone: $telefone, endereco: $endereco, passowrd: $passowrd, cnpj: $cnpj)';
+    return 'EmpresaModel(foto: $foto, nomeClinica: $nomeClinica, emailClinica: $emailClinica, telefone: $telefone, endereco: $endereco, passowrd: $passowrd, cnpj: $cnpj,)';
   }
 
   @override

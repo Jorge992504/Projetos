@@ -12,6 +12,7 @@ import 'package:dente/src/pages/historico_paciente/historico_paciente_router.dar
 import 'package:dente/src/pages/home/home_router.dart';
 import 'package:dente/src/pages/login/login_router.dart';
 import 'package:dente/src/pages/payment/payment_router.dart';
+import 'package:dente/src/pages/premium/premium_page.dart';
 import 'package:dente/src/pages/registrar_empresa/registrar_empresa_router.dart';
 import 'package:dente/src/pages/registrar_paciente/registrar_paciente_router.dart';
 import 'package:dente/src/pages/reset_password/reset_password_router.dart';
@@ -55,6 +56,7 @@ class DenteApp extends StatelessWidget {
           Rotas.dashboard: (context) => DashboardRouter.page(),
           Rotas.payment: (context) => PaymentRouter.page(),
           Rotas.convenio: (context) => ConvenioRouter.page(),
+          Rotas.premium: (context) => PremiumPage(),
         },
       ),
     );

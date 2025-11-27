@@ -66,7 +66,7 @@ public class PagamentoService {
 
         Optional<Pagamento> pagamentoXagendamento = pagamentoRepository.findByAgendamentoId(agendamento.get().getId());
         if (pagamentoXagendamento.isPresent()){
-            throw new ErrorException("Pagamento já registrado");
+            throw new ErrorException("Pagamento já realizado");
         }else {
             Pagamento pagamento = Pagamento.builder()
                     .agendamento(agendamento.get())

@@ -46,4 +46,13 @@ class LoginRepository {
       throw CreateException.dioException(e);
     }
   }
+
+  Future<bool> verificarAcessoPremium() async {
+    try {
+      final response = await restClient.auth.get('/premium/status');
+      return response.data['isPremium'] ?? false;
+    } on DioException catch (e) {
+      throw CreateException.dioException(e);
+    }
+  }
 }

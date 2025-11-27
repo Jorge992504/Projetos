@@ -1,5 +1,6 @@
 import 'package:dente/src/models/response/lista_procedimentos_realizados_model.dart';
 import 'package:dente/src/models/response/relatorio_agendamento_cabeca_response.dart';
+import 'package:dente/src/models/response/relatorio_financiero_mensal_response.dart';
 import 'package:match/match.dart';
 
 part 'dashboard_state.g.dart';
@@ -13,17 +14,20 @@ class DashboardState {
 
   final List<ListaProcedimentosRealizadosModel>? procedimentosRealizados;
   final List<RelatorioAgendamentoCabecaResponse>? relatoriosAgendamentos;
+  final List<RelatorioFinancieroMensalResponse>? relatoriosFinancieros;
 
   DashboardState.initial()
     : status = DashboardStatus.initial,
       errorMessage = null,
       procedimentosRealizados = [],
-      relatoriosAgendamentos = [];
+      relatoriosAgendamentos = [],
+      relatoriosFinancieros = [];
   DashboardState({
     required this.status,
     this.errorMessage,
     this.procedimentosRealizados,
     this.relatoriosAgendamentos,
+    this.relatoriosFinancieros,
   });
 
   DashboardState copyWith({
@@ -31,6 +35,7 @@ class DashboardState {
     String? errorMessage,
     List<ListaProcedimentosRealizadosModel>? procedimentosRealizados,
     List<RelatorioAgendamentoCabecaResponse>? relatoriosAgendamentos,
+    List<RelatorioFinancieroMensalResponse>? relatoriosFinancieros,
   }) {
     return DashboardState(
       status: status ?? this.status,
@@ -39,6 +44,8 @@ class DashboardState {
           procedimentosRealizados ?? this.procedimentosRealizados,
       relatoriosAgendamentos:
           relatoriosAgendamentos ?? this.relatoriosAgendamentos,
+      relatoriosFinancieros:
+          relatoriosFinancieros ?? this.relatoriosFinancieros,
     );
   }
 
@@ -48,6 +55,7 @@ class DashboardState {
       errorMessage,
       procedimentosRealizados,
       relatoriosAgendamentos,
+      relatoriosFinancieros,
     ];
   }
 }

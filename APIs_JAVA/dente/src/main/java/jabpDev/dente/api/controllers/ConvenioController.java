@@ -6,6 +6,7 @@ import jabpDev.dente.api.dto.response.BuscarServicosDtoResponse;
 import jabpDev.dente.api.dto.response.ListarConvenioResponse;
 import jabpDev.dente.api.services.ConvenioService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

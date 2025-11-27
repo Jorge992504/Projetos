@@ -116,12 +116,10 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
             loading: showLoader,
             loaded: hideLoader,
             failure: () {
-              showError(state.errorMessage ?? 'INTERNAL_ERROR');
               hideLoader();
+              showError(state.errorMessage ?? 'INTERNAL_ERROR');
             },
-            success: () async {
-              // showSuccess("Sucesso ao realizar cadastro.");
-              // Navigator.of(context).pop();
+            success: () {
               hideLoader();
             },
           );
@@ -661,20 +659,18 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                 },
                                 status: agendamentoDetalhe.status,
                                 onPressedPagamento: () async {
-                                  await Navigator.of(context)
-                                      .pushNamed(
-                                        Rotas.payment,
-                                        arguments: {
-                                          "agendamentoDetalhe":
-                                              agendamentoDetalhe,
-                                        },
-                                      )
-                                      .then((_) async {
-                                        await refreshPage(
-                                          agendamentosSelecionados,
-                                        );
-                                        setState(() {});
-                                      });
+                                  await Navigator.of(context).pushNamed(
+                                    Rotas.payment,
+                                    arguments: {
+                                      "agendamentoDetalhe": agendamentoDetalhe,
+                                    },
+                                  );
+                                  // .then((_) async {
+                                  //   await refreshPage(
+                                  //     agendamentosSelecionados,
+                                  //   );
+                                  //   setState(() {});
+                                  // });
                                 },
                               ),
                             ),

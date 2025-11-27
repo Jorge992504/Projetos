@@ -1,4 +1,7 @@
 package mercado_pago.payment.dto;
 
-public record PixStatusResponse() {
+public record PixStatusResponse(
+        String status,
+        Long paymentId
+) {
 }

@@ -92,13 +92,12 @@ class _AgendamentoPageState
             loading: showLoader,
             loaded: hideLoader,
             failure: () {
-              showError(state.errorMessage ?? 'INTERNAL_ERROR');
               hideLoader();
+              showError(state.errorMessage ?? 'INTERNAL_ERROR');
             },
             success: () async {
-              showSuccess("Agendamento relaizado!");
-              // Navigator.of(context).pop();
               hideLoader();
+              showSuccess("Agendamento relaizado!");
             },
           );
         },

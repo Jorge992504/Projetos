@@ -1,4 +1,12 @@
 package mercado_pago.payment.dto;
 
-public record CardRequest() {
+import java.math.BigDecimal;
+
+public record CardRequest(
+        BigDecimal amount,
+        String token,
+        String descricao,
+        Integer pacelas,
+        String paymentMethodId
+) {
 }

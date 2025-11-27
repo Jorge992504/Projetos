@@ -4,14 +4,15 @@ package jabpDev.dente.api.services;
 import jabpDev.dente.api.dto.response.AgendamentoCabecaResponse;
 import jabpDev.dente.api.dto.response.RelatorioAgendamentoResponse;
 import jabpDev.dente.api.dto.response.RelatorioClinicoProcedimentosResponse;
-import jabpDev.dente.api.dto.response.RelatorioFinanceiroResponse;
+import jabpDev.dente.api.dto.response.RelatorioPagamentoMensalDtoResponse;
+import jabpDev.dente.api.dto.response.sub_response.ItemPagamentoMensalDtoResponse;
 import jabpDev.dente.api.entitys.Agendamento;
 import jabpDev.dente.api.entitys.Empresa;
+import jabpDev.dente.api.entitys.Pagamento;
+import jabpDev.dente.api.entitys.Servicos;
 import jabpDev.dente.api.exceptions.ErrorException;
 import jabpDev.dente.api.repositories.*;
 import lombok.AllArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -207,7 +208,7 @@ public class RelatoriosServices {
     }
 
 
-    public RelatorioFinanceiroResponse buscarelatoriosFinanciero(String filtro){
+    public List<RelatorioPagamentoMensalDtoResponse> buscarelatoriosFinanciero(){
         String nmEmpresa = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
 
@@ -215,29 +216,41 @@ public class RelatoriosServices {
             throw new ErrorException("Sem permissão.\nRealizar login novamente");
         }
 
-        List<Object[]> bruto = pagamentoRepository.faturamentoDiario(empresa.get().getId());
-        if (bruto.isEmpty()){
-            return null;
+        List<Pagamento> pagamentos = pagamentoRepository.findAllByEmpresaId(empresa.get().getId());
+
+        Map<String, List<Pagamento>> agrupado = pagamentos.stream()
+                .collect(Collectors.groupingBy(p -> {
+                    return p.getData_pagamento().format(DateTimeFormatter.ofPattern("MM-yyyy"));
+                }));
+        List<RelatorioPagamentoMensalDtoResponse> resposta = new ArrayList<>();
+
+        for(String mesAno : agrupado.keySet()){
+            List<Pagamento> listaMes = agrupado.get(mesAno);
+            List<ItemPagamentoMensalDtoResponse> itens = new ArrayList<>();
+            for(Pagamento p : listaMes){
+                Optional<Agendamento> agendamento = agendamentoRepository.findByIdAndEmpresaId(p.getAgendamento().getId(),empresa.get().getId());
+                Optional<Servicos> servicos = servicosRepository.findByIdAndEmpresaId(agendamento.get().getServico().getId(),empresa.get().getId());
+                String dataFormatada = p.getData_pagamento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+                itens.add(new ItemPagamentoMensalDtoResponse(
+                        dataFormatada,
+                        servicos.get().getNome(),
+                        p.getValor_recebido(),
+                        p.getValor_desconto()
+                ));
+            }
+            double totalMes = itens.stream()
+                    .mapToDouble(ItemPagamentoMensalDtoResponse::valorRecebido)
+                    .sum();
+
+            resposta.add(new RelatorioPagamentoMensalDtoResponse(
+                    mesAno,
+                    totalMes,
+                    itens
+            ));
         }
-        Object[] linha = bruto.get(0);
-        LocalDate data = ((java.sql.Date) linha[0]).toLocalDate();
+        resposta.sort(Comparator.comparing(RelatorioPagamentoMensalDtoResponse::mes));
+        return resposta;
 
-        Double total = (Double) linha[1];
-
-        RelatorioFinanceiroResponse.Cabecalho cab = new RelatorioFinanceiroResponse.Cabecalho();
-        cab.setPeriodo(data.toString());
-        cab.setValorTotal(total);
-
-        List<Object[]> detalhesBrutos = pagamentoRepository.detalhesDiariosPorServico(empresa.get().getId(),data);
-        List<RelatorioFinanceiroResponse.ItemDetalhe> detalhes = detalhesBrutos.stream().map(row -> {
-            RelatorioFinanceiroResponse.ItemDetalhe item = new RelatorioFinanceiroResponse.ItemDetalhe();
-            item.setDescricao((String) row[0]);
-            item.setValor((Double) row[1]);
-            return item;
-        }).toList();
-        RelatorioFinanceiroResponse response = new RelatorioFinanceiroResponse();
-        response.setCabecalho(cab);
-        response.setDetalhes(detalhes);
-        return response;
     }
 }

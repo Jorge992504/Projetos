@@ -1,4 +1,3 @@
-import 'package:dente/core/router/rotas.dart';
 import 'package:dente/core/ui/base/base_state.dart';
 import 'package:dente/core/ui/style/custom_colors.dart';
 import 'package:dente/core/ui/style/fontes_letras.dart';
@@ -31,13 +30,10 @@ class _DashboardPageState
             loading: showLoader,
             loaded: hideLoader,
             failure: () {
-              showError(state.errorMessage ?? 'INTERNAL_ERROR');
-
               hideLoader();
+              showError(state.errorMessage ?? 'INTERNAL_ERROR');
             },
-            success: () async {
-              // showSuccess("Sucesso ao realizar cadastro.");
-              // Navigator.of(context).pop();
+            success: () {
               hideLoader();
             },
           );
@@ -145,94 +141,6 @@ class _DashboardPageState
                               children: [
                                 Text(
                                   "Relatórios Financieros",
-                                  style: context.cusotomFontes.textBold
-                                      .copyWith(
-                                        color: ColorsConstants.appBarColor,
-                                        fontSize: 16,
-                                      ),
-                                ),
-                                const SizedBox(height: 16),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: Icon(
-                                    Icons.arrow_circle_right_outlined,
-                                    color: ColorsConstants.appBarColor,
-                                    size: 25,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 250,
-                      height: 100,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.of(context).pushNamed(
-                            Rotas.relatorio,
-                            // arguments: {'id': relatoriosModel.id},
-                          );
-                        },
-                        child: Card(
-                          color: ColorsConstants.primaryColor,
-                          elevation: 6,
-                          shadowColor: ColorsConstants.appBarColor,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Relatórios de Pacientes",
-                                  style: context.cusotomFontes.textBold
-                                      .copyWith(
-                                        color: ColorsConstants.appBarColor,
-                                        fontSize: 16,
-                                      ),
-                                ),
-                                const SizedBox(height: 16),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: Icon(
-                                    Icons.arrow_circle_right_outlined,
-                                    color: ColorsConstants.appBarColor,
-                                    size: 25,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(
-                      width: 250,
-                      height: 100,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.of(context).pushNamed(
-                            Rotas.relatorio,
-                            // arguments: {'id': relatoriosModel.id},
-                          );
-                        },
-                        child: Card(
-                          color: ColorsConstants.primaryColor,
-                          elevation: 6,
-                          shadowColor: ColorsConstants.appBarColor,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Relatórios para Convênios",
                                   style: context.cusotomFontes.textBold
                                       .copyWith(
                                         color: ColorsConstants.appBarColor,

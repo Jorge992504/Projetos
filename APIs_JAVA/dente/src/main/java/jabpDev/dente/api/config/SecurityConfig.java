@@ -1,6 +1,7 @@
 package jabpDev.dente.api.config;
 
 
+import jabpDev.dente.api.services.ExceptionService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +53,11 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
 
+    }
+
+    @Bean
+    public ExceptionService exceptionService(){
+        return new ExceptionService();
     }
 
 }

@@ -79,12 +79,10 @@ class _ConvenioPageState extends BaseState<ConvenioPage, ConvenioController> {
             loading: showLoader,
             loaded: hideLoader,
             failure: () {
-              showError(state.errorMessage ?? 'INTERNAL_ERROR');
               hideLoader();
+              showError(state.errorMessage ?? 'INTERNAL_ERROR');
             },
-            success: () async {
-              // showSuccess("Sucesso");
-              // Navigator.of(context).pop();
+            success: () {
               hideLoader();
             },
           );

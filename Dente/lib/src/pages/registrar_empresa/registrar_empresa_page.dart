@@ -72,21 +72,22 @@ class _RegistrarEmpresaPageState
             loading: showLoader,
             loaded: hideLoader,
             failure: () {
-              showError(state.errorMessage ?? 'INTERNAL_ERROR');
               hideLoader();
+              showError(state.errorMessage ?? 'INTERNAL_ERROR');
             },
             success: () async {
+              hideLoader();
               showSuccess("Sucesso ao realizar cadastro.");
               await Provider.of<AuthProvider>(
                 context,
                 listen: false,
               ).atualizarUsuario();
+              await showPeriodoTesteDialog();
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.of(
                   context,
                 ).pushNamedAndRemoveUntil(Rotas.home, (route) => false);
               });
-              hideLoader();
             },
           );
         },
@@ -445,4 +446,26 @@ class _RegistrarEmpresaPageState
     mask: '(##) # ####-####',
     filter: {"#": RegExp(r'[0-9]')},
   );
+
+  Future<void> showPeriodoTesteDialog() async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Período de Teste'),
+          content: Text(
+            'Seu período de teste de 15 dias está ativo. Aproveite para explorar todos os recursos do aplicativo!',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

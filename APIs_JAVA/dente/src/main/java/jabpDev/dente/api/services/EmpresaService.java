@@ -42,7 +42,8 @@ public class EmpresaService {
                         optionalEmpresa.get().getEmailClinica(),
                         optionalEmpresa.get().getTelefone(),
                         optionalEmpresa.get().getEndereco(),
-                        optionalEmpresa.get().getCnpj()
+                        optionalEmpresa.get().getCnpj(),
+                        optionalEmpresa.get().getDataRegistro()
                         );
             }else{
                 throw new ErrorException("Empresa não encontrada");

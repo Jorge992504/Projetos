@@ -75,6 +75,15 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> verificarAcessoPremium() async {
+    try {
+      bool isPremium = await _loginRepository.verificarAcessoPremium();
+      return isPremium;
+    } catch (e) {
+      return false;
+    }
+  }
+
   String get token => _token;
   bool get isAuth => _isAuth;
   String get usuarioLogado => _usuarioLogado;

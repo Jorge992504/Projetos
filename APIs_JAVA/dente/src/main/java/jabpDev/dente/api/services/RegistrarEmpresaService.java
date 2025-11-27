@@ -3,14 +3,17 @@ package jabpDev.dente.api.services;
 
 import jabpDev.dente.api.dto.request.RegistrarEmpresaDtoRequest;
 import jabpDev.dente.api.entitys.Empresa;
+import jabpDev.dente.api.entitys.Premium;
 import jabpDev.dente.api.exceptions.ErrorException;
 import jabpDev.dente.api.repositories.EmpresaRepository;
+import jabpDev.dente.api.repositories.PremiumRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.util.Base64;
 
 @Service
@@ -21,6 +24,7 @@ public class RegistrarEmpresaService {
     private final EmpresaRepository empresaRepository;
     private final PasswordEncoder passwordEncoder;
     private final ServicesGerais servicesGerais;
+    private final PremiumRepository premiumRepository;
 
     @Transactional
     public String registrarEmpresa(RegistrarEmpresaDtoRequest body)  {
@@ -40,11 +44,19 @@ public class RegistrarEmpresaService {
                 .telefone(body.telefone())
                 .password(password)
 //                .foto(body.foto() != null ? nomeFoto : null)
+                .dataRegistro(LocalDate.now())
                 .build();
         Empresa response = empresaRepository.save(empresa);
         if (response.getId() < 0 ){
             throw new ErrorException("Erro ao realizar cadastro");
         }
+
+        Premium premium = Premium.builder()
+                .dataPremium(LocalDate.now())
+                .periodoTeste(true)
+                .premium(false)
+                .build();
+        premiumRepository.save(premium);
 
 
 //        String uploadDir = new File("src/main/resources/static/public/" + response.getId()).getAbsolutePath();

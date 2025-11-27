@@ -2,16 +2,19 @@ package jabpDev.dente.api.services;
 
 import jabpDev.dente.api.exceptions.ErrorException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.config.RuntimeBeanNameReference;
+import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
-public class ExceptionService {
+public class ExceptionService extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ErrorException.class)
     public ResponseEntity<?> handleErrorException(ErrorException errorException, HttpServletRequest request){

@@ -82,16 +82,16 @@ class _ResetPasswordPageState
             loading: showLoader,
             loaded: hideLoader,
             failure: () {
-              showError(state.errorMessage ?? 'INTERNAL_ERROR');
               hideLoader();
+              showError(state.errorMessage ?? 'INTERNAL_ERROR');
             },
             success: () async {
+              hideLoader();
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.of(
                   context,
                 ).pushNamedAndRemoveUntil(Rotas.login, (route) => false);
               });
-              hideLoader();
             },
           );
         },

@@ -31,9 +31,9 @@ public class ServicesGerais {
     private String secretKey;
     @Value("${jwt.expiration}")
     private Long expirationTokenTime;
-    @Getter
-    @Value("${app.base-url}")
-    public String baseUrl;
+//    @Getter
+//    @Value("${app.base-url}")
+//    public String baseUrl;
     @Getter
     @Value("${app.remote-url}")
     public String httpRemote;
@@ -282,5 +282,8 @@ public class ServicesGerais {
         int resto = soma % 11;
         return (resto < 2) ? 0 : 11 - resto;
     }
+
+
+
 
 }

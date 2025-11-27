@@ -1,4 +1,9 @@
 package mercado_pago.payment.dto;
 
-public record PixRequest() {
+import java.math.BigDecimal;
+
+public record PixRequest(
+        String descricao,
+        BigDecimal valor
+) {
 }

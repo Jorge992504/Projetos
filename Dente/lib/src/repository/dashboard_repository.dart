@@ -4,6 +4,7 @@ import 'package:dente/core/exceptions/create_exception.dart';
 import 'package:dente/core/rest_client/rest_client.dart';
 import 'package:dente/src/models/response/lista_procedimentos_realizados_model.dart';
 import 'package:dente/src/models/response/relatorio_agendamento_cabeca_response.dart';
+import 'package:dente/src/models/response/relatorio_financiero_mensal_response.dart';
 
 class DashboardRepository {
   final RestClient restClient;
@@ -43,6 +44,21 @@ class DashboardRepository {
       return response.data
           .map<RelatorioAgendamentoCabecaResponse>(
             (e) => RelatorioAgendamentoCabecaResponse.fromMap(e),
+          )
+          .toList();
+    } catch (e, s) {
+      log('Erro ao listar os agendamentos', error: e, stackTrace: s);
+      throw CreateException.dioException(e);
+    }
+  }
+
+  Future<List<RelatorioFinancieroMensalResponse>>
+  buscaRelatoriosFinancieros() async {
+    try {
+      final response = await restClient.auth.get("/relatorios/financiero");
+      return response.data
+          .map<RelatorioFinancieroMensalResponse>(
+            (e) => RelatorioFinancieroMensalResponse.fromMap(e),
           )
           .toList();
     } catch (e, s) {

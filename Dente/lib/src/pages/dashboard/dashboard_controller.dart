@@ -66,4 +66,33 @@ class DashboardController extends Cubit<DashboardState> {
       );
     }
   }
+
+  Future<void> buscaRelatoriosFinancieros() async {
+    try {
+      emit(
+        state.copyWith(
+          status: DashboardStatus.loading,
+          relatoriosFinancieros: [],
+        ),
+      );
+
+      final response = await _repository.buscaRelatoriosFinancieros();
+
+      emit(
+        state.copyWith(
+          status: DashboardStatus.loaded,
+          relatoriosFinancieros: response,
+        ),
+      );
+    } on RepositoryException catch (e, s) {
+      log('$s');
+      emit(
+        state.copyWith(
+          status: DashboardStatus.failure,
+          errorMessage: e.message,
+          relatoriosFinancieros: [],
+        ),
+      );
+    }
+  }
 }

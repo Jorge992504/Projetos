@@ -15,23 +15,10 @@ public interface PagamentoRepository extends JpaRepository<Pagamento, Long> {
     Optional<Pagamento> findByAgendamentoId(Long agendamentoId);
 
     @Query(value = """
-            select p.data_pagamento, SUM(valor_recebido)
+            select p.*
             from pagamento p
-            where p.status = 'Realizado'
-            and p.empresa_id = :empresaId
-            group by p.data_pagamento
-            order by p.data_pagamento DESC
+            where p.empresa_id = :empresaId
+            ORDER BY p.data_pagamento ASC;
             """,nativeQuery = true)
-    List<Object[]> faturamentoDiario(Long empresaId);
-    @Query(value = """
-            select s.nome, SUM(p.valor_recebido)
-            from pagamento p
-            JOIN agendamento a ON a.id = p.agendamento_id
-            JOIN servicos s ON a.servico_id = s.id
-            where p.status = 'Realizado'
-            and p.empresa_id = :empresaId
-            and p.data_pagamento = :data
-            group by s.nome
-            """,nativeQuery = true)
-    List<Object[]> detalhesDiariosPorServico(Long empresaId, LocalDate data);
+    List<Pagamento> findAllByEmpresaId(Long empresaId);
 }

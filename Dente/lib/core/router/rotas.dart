@@ -17,4 +17,5 @@ mixin Rotas {
   static const String relatorio = "/relatorio";
   static const String payment = "/payment";
   static const String convenio = "/convenio";
+  static const String premium = "/premium";
 }

@@ -3,16 +3,13 @@ package jabpDev.dente.api.controllers;
 
 
 import jabpDev.dente.api.dto.response.AgendamentoCabecaResponse;
-import jabpDev.dente.api.dto.response.RelatorioAgendamentoResponse;
 import jabpDev.dente.api.dto.response.RelatorioClinicoProcedimentosResponse;
-import jabpDev.dente.api.dto.response.RelatorioFinanceiroResponse;
+import jabpDev.dente.api.dto.response.RelatorioPagamentoMensalDtoResponse;
 import jabpDev.dente.api.services.RelatoriosServices;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -31,8 +28,8 @@ public class RelatoriosController {
     }
 
     @GetMapping("/financiero")
-    public RelatorioFinanceiroResponse buscarelatoriosFinanciero(@RequestParam String filtro){
-        return relatoriosServices.buscarelatoriosFinanciero(filtro);
+    public List<RelatorioPagamentoMensalDtoResponse> buscarelatoriosFinanciero(){
+        return relatoriosServices.buscarelatoriosFinanciero();
     }
 
 }
