@@ -9,12 +9,12 @@ import com.mercadopago.core.MPRequestOptions;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.payment.Payment;
-import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import mercado_pago.payment.dto.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.math.BigDecimal;
 import java.net.URI;
@@ -42,6 +42,7 @@ public class PaymentService {
 //    }
 
     private final ServicesGerais servicesGerais;
+    private final DecodificarService decodificarService;
 
     // ----------------------------------------------------------
     // PIX
@@ -113,40 +114,52 @@ public class PaymentService {
         }
     }
 
-    public Payment pagarCartao(CardRequest request) throws MPException, MPApiException {
+
+    // ----------------------------------------------------------
+    // CARTÃO
+    // ----------------------------------------------------------
+    public String pagarCartao(String token) throws MPException, MPApiException {
         try{
-            MercadoPagoConfig.setAccessToken("TEST-14621634747990-112615-22090bcbc47940b020eb33be105e7efc-1173608349");
-            String idempotencyKey = "pix_" + System.currentTimeMillis();
 
-            Map<String, String> customHeaders = new HashMap<>();
-            customHeaders.put("x-idempotency-key", idempotencyKey);
+            String json = decodificarService.decryptAES(token);
+            PaymentDTO dados = decodificarService.parseCartao(json);
 
-            MPRequestOptions requestOptions = MPRequestOptions.builder()
-                    .customHeaders(customHeaders)
-                    .build();
+            String cardToken = gerarToken(dados);
 
-            PaymentClient client = new PaymentClient();
 
-            PaymentCreateRequest paymentCreateRequest =
-                    PaymentCreateRequest.builder()
-                            .transactionAmount(request.amount())
-                            .token(request.token())
-                            .description(request.descricao())
-                            .installments(request.pacelas())
-                            .paymentMethodId(request.paymentMethodId())
-                            .payer(
-                                    PaymentPayerRequest.builder()
-                                            .email("emailTeste@gmail.com")
-                                            .firstName("Test")
-                                            .identification(
-                                                    IdentificationRequest.builder()
-                                                            .type("CPF")
-                                                            .number("12345678909")
-                                                            .build())
-                                            .build())
-                            .build();
-
-            return client.create(paymentCreateRequest, requestOptions);
+//            MercadoPagoConfig.setAccessToken("TEST-14621634747990-112615-22090bcbc47940b020eb33be105e7efc-1173608349");
+//            String idempotencyKey = "pix_" + System.currentTimeMillis();
+//
+//            Map<String, String> customHeaders = new HashMap<>();
+//            customHeaders.put("x-idempotency-key", idempotencyKey);
+//
+//            MPRequestOptions requestOptions = MPRequestOptions.builder()
+//                    .customHeaders(customHeaders)
+//                    .build();
+//
+//            PaymentClient client = new PaymentClient();
+//
+//            PaymentCreateRequest paymentCreateRequest =
+//                    PaymentCreateRequest.builder()
+//                            .transactionAmount(request.amount())
+//                            .token(request.token())
+//                            .description(request.descricao())
+//                            .installments(request.pacelas())
+//                            .paymentMethodId(request.paymentMethodId())
+//                            .payer(
+//                                    PaymentPayerRequest.builder()
+//                                            .email("emailTeste@gmail.com")
+//                                            .firstName("Test")
+//                                            .identification(
+//                                                    IdentificationRequest.builder()
+//                                                            .type("CPF")
+//                                                            .number("12345678909")
+//                                                            .build())
+//                                            .build())
+//                            .build();
+//
+//            return client.create(paymentCreateRequest, requestOptions);
+            return cardToken;
 
         }catch (MPApiException e) {
             System.out.println("==== ERRO MERCADO PAGO ====");
@@ -154,7 +167,59 @@ public class PaymentService {
             System.out.println("Content: " + e.getApiResponse().getContent());
             System.out.println("===========================");
             throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
+
+
+    public String gerarToken(PaymentDTO card) throws Exception {
+
+        String url = "https://api.mercadopago.com/v1/card_tokens?public_key=" + "TEST-1842e064-25f7-44f4-84c9-58c47ae2dd25";
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        ObjectNode cardHolder = mapper.createObjectNode();
+        cardHolder.put("name", card.cardholderName());
+
+        ObjectNode identification = mapper.createObjectNode();
+        identification.put("type", "CPF");
+        identification.put("number", card.cardholderCpf());
+
+        cardHolder.set("identification", identification);
+
+        ObjectNode body = mapper.createObjectNode();
+        body.put("card_number", card.cardNumber());
+        body.put("security_code", card.securityCode());
+        body.put("expiration_month", card.expirationMonth());
+        body.put("expiration_year", card.expirationYear());
+        body.set("cardholder", cardHolder);
+
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
+                .build();
+
+        HttpResponse<String> response =
+                client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        JsonNode json = mapper.readTree(response.body());
+
+        if (json.has("id")) {
+            return json.get("id").asText(); // <-- este é o token!
+        }
+
+        throw new RuntimeException("Erro ao gerar token: " + json.toString());
+    }
+
+
+
+
+
+
+
 
 }
