@@ -23,6 +23,7 @@ public class Servicos {
     @Column(name = "vl")
     private Float vl;
 
-    @Column(name = "empresa_id")
-    private Long empresaId;
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
+    private Empresa empresa;
 }

@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -70,7 +71,7 @@ public class PacienteService {
                 .endereco(body.endereco())
                 .telefone(body.telefone())
                 .cpf(body.cpf())
-                .empresaId(empresa.get().getId())
+                .empresa(empresa.get())
                 .build();
 
         Paciente response = pacienteRepository.save(paciente);

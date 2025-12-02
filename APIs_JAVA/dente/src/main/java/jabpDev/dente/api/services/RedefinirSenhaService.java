@@ -31,7 +31,7 @@ public class RedefinirSenhaService {
         int codigo = 1000 + random.nextInt(9000);
         Optional<Empresa> empresa = empresaRepository.findByEmailClinica(email);
         if (empresa.isPresent()){
-            Password password = Password.builder().empresaId(empresa.get().getId()).codigo(codigo).build();
+            Password password = Password.builder().empresa(empresa.get()).codigo(codigo).build();
             Password save = redefinirSenhaRepository.save(password);
             if (password.getCodigo() > 0){
                 servicesGerais.enviarEmailRedefinirSenha(empresa.get().getEmailClinica(), codigo, empresa.get().getNomeClinica());
@@ -58,7 +58,7 @@ public class RedefinirSenhaService {
             if(!password.isPresent()){
                 throw new ErrorException("Código não encontrado");
             }
-            if (password.get().getEmpresaId().equals(empresa.get().getId())){
+            if (password.get().getEmpresa().getId().equals(empresa.get().getId())){
                 redefinirSenhaRepository.deleteById(password.get().getId());
             }else{
                 throw new ErrorException("Código invalido");

@@ -47,10 +47,18 @@ class LoginRepository {
     }
   }
 
-  Future<bool> verificarAcessoPremium() async {
+  Future<String> verificarAcessoPremium() async {
     try {
-      final response = await restClient.auth.get('/premium/status');
-      return response.data['isPremium'] ?? false;
+      final response = await restClient.auth.get('/plano/status');
+      return response.data;
+    } on DioException catch (e) {
+      throw CreateException.dioException(e);
+    }
+  }
+
+  Future<void> validarToken() async {
+    try {
+      await restClient.auth.get('/controllers/validar-token');
     } on DioException catch (e) {
       throw CreateException.dioException(e);
     }

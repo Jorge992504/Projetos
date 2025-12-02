@@ -3,10 +3,10 @@ package jabpDev.dente.api.services;
 
 import jabpDev.dente.api.dto.request.RegistrarEmpresaDtoRequest;
 import jabpDev.dente.api.entitys.Empresa;
-import jabpDev.dente.api.entitys.Premium;
+import jabpDev.dente.api.entitys.Plano;
 import jabpDev.dente.api.exceptions.ErrorException;
 import jabpDev.dente.api.repositories.EmpresaRepository;
-import jabpDev.dente.api.repositories.PremiumRepository;
+import jabpDev.dente.api.repositories.PlanoRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +24,7 @@ public class RegistrarEmpresaService {
     private final EmpresaRepository empresaRepository;
     private final PasswordEncoder passwordEncoder;
     private final ServicesGerais servicesGerais;
-    private final PremiumRepository premiumRepository;
+    private final PlanoRepository premiumRepository;
 
     @Transactional
     public String registrarEmpresa(RegistrarEmpresaDtoRequest body)  {
@@ -45,21 +45,22 @@ public class RegistrarEmpresaService {
                 .password(password)
 //                .foto(body.foto() != null ? nomeFoto : null)
                 .dataRegistro(LocalDate.now())
+                .filial(body.filialClinica())
                 .build();
         Empresa response = empresaRepository.save(empresa);
         if (response.getId() < 0 ){
             throw new ErrorException("Erro ao realizar cadastro");
         }
 
-        Premium premium = Premium.builder()
-                .dataPremium(LocalDate.now())
+        Plano premium = Plano.builder()
+                .dataTeste(LocalDate.now())
                 .periodoTeste(true)
-                .premium(false)
+                .empresa(response)
                 .build();
         premiumRepository.save(premium);
 
 
-//        String uploadDir = new File("src/main/resources/static/public/" + response.getId()).getAbsolutePath();
+//        String uploadDir = new File("src/main/resources/static/public/" + response.getId() + "/" + response.getFilial()).getAbsolutePath();
         String uploadDir = new File("/home/ec2-user/dente/uploads/public/" + response.getId()).getAbsolutePath();
 
         File directory = new File(uploadDir);

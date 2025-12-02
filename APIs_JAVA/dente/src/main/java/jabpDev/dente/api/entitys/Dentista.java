@@ -29,8 +29,9 @@ public class Dentista {
     @Column(name = "cro", nullable = false)
     private String cro;
 
-    @Column(name = "empresa_id")
-    private Long empresaId;
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
+    private Empresa empresa;
 
     @Column(name = "ativo")
     private boolean ativo;

@@ -7,10 +7,12 @@ import jabpDev.dente.api.entitys.Agendamento;
 import jabpDev.dente.api.entitys.Dentista;
 import jabpDev.dente.api.entitys.Paciente;
 import jabpDev.dente.api.exceptions.ErrorException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -284,6 +286,30 @@ public class ServicesGerais {
     }
 
 
+    public ResponseEntity<?> validarTokenGeral(String header){
+        try {
+            if (header == null || !header.startsWith("Bearer ")){
+                throw new ErrorException("Usuário não logado");
+            }
+            String token = header.substring(7);
+            Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return ResponseEntity.ok(201);
+        }catch (ExpiredJwtException e) {
+            throw new ErrorException("Token expirado");
+        } catch (UnsupportedJwtException e) {
+            throw new ErrorException("TOKEN NÃO SUPORTADO");
+        } catch (MalformedJwtException e) {
+            throw new ErrorException("TOKEN MAL FORMADO");
+        } catch (SecurityException e) {
+            throw new ErrorException("ASSINATURA INVÁLIDA");
+        } catch (Exception e) {
+            throw new ErrorException("TOKEN INVÁLIDO");
+        }
+    }
 
 
 }

@@ -19,8 +19,9 @@ public class Password {
     private Long id;
 
 
-    @Column(name = "empresa_id")
-    private Long empresaId;
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
+    private Empresa empresa;
 
 
     @Column(name = "codigo")

@@ -35,8 +35,9 @@ public class Paciente {
     @Column(name = "rg")
     private String rg;
 
-    @Column(name = "empresa_id")
-    private Long empresaId;
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
+    private Empresa empresa;
 
     @Column(name = "password")
     private String password;

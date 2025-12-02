@@ -25,7 +25,7 @@ public class Empresa implements UserDetails {
     @Column(name = "nomeClinica")
     private String nomeClinica;
 
-    @Column(name = "emailClinica", nullable = false)
+    @Column(name = "emailClinica", nullable = false,unique = true)
     private String emailClinica;
 
     @Column(name = "telefone")
@@ -48,6 +48,9 @@ public class Empresa implements UserDetails {
 
     @Column(name = "data_registro")
     private LocalDate dataRegistro;
+
+    @Column(name = "filial",unique = true)
+    private Long filial;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

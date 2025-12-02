@@ -49,33 +49,11 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
     super.initState();
     mesAtual = DateTime.now();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // controller.buscaAgendamentos();
-      // agendamentosPorData = agruparPorData();
       empresaModel = Provider.of<AuthProvider>(
         context,
         listen: false,
       ).empresaModel;
       await refreshAgendamentos();
-
-      // if (controller.state.agendamentos!.isNotEmpty) {
-      //   List<AgendamentoPorPacienteRequest> request = [];
-
-      //   for (var agendamento in agendamentosDia) {
-      //     request.add(
-      //       AgendamentoPorPacienteRequest(
-      //         data: DateFormat('yyyy-MM-dd').format(agendamento.data!),
-      //         id: agendamento.id,
-      //       ),
-      //     );
-      //   }
-      //   if (request.isNotEmpty) {
-      //     agendamentosDetalhes = await controller.buscarDadosDosAgendamentos(
-      //       request,
-      //     );
-      //   } else {
-      //     agendamentosDetalhes = [];
-      //   }
-      // }
     });
   }
 
@@ -365,11 +343,12 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                       width: 950,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.of(
-                            context,
-                          ).pushNamed(Rotas.agendamento).then((_) async {
-                            await refreshAgendamentos(); // método que já atualiza tudo corretamente
-                          });
+                          // Navigator.of(
+                          //   context,
+                          // ).pushNamed(Rotas.agendamento).then((_) async {
+                          //   await refreshAgendamentos(); // método que já atualiza tudo corretamente
+                          // });
+                          Navigator.of(context).pushNamed(Rotas.premium);
                         },
                         child: Text(
                           'Novo agendamento',

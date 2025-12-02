@@ -9,7 +9,8 @@ public record RegistrarEmpresaDtoRequest(
         String telefone,
         String endereco,
         String passowrd,
-        String cnpj
+        String cnpj,
+        Long filialClinica
 
 ) {
 }

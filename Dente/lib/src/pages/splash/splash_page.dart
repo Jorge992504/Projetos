@@ -61,43 +61,71 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> loading() async {
-    bool isPremium = await Provider.of<AuthProvider>(
-      context,
-      listen: false,
-    ).verificarAcessoPremium();
-    if (!isPremium) {
-      await showPeriodoTesteDialog();
-      return;
-    }
     bool isAuth = Provider.of<AuthProvider>(context, listen: false).isAuth;
     if (isAuth) {
-      await Provider.of<AuthProvider>(
+      bool validToken = await Provider.of<AuthProvider>(
         context,
         listen: false,
-      ).atualizarUsuario();
-      if (mounted) {
-        Navigator.of(context).pushReplacementNamed(Rotas.home);
+      ).validarToken();
+      if (validToken) {
+        String isPlano = await Provider.of<AuthProvider>(
+          // ignore: use_build_context_synchronously
+          context,
+          listen: false,
+        ).verificarPlano();
+        if (isPlano == '!Teste') {
+          showPlanoDialog('Teste');
+          return;
+        }
+        if (isPlano == '!Plano') {
+          showPlanoDialog('Outro');
+          return;
+        }
+        if (isPlano == 'Finalizado') {
+          showPlanoDialog('Plano');
+          return;
+        }
+        await Provider.of<AuthProvider>(
+          // ignore: use_build_context_synchronously
+          context,
+          listen: false,
+        ).atualizarUsuario();
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed(Rotas.home);
+        }
+      } else {
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).pushReplacementNamed(Rotas.login);
       }
     } else {
+      // ignore: use_build_context_synchronously
       Navigator.of(context).pushReplacementNamed(Rotas.login);
     }
     // Provider.of<AuthProvider>(context, listen: false).logout();
     // Navigator.of(context).popAndPushNamed(Rotas.login);
   }
 
-  Future<void> showPeriodoTesteDialog() async {
+  Future<void> showPlanoDialog(String value) async {
     await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text(
-            'Mensalidade Premium Inativada',
+            value == "Teste"
+                ? "Periodo de Teste Encerrado"
+                : value == "Plano"
+                ? "Plano Expirado"
+                : 'Sem plano ativo',
             style: context.cusotomFontes.textBold.copyWith(
               color: ColorsConstants.appBarColor,
             ),
           ),
           content: Text(
-            'Seu plano premium expirou. Para continuar aproveitando os\nbenefícios do plano Premium, por favor, realize a assinatura.',
+            value == "Teste"
+                ? 'Seu período de teste gratuito chegou ao fim.\nPara continuar aproveitando os benefícios realize a assinatura.'
+                : value == "Plano"
+                ? 'Seu plano expirou.\nPara continuar aproveitando os benefícios realize a assinatura.'
+                : 'Você não possui um plano ativo.\nPara continuar aproveitando os benefícios realize a assinatura.',
             style: context.cusotomFontes.textRegular.copyWith(
               color: ColorsConstants.appBarColor,
             ),

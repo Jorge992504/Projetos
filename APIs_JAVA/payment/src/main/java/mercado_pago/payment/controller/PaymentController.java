@@ -2,6 +2,7 @@ package mercado_pago.payment.controller;
 
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
+import com.mercadopago.resources.payment.Payment;
 import lombok.RequiredArgsConstructor;
 import mercado_pago.payment.dto.*;
 import mercado_pago.payment.service.PaymentService;
@@ -30,9 +31,14 @@ public class PaymentController {
         return paymentService.statusPix(paymentId);
     }
 
-    @GetMapping("/card")
-    public String pagarCartao(@RequestParam String token) throws MPException, MPApiException {
-        return paymentService.pagarCartao(token);
+    @PostMapping("/card")
+    public CardResponse pagarCartao(@RequestBody CardRequest cardRequest) throws MPException, MPApiException {
+        return paymentService.pagarCartao(cardRequest);
+    }
+
+    @GetMapping("/card-status")
+    public CardStatusResponse statusCard(@RequestParam Long paymentId){
+        return paymentService.statusCard(paymentId);
     }
 
     @GetMapping("/public-key")

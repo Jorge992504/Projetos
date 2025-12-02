@@ -13,6 +13,7 @@ import jabpDev.dente.api.entitys.Servicos;
 import jabpDev.dente.api.exceptions.ErrorException;
 import jabpDev.dente.api.repositories.*;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -83,7 +84,7 @@ public class RelatoriosServices {
 
     public List<AgendamentoCabecaResponse> buscaRelatoriosAgendamentos(String filtro) {
 
-        String nmEmpresa = SecurityContextHolder.getContext().getAuthentication().getName();
+        String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
 
         if (empresa.isEmpty()){
@@ -209,7 +210,7 @@ public class RelatoriosServices {
 
 
     public List<RelatorioPagamentoMensalDtoResponse> buscarelatoriosFinanciero(){
-        String nmEmpresa = SecurityContextHolder.getContext().getAuthentication().getName();
+        String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
 
         if (empresa.isEmpty()){

@@ -10,10 +10,12 @@ import jabpDev.dente.api.repositories.EmpresaRepository;
 import jabpDev.dente.api.repositories.ServicosRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,7 +42,7 @@ public class ServicosService {
         Servicos servicos = Servicos.builder()
                 .nome(body.nome())
                 .vl(body.vl())
-                .empresaId(empresa.get().getId())
+                .empresa(empresa.get())
                 .build();
         Servicos response = servicosRepository.save(servicos);
         if (response.getId() < 0){

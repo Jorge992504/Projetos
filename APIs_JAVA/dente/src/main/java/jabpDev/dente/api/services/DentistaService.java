@@ -10,10 +10,12 @@ import jabpDev.dente.api.repositories.DentistaRepository;
 import jabpDev.dente.api.repositories.EmpresaRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -47,7 +49,7 @@ public class DentistaService {
         Dentista dentista = Dentista.builder()
                 .cro(body.cro())
                 .email(body.email())
-                .empresaId(empresa.get().getId())
+                .empresa(empresa.get())
                 .telefone(body.telefone())
                 .nome(body.nome())
                 .ativo(true)

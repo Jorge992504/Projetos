@@ -186,6 +186,7 @@ class _RegistrarEmpresaPageState
                           maxLength: 18,
                         ),
                       ),
+
                       const SizedBox(height: 14),
                       SizedBox(
                         width: tamanho.maxWidth * 0.3,
@@ -452,16 +453,30 @@ class _RegistrarEmpresaPageState
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Período de Teste'),
+          title: Text(
+            'Período de Teste',
+            style: context.cusotomFontes.textExtraBold.copyWith(
+              color: ColorsConstants.appBarColor,
+              fontSize: 20,
+            ),
+          ),
           content: Text(
-            'Seu período de teste de 15 dias está ativo. Aproveite para explorar todos os recursos do aplicativo!',
+            'Seu período de teste de 30 dias está ativo.\nAproveite para explorar todos os recursos do aplicativo!',
+            style: context.cusotomFontes.textBoldItalic.copyWith(
+              color: ColorsConstants.appBarColor,
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: Text(
+                'OK',
+                style: context.cusotomFontes.textBold.copyWith(
+                  color: ColorsConstants.appBarColor,
+                ),
+              ),
             ),
           ],
         );

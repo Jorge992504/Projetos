@@ -1,6 +1,7 @@
 package jabpDev.dente.api.services;
 
 
+import io.jsonwebtoken.Claims;
 import jabpDev.dente.api.dto.request.RegistrarEmpresaDtoRequest;
 import jabpDev.dente.api.dto.response.EmpresaDtoResponse;
 import jabpDev.dente.api.entitys.Empresa;
@@ -8,11 +9,13 @@ import jabpDev.dente.api.exceptions.ErrorException;
 import jabpDev.dente.api.repositories.EmpresaRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.Base64;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -43,7 +46,8 @@ public class EmpresaService {
                         optionalEmpresa.get().getTelefone(),
                         optionalEmpresa.get().getEndereco(),
                         optionalEmpresa.get().getCnpj(),
-                        optionalEmpresa.get().getDataRegistro()
+                        optionalEmpresa.get().getDataRegistro(),
+                        optionalEmpresa.get().getFilial()
                         );
             }else{
                 throw new ErrorException("Empresa não encontrada");
@@ -54,8 +58,8 @@ public class EmpresaService {
 
     @Transactional
     public void editarDadosEmpresa( RegistrarEmpresaDtoRequest body){
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<Empresa> empresa = empresaRepository.findByEmailClinica(email);
+        String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
         if (!empresa.isPresent()){
             throw new ErrorException("Clinica não cadastrada");
         }else{

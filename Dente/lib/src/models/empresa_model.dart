@@ -9,6 +9,7 @@ class EmpresaModel {
   String? endereco;
   String? passowrd;
   String? cnpj;
+  int? filialClinica;
 
   EmpresaModel({
     this.foto,
@@ -18,6 +19,7 @@ class EmpresaModel {
     this.endereco,
     this.passowrd,
     this.cnpj,
+    this.filialClinica,
   });
 
   EmpresaModel copyWith({
@@ -28,6 +30,7 @@ class EmpresaModel {
     String? endereco,
     String? passowrd,
     String? cnpj,
+    int? filialClinica,
   }) {
     return EmpresaModel(
       foto: foto ?? this.foto,
@@ -37,6 +40,7 @@ class EmpresaModel {
       endereco: endereco ?? this.endereco,
       passowrd: passowrd ?? this.passowrd,
       cnpj: cnpj ?? this.cnpj,
+      filialClinica: filialClinica ?? this.filialClinica,
     );
   }
 
@@ -49,6 +53,7 @@ class EmpresaModel {
       'endereco': endereco,
       'passowrd': passowrd,
       'cnpj': cnpj,
+      'filialClinica': filialClinica,
     };
   }
 
@@ -61,6 +66,7 @@ class EmpresaModel {
       endereco: map['endereco'] ?? "",
       passowrd: map['passowrd'] ?? "",
       cnpj: map['cnpj'] ?? "",
+      filialClinica: map['filialClinica'] ?? 0,
     );
   }
 
@@ -71,7 +77,7 @@ class EmpresaModel {
 
   @override
   String toString() {
-    return 'EmpresaModel(foto: $foto, nomeClinica: $nomeClinica, emailClinica: $emailClinica, telefone: $telefone, endereco: $endereco, passowrd: $passowrd, cnpj: $cnpj,)';
+    return 'EmpresaModel(foto: $foto, nomeClinica: $nomeClinica, emailClinica: $emailClinica, telefone: $telefone, endereco: $endereco, passowrd: $passowrd, cnpj: $cnpj, filialClinica: $filialClinica)';
   }
 
   @override
@@ -84,7 +90,8 @@ class EmpresaModel {
         other.telefone == telefone &&
         other.endereco == endereco &&
         other.passowrd == passowrd &&
-        other.cnpj == cnpj;
+        other.cnpj == cnpj &&
+        other.filialClinica == filialClinica;
   }
 
   @override
@@ -95,6 +102,7 @@ class EmpresaModel {
         telefone.hashCode ^
         endereco.hashCode ^
         passowrd.hashCode ^
-        cnpj.hashCode;
+        cnpj.hashCode ^
+        filialClinica.hashCode;
   }
 }

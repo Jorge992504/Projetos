@@ -75,12 +75,24 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> verificarAcessoPremium() async {
+  Future<bool> validarToken() async {
     try {
-      bool isPremium = await _loginRepository.verificarAcessoPremium();
-      return isPremium;
+      await _loginRepository.validarToken();
+      _isAuth = true;
+      notifyListeners();
+      return true;
     } catch (e) {
+      logout();
       return false;
+    }
+  }
+
+  Future<String> verificarPlano() async {
+    try {
+      String isPlano = await _loginRepository.verificarAcessoPremium();
+      return isPlano;
+    } catch (e) {
+      return "";
     }
   }
 

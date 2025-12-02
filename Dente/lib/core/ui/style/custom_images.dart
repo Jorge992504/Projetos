@@ -8,3 +8,9 @@ sealed class ImageConstants {
   static const dashboard = 'assets/image/dashboard.png';
   static const convenio = 'assets/image/convenio.png';
 }
+
+sealed class LogosCartoes {
+  static const visa = 'assets/logo/visaLogo.png';
+  static const mastercard = 'assets/logo/mastercardLogo.png';
+  static const pix = 'assets/logo/pix.png';
+}
