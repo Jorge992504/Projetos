@@ -3,14 +3,11 @@ package jabpDev.dente.api.config;
 
 import jabpDev.dente.api.services.ExceptionService;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -35,10 +32,13 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/**").permitAll()
-//                        .requestMatchers("/api/public/**").permitAll()
+//                      .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers(filter.getLogin()).permitAll()
                         .requestMatchers("/registrar/empresa").permitAll()
                         .requestMatchers( "/redefine/**").permitAll()
+                        .requestMatchers(filter.getCard(), filter.getCardStatus()).permitAll()
+                        .requestMatchers(filter.getPix(), filter.getPixStatus()).permitAll()
+                        .requestMatchers(filter.getCardPublicKey()).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)

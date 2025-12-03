@@ -40,6 +40,16 @@ public class ServicesGerais {
     @Value("${app.remote-url}")
     public String httpRemote;
 
+    @Getter
+    @Value("${mercadopago.access.token}")
+    public String accessToken;
+    @Getter
+    @Value("${mercadopago.public.key}")
+    public String publicKey;
+    @Getter
+    @Value("${aes.secret}")
+    public String aesSecret;
+
     private final JavaMailSender javaMailSender;
 
     public ServicesGerais(JavaMailSender javaMailSender){

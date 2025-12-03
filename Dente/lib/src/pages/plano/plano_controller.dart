@@ -1,4 +1,10 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
+import 'package:dente/core/exceptions/repository_exception.dart';
+import 'package:dente/src/models/request/pix_request.dart';
+import 'package:dente/src/models/response/pix_response.dart';
+import 'package:dente/src/models/response/precos_model_response.dart';
 import 'package:dente/src/pages/plano/plano_state.dart';
 import 'package:dente/src/repository/plano_repository.dart';
 
@@ -7,28 +13,54 @@ class PlanoController extends Cubit<PlanoState> {
 
   PlanoController(this._repository) : super(PlanoState.initial());
 
-  // Future<Map<String, dynamic>> register(EmpresaModel model) async {
-  //   try {
-  //     emit(state.copyWith(status: PlanoStatus.loading));
+  Future<List<PrecosModelResponse>> buscarPrecos() async {
+    try {
+      emit(state.copyWith(status: PlanoStatus.loading));
 
-  //     final result = await _repository.register(model);
+      final result = await _repository.buscarPlanos();
 
-  //     emit(
-  //       state.copyWith(
-  //         status: PlanoStatus.success,
-  //         errorMessage: null,
-  //       ),
-  //     );
-  //     return result;
-  //   } on RepositoryException catch (e, s) {
-  //     log('$s');
-  //     emit(
-  //       state.copyWith(
-  //         status: PlanoStatus.failure,
-  //         errorMessage: e.message,
-  //       ),
-  //     );
-  //     return {};
-  //   }
-  // }
+      emit(state.copyWith(status: PlanoStatus.loaded, errorMessage: null));
+      return result;
+    } on RepositoryException catch (e, s) {
+      log('$s');
+      emit(
+        state.copyWith(status: PlanoStatus.failure, errorMessage: e.message),
+      );
+      return [];
+    }
+  }
+
+  Future<PixResponse> gerarPix(PixRequest body) async {
+    try {
+      emit(state.copyWith(status: PlanoStatus.loading));
+
+      final result = await _repository.gerarPix(body);
+
+      emit(state.copyWith(status: PlanoStatus.loaded, errorMessage: null));
+      return result;
+    } on RepositoryException catch (e, s) {
+      log('$s');
+      emit(
+        state.copyWith(status: PlanoStatus.failure, errorMessage: e.message),
+      );
+      rethrow;
+    }
+  }
+
+  Future<String> verificarStatusPagamento(int paymentId) async {
+    try {
+      emit(state.copyWith(status: PlanoStatus.loading));
+
+      final result = await _repository.verificarStatusPagamento(paymentId);
+
+      emit(state.copyWith(status: PlanoStatus.loaded, errorMessage: null));
+      return result;
+    } on RepositoryException catch (e, s) {
+      log('$s');
+      emit(
+        state.copyWith(status: PlanoStatus.failure, errorMessage: e.message),
+      );
+      rethrow;
+    }
+  }
 }

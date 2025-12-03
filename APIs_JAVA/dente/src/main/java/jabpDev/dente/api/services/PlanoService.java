@@ -1,5 +1,18 @@
 package jabpDev.dente.api.services;
 
+import com.mercadopago.MercadoPagoConfig;
+import com.mercadopago.client.common.IdentificationRequest;
+import com.mercadopago.client.payment.PaymentClient;
+import com.mercadopago.client.payment.PaymentCreateRequest;
+import com.mercadopago.client.payment.PaymentPayerRequest;
+import com.mercadopago.core.MPRequestOptions;
+import com.mercadopago.exceptions.MPApiException;
+import com.mercadopago.exceptions.MPException;
+import com.mercadopago.resources.payment.Payment;
+import jabpDev.dente.api.dto.request.PixRequest;
+import jabpDev.dente.api.dto.response.PixResponse;
+import jabpDev.dente.api.dto.response.PixStatusResponse;
+import jabpDev.dente.api.dto.response.PublicKeyResponse;
 import jabpDev.dente.api.entitys.Empresa;
 import jabpDev.dente.api.entitys.Plano;
 import jabpDev.dente.api.exceptions.ErrorException;
@@ -10,7 +23,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.time.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -19,6 +35,7 @@ public class PlanoService {
 
     private final PlanoRepository planoRepository;
     private final EmpresaRepository empresaRepository;
+    private final ServicesGerais servicesGerais;
 
     @Transactional
     public String verificaPlano(){
@@ -78,13 +95,86 @@ public class PlanoService {
     }
 
     @Transactional
-    public void assinarPlano(){
+    private void assinarPlano(){
         String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
         if (empresa.isEmpty()){
             throw new ErrorException("Realizar login novamente");
         }
     }
+
+//    PIX
+    public PixResponse pagarPix(PixRequest body) throws MPException, MPApiException {
+        try {
+
+            MercadoPagoConfig.setAccessToken(servicesGerais.accessToken);
+            String idempotencyKey = "pix_" + System.currentTimeMillis();
+
+            Map<String,String> customHeaders = new HashMap<>();
+            customHeaders.put("x-idempotency-key", idempotencyKey);
+
+            MPRequestOptions mpRequestOptions = MPRequestOptions.builder()
+                    .customHeaders(customHeaders)
+                    .build();
+
+            PaymentClient paymentClient = new PaymentClient();
+
+            PaymentCreateRequest paymentCreateRequest = PaymentCreateRequest.builder()
+                    .transactionAmount(new BigDecimal(String.valueOf(body.valor())))
+                    .description(body.descricao())
+                    .paymentMethodId("pix")
+                    .dateOfExpiration(OffsetDateTime.now(ZoneOffset.of("-03:00")).plusMinutes(30))
+                    .payer(
+                            PaymentPayerRequest.builder()
+                                    .email(body.email())
+                                    .firstName(body.name())
+                                    .identification(
+                                            IdentificationRequest.builder()
+                                                    .type("CPF")
+                                                    .number("80233616942")
+                                    .build()
+                                    )
+                                    .build()
+                    )
+                    .build();
+
+            Payment payment = paymentClient.create(paymentCreateRequest,mpRequestOptions);
+
+            return new PixResponse(
+                    payment.getPointOfInteraction()
+                            .getTransactionData()
+                            .getQrCode(),
+                    payment.getPointOfInteraction()
+                            .getTransactionData()
+                            .getQrCodeBase64(),
+                    payment.getId()
+            );
+        }catch (MPException e){
+            throw new ErrorException("MPException, erro no mp: " + e.getMessage());
+        }catch (MPApiException e){
+            throw new ErrorException("MPApiException, erro na api: " + e.getMessage() + " \n " + "Status: " + e.getApiResponse().getStatusCode() + " \n " + "Content: " + e.getApiResponse().getContent());
+        }
+    }
+
+    public PixStatusResponse statusPix(Long paymentId){
+        try {
+            MercadoPagoConfig.setAccessToken(servicesGerais.accessToken);
+            PaymentClient paymentClient = new PaymentClient();
+            Payment payment = paymentClient.get(paymentId);
+            return new PixStatusResponse(payment.getStatus());
+        }catch (MPException e){
+            throw new ErrorException("MPException, erro no mp: " + e.getMessage());
+        }catch (MPApiException e){
+            throw new ErrorException("MPApiException, erro na api: " + e.getMessage() + " \n " + "Status: " + e.getApiResponse().getStatusCode() + " \n " + "Content: " + e.getApiResponse().getContent());
+        }
+
+    }
+
+//    pagamento com cartao
+//    public PublicKeyResponse getPublicKey(){
+//        return new PublicKeyResponse(servicesGerais.publicKey);
+//
+//    }
 }
 
 
