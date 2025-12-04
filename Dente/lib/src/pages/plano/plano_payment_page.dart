@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 
@@ -6,14 +7,19 @@ import 'package:dente/core/router/rotas.dart';
 import 'package:dente/core/ui/base/base_state.dart';
 import 'package:dente/core/ui/style/custom_colors.dart';
 import 'package:dente/core/ui/style/fontes_letras.dart';
+import 'package:dente/src/models/request/card_request.dart';
 import 'package:dente/src/models/request/pix_request.dart';
+import 'package:dente/src/models/response/card_response.dart';
+import 'package:dente/src/models/response/card_status_response.dart';
 import 'package:dente/src/models/response/pix_response.dart';
 import 'package:dente/src/pages/plano/plano_controller.dart';
 import 'package:dente/src/pages/plano/plano_state.dart';
+import 'package:dente/src/pages/plano/widgets/card_payment_page.dart';
 import 'package:dente/src/pages/plano/widgets/pix_paymento_page.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 
 class PlanoPaymentPage extends StatefulWidget {
   final String? plano;
@@ -38,8 +44,25 @@ class _PlanoPaymentPageState
   String valorFinalPlano = "";
 
   bool isPix = false;
-  bool isStatusPix = false;
+  bool isCard = false;
+
   PixResponse pixResponse = PixResponse();
+
+  String iconeCartao = 'desconhecido';
+  String publicKey = "";
+
+  TextEditingController cartaoController = TextEditingController();
+  TextEditingController validadeController = TextEditingController();
+  TextEditingController cvvController = TextEditingController();
+  TextEditingController nomeController = TextEditingController();
+  TextEditingController cpfController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  FocusNode cartaoFocus = FocusNode();
+  FocusNode validadeFocus = FocusNode();
+  FocusNode cvvFocus = FocusNode();
+  FocusNode nomeFocus = FocusNode();
+  FocusNode cpfFocus = FocusNode();
+  FocusNode emailFocus = FocusNode();
 
   @override
   void initState() {
@@ -76,6 +99,7 @@ class _PlanoPaymentPageState
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Padding(padding: EdgeInsetsGeometry.all(30)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -315,7 +339,15 @@ class _PlanoPaymentPageState
                           pixResponse = PixResponse();
                         });
                         if (isPix) {
+                          setState(() {
+                            isCard = false;
+                          });
                           await gerarPix();
+                        } else {
+                          await buscaPublicKey();
+                          setState(() {
+                            isCard = true;
+                          });
                         }
                       },
                     ),
@@ -487,6 +519,35 @@ class _PlanoPaymentPageState
                     copiaCola: pixResponse.qrCodeBase64 ?? "",
                   ),
                 ),
+                Visibility(
+                  visible: isCard,
+                  child: CardPaymentPage(
+                    onChanged: (value) {
+                      String bandeira = identificarBandeira(value);
+                      setState(() {
+                        iconeCartao =
+                            bandeira; // usar para mostrar ícone Visa/Master
+                      });
+                    },
+                    iconeCartao: iconeCartao,
+                    cartaoController: cartaoController,
+                    validadeController: validadeController,
+                    cvvController: cvvController,
+                    nomeController: nomeController,
+                    cpfController: cpfController,
+                    emailController: emailController,
+                    cartaoFocus: cartaoFocus,
+                    validadeFocus: validadeFocus,
+                    cvvFocus: cvvFocus,
+                    nomeFocus: nomeFocus,
+                    cpfFocus: cpfFocus,
+                    emailFocus: emailFocus,
+                    onPagar: () async {
+                      CardResponse response = await pagarCartao();
+                      verificarStatusCard(response.id!);
+                    },
+                  ),
+                ),
               ],
             ),
           );
@@ -502,11 +563,11 @@ class _PlanoPaymentPageState
   ];
 
   Future<void> calcularValorPlano(String plano, String periodo) async {
-    if (plano == "Basíco") {
+    if (plano == "Basico") {
       if (periodo == "Mensal") {
         setState(() {
           periodoSelecionado = "0% off";
-          valorFinalPlano = "R\$ 85.00";
+          valorPlano = "R\$ 85.00";
           valorComDescontoPlano = "R\$ 85.00";
         });
         return;
@@ -619,6 +680,146 @@ class _PlanoPaymentPageState
       }
     });
   }
+
+  String identificarBandeira(String numeroCartao) {
+    if (numeroCartao.isEmpty) return 'desconhecido';
+
+    String bin = numeroCartao.replaceAll(' ', '').substring(0, 6);
+
+    // Visa: começa com 4
+    if (bin.startsWith('4')) return 'visa';
+
+    // Mastercard: começa com 51-55 ou 2221-2720
+    int binInt = int.tryParse(bin) ?? 0;
+    if ((binInt >= 510000 && binInt <= 559999) ||
+        (binInt >= 222100 && binInt <= 272099)) {
+      return 'mastercard';
+    }
+
+    // American Express: começa com 34 ou 37
+    if (bin.startsWith('34') || bin.startsWith('37')) return 'amex';
+
+    // Outros casos
+    return 'desconhecido';
+  }
+
+  //!!!!!!!!! pagamento com cartao !!!!!!!!!!!!!!!
+  String limparNumeroCartao(String numero) {
+    return numero.replaceAll(' ', '');
+  }
+
+  String converterMesValidade(String data) {
+    // Remove barras
+    final limpa = data.replaceAll('/', '');
+
+    if (limpa.length != 4) return data; // segurança
+
+    final mm = limpa.substring(0, 2);
+
+    return mm;
+  }
+
+  String converterAnoValidade(String data) {
+    // Remove barras
+    final limpa = data.replaceAll('/', '');
+
+    if (limpa.length != 4) return data; // segurança
+
+    final aa = limpa.substring(2, 4);
+
+    return '20$aa';
+  }
+
+  String limparCPF(String cpf) {
+    return cpf.replaceAll('.', '').replaceAll('-', '');
+  }
+
+  Future<void> buscaPublicKey() async {
+    String response = await controller.buscaPublicKey();
+    if (response.isNotEmpty) {
+      setState(() {
+        publicKey = response;
+      });
+    }
+  }
+
+  Future<CardResponse> pagarCartao() async {
+    final cardToken = await gerarToken();
+    String name = nomeController.text;
+    String cpf = limparCPF(cpfController.text);
+
+    final valorFormatado = formatarValor(valorComDescontoPlano);
+    num valorFinal = num.tryParse(valorFormatado) ?? 0.0;
+
+    CardRequest request = CardRequest(
+      amount: valorFinal,
+      cardToken: cardToken,
+      descricao: "Plano $planoSelecionado",
+      parcelas: 1,
+      paymentMethodId: iconeCartao == "mastercard" ? "master" : "visa",
+      email: emailController.text,
+      name: name,
+      cpf: cpf,
+    );
+    CardResponse response = await controller.pagamentoCard(request);
+    return response;
+  }
+
+  Future<String> gerarToken() async {
+    final url = Uri.parse(
+      'https://api.mercadopago.com/v1/card_tokens?public_key=$publicKey',
+    );
+
+    String mes = converterMesValidade(validadeController.text);
+    String ano = converterAnoValidade(validadeController.text);
+    String cardNumber = limparNumeroCartao(cartaoController.text);
+    String securityCode = cvvController.text;
+    String name = nomeController.text;
+    String cpf = limparCPF(cpfController.text);
+    int expirationMonth = int.tryParse(mes) ?? 0;
+    int expirationYear = int.tryParse(ano) ?? 0;
+
+    final body = {
+      "card_number": cardNumber,
+      "expiration_month": expirationMonth,
+      "expiration_year": expirationYear,
+      "security_code": securityCode,
+      "cardholder": {
+        "name": name,
+        "identification": {"type": "CPF", "number": cpf},
+      },
+    };
+
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(body),
+    );
+
+    debugPrint("STATUS: ${response.statusCode}");
+    debugPrint("BODY: ${response.body}");
+    final json = jsonDecode(response.body);
+
+    // 🔥 Retorna só o id
+    return json["id"] ?? "";
+  }
+
+  void verificarStatusCard(int paymentId) {
+    Timer(const Duration(minutes: 5), () {
+      final status = controller.statusCard(paymentId);
+      // ignore: unrelated_type_equality_checks
+      if (status == "approved") {
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil(Rotas.login, (_) => false);
+        // ignore: unrelated_type_equality_checks
+      } else if (status == "cancelled") {
+        showError("O pagamento falhou.");
+      } else {
+        showError("Pagamento pendente.");
+      }
+    });
+  }
 }
 
 class MetodoPagamento {
@@ -636,72 +837,9 @@ class ValorPlano {
 
 
 
-// Future<String> gerarToken() async {
-//     final url = Uri.parse(
-//       'https://api.mercadopago.com/v1/card_tokens?public_key=TEST-1842e064-25f7-44f4-84c9-58c47ae2dd25',
-//     );
 
-//     final body = {
-//       "card_number": "4235647728025682",
-//       "expiration_month": 11,
-//       "expiration_year": 2030,
-//       "security_code": "123",
-//       "cardholder": {
-//         "name": "APRO",
-//         "identification": {"type": "CPF", "number": "12345678909"},
-//       },
-//     };
 
-//     final response = await http.post(
-//       url,
-//       headers: {"Content-Type": "application/json"},
-//       body: jsonEncode(body),
-//     );
 
-//     debugPrint("STATUS: ${response.statusCode}");
-//     debugPrint("BODY: ${response.body}");
-
-//     return response.body;
-//   }
-
-//   String identificarBandeira(String numeroCartao) {
-//     if (numeroCartao.isEmpty) return 'desconhecido';
-
-//     String bin = numeroCartao.replaceAll(' ', '').substring(0, 6);
-
-//     // Visa: começa com 4
-//     if (bin.startsWith('4')) return 'visa';
-
-//     // Mastercard: começa com 51-55 ou 2221-2720
-//     int binInt = int.tryParse(bin) ?? 0;
-//     if ((binInt >= 510000 && binInt <= 559999) ||
-//         (binInt >= 222100 && binInt <= 272099)) {
-//       return 'mastercard';
-//     }
-
-//     // American Express: começa com 34 ou 37
-//     if (bin.startsWith('34') || bin.startsWith('37')) return 'amex';
-
-//     // Outros casos
-//     return 'desconhecido';
-//   }
-
-  // TextField(
-  //           onChanged: (value) {
-  //             String bandeira = identificarBandeira(value);
-  //             setState(() {
-  //               iconeCartao = bandeira; // usar para mostrar ícone Visa/Master
-  //             });
-  //           },
-  //           decoration: InputDecoration(
-  //             hintText: 'Número do cartão',
-  //             prefixIcon: iconeCartao == 'visa'
-  //                 ? Image.asset(LogosCartoes.visa, width: 40)
-  //                 : iconeCartao == 'mastercard'
-  //                 ? Image.asset(LogosCartoes.mastercard, width: 40)
-  //                 : Icon(Icons.credit_card),
-  //           ),
-  //         ),
 
 
 

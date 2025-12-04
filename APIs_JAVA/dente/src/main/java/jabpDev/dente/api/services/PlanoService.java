@@ -9,10 +9,9 @@ import com.mercadopago.core.MPRequestOptions;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.payment.Payment;
+import jabpDev.dente.api.dto.request.CardRequest;
 import jabpDev.dente.api.dto.request.PixRequest;
-import jabpDev.dente.api.dto.response.PixResponse;
-import jabpDev.dente.api.dto.response.PixStatusResponse;
-import jabpDev.dente.api.dto.response.PublicKeyResponse;
+import jabpDev.dente.api.dto.response.*;
 import jabpDev.dente.api.entitys.Empresa;
 import jabpDev.dente.api.entitys.Plano;
 import jabpDev.dente.api.exceptions.ErrorException;
@@ -171,10 +170,72 @@ public class PlanoService {
     }
 
 //    pagamento com cartao
-//    public PublicKeyResponse getPublicKey(){
-//        return new PublicKeyResponse(servicesGerais.publicKey);
-//
-//    }
+    public PublicKeyResponse getPublicKey(){
+        return new PublicKeyResponse(servicesGerais.publicKey);
+    }
+
+    public CardResponse pagarCartao(CardRequest body) throws MPException, MPApiException {
+        try {
+            MercadoPagoConfig.setAccessToken(servicesGerais.accessToken);
+            String idempotencyKey = "card_" + System.currentTimeMillis();
+
+            Map<String, String> customHeaders = new HashMap<>();
+            customHeaders.put("x-idempotency-key", idempotencyKey);
+
+            MPRequestOptions mpRequestOptions = MPRequestOptions.builder()
+                    .customHeaders(customHeaders)
+                    .build();
+
+            PaymentClient paymentClient = new PaymentClient();
+
+            PaymentCreateRequest paymentCreateRequest = PaymentCreateRequest.builder()
+                    .transactionAmount(body.amount())
+                    .token(body.cardToken())
+                    .description(body.descricao())
+                    .installments(body.parcelas())
+                    .paymentMethodId(body.paymentMethodId())
+                    .payer(
+                            PaymentPayerRequest.builder()
+                                    .email(body.email())
+                                    .firstName(body.name())
+                                    .identification(
+                                            IdentificationRequest.builder()
+                                                    .type("CPF")
+                                                    .number(body.cpf())
+                                                    .build()
+                                    )
+                                    .build()
+                    )
+                    .build();
+
+            Payment payment = paymentClient.create(paymentCreateRequest,mpRequestOptions);
+            return new CardResponse(
+                    payment.getStatus(),
+                    payment.getStatusDetail(),
+                    payment.getId(),
+                    payment.getDateApproved(),
+                    payment.getPaymentMethodId(),
+                    payment.getPaymentTypeId()
+            );
+        }catch (MPException e){
+            throw new ErrorException("MPException, erro no mp: " + e.getMessage());
+        }catch (MPApiException e){
+            throw new ErrorException("MPApiException, erro na api: " + e.getMessage() + " \n " + "Status: " + e.getApiResponse().getStatusCode() + " \n " + "Content: " + e.getApiResponse().getContent());
+        }
+    }
+
+    public CardStatusResponse statusCard(Long paymentId) throws MPException, MPApiException {
+        try {
+            MercadoPagoConfig.setAccessToken(servicesGerais.accessToken);
+            PaymentClient paymentClient = new PaymentClient();
+            Payment payment = paymentClient.get(paymentId);
+            return new CardStatusResponse(payment.getStatus());
+        }catch (MPException e){
+            throw new ErrorException("MPException, erro no mp: " + e.getMessage());
+        }catch (MPApiException e){
+            throw new ErrorException("MPApiException, erro na api: " + e.getMessage() + " \n " + "Status: " + e.getApiResponse().getStatusCode() + " \n " + "Content: " + e.getApiResponse().getContent());
+        }
+    }
 }
 
 

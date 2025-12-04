@@ -8,10 +8,16 @@ conetar meu not com a aws => ssh ec2-user@ec2-3-128-31-51.us-east-2.compute.amaz
 buildar a api => mvn clean install -DskipTests
 seta  o java 21 => set JAVA_HOME="C:\java\jdk-21"
                    set PATH=%JAVA_HOME%\bin;%PATH%
-copiar o .jar para a aws => scp dente-0.0.1-SNAPSHOT.jar ec2-user@3.128.31.51:/home/ec2-user
+copiar o .jar para a aws => scp dente-0.0.1-SNAPSHOT.jar ec2-user@3.128.31.51:/home/ec2-user/dente
 
 acessar ao banco => psql -h pg-jabpdev.cv2m40igmifd.us-east-2.rds.amazonaws.com -U postgres
 
 para de rodar o script => sudo systemctl stop dente
 inicia o script => sudo systemctl stop dente
 verifica o status da api => sudo systemctl status dente
+
+
+
+ssh -N -L 5433:pg-jabpdev.cv2m40igmifd.us-east-2.rds.amazonaws.com:5432 ec2-user@ec2-3-128-31-51.us-east-2.compute.amazonaws.com
+ssh -N -L 8081:8080 ec2-user@ec2-3-128-31-51.us-east-2.compute.amazonaws.com
+localhost:5433

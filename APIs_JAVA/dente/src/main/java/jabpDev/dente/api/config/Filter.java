@@ -19,4 +19,5 @@ public class Filter {
     public String card = "/plano/card";
     public String cardStatus = "/plano/card-status";
     public String cardPublicKey = "/plano/public-key";
+    public String precoFind = "/preco/find";
 }

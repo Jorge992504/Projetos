@@ -21,7 +21,7 @@ class PlanoPage extends StatefulWidget {
 class _PlanoPageState extends BaseState<PlanoPage, PlanoController> {
   String respostaTexto =
       ""; // <-- aqui guardamos o retorno para mostrar no Text
-  String iconeCartao = 'desconhecido';
+
   List<PrecosModelResponse> precos = [];
 
   @override

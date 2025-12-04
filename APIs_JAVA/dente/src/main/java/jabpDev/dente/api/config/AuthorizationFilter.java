@@ -38,7 +38,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                 path.startsWith(filter.getRedefine()) || path.startsWith("/public/") ||
                 path.equals(filter.getCard()) || path.equals(filter.getCardStatus()) ||
                 path.equals(filter.getPix())  || path.equals(filter.getPixStatus())  ||
-                path.equals(filter.getCardPublicKey())
+                path.equals(filter.getCardPublicKey()) || path.equals(filter.getPrecoFind())
         ){
             filterChain.doFilter(request,response);
             return;

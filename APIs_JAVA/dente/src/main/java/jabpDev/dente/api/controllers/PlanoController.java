@@ -33,18 +33,18 @@ public class PlanoController {
     }
 
 //    pagamento com cartoes
-//    @GetMapping("/public-key")
-//    public PublicKeyResponse getPublicKey(){
-//        return planoService.getPublicKey();
-//    }
+    @GetMapping("/public-key")
+    public PublicKeyResponse getPublicKey(){
+        return planoService.getPublicKey();
+    }
 
-//    @PostMapping("/card")
-//    public CardResponse pagarCartao(@RequestBody CardRequest body) throws MPException, MPApiException {
-//        return planoService.pagarCartao(body);
-//    }
-//
-//    @GetMapping("/card-status")
-//    public CardStatusResponse statusCard(@RequestParam Long paymentId){
-//        return planoService.statusCard(paymentId);
-//    }
+    @PostMapping("/card")
+    public CardResponse pagarCartao(@RequestBody CardRequest body) throws MPException, MPApiException {
+        return planoService.pagarCartao(body);
+    }
+
+    @GetMapping("/card-status")
+    public CardStatusResponse statusCard(@RequestParam Long paymentId) throws MPException, MPApiException {
+        return planoService.statusCard(paymentId);
+    }
 }

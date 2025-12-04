@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers(filter.getCard(), filter.getCardStatus()).permitAll()
                         .requestMatchers(filter.getPix(), filter.getPixStatus()).permitAll()
                         .requestMatchers(filter.getCardPublicKey()).permitAll()
+                        .requestMatchers(filter.getPrecoFind()).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
