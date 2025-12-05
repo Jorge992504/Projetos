@@ -133,10 +133,16 @@ class _SplashPageState extends State<SplashPage> {
           actions: [
             TextButton(
               onPressed: () {
-                Provider.of<AuthProvider>(context, listen: false).logout();
-                Navigator.of(
+                final token = Provider.of<AuthProvider>(
                   context,
-                ).pushNamedAndRemoveUntil(Rotas.premium, (route) => false);
+                  listen: false,
+                ).token;
+                Provider.of<AuthProvider>(context, listen: false).logout();
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  Rotas.premium,
+                  (route) => false,
+                  arguments: {"token": token},
+                );
               },
               child: Text(
                 'OK',

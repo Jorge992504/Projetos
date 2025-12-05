@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:typed_data';
-
 import 'package:dente/core/router/rotas.dart';
 import 'package:dente/core/ui/base/base_state.dart';
 import 'package:dente/core/ui/style/custom_colors.dart';
@@ -10,7 +8,6 @@ import 'package:dente/core/ui/style/fontes_letras.dart';
 import 'package:dente/src/models/request/card_request.dart';
 import 'package:dente/src/models/request/pix_request.dart';
 import 'package:dente/src/models/response/card_response.dart';
-import 'package:dente/src/models/response/card_status_response.dart';
 import 'package:dente/src/models/response/pix_response.dart';
 import 'package:dente/src/pages/plano/plano_controller.dart';
 import 'package:dente/src/pages/plano/plano_state.dart';
@@ -24,7 +21,8 @@ import 'package:http/http.dart' as http;
 class PlanoPaymentPage extends StatefulWidget {
   final String? plano;
   final String? preco;
-  const PlanoPaymentPage({super.key, this.plano, this.preco});
+  final String? token;
+  const PlanoPaymentPage({super.key, this.plano, this.preco, this.token});
 
   @override
   State<PlanoPaymentPage> createState() => _PlanoPaymentPageState();
@@ -64,11 +62,14 @@ class _PlanoPaymentPageState
   FocusNode cpfFocus = FocusNode();
   FocusNode emailFocus = FocusNode();
 
+  String token = "";
+
   @override
   void initState() {
     super.initState();
     planoSelecionado = widget.plano ?? "Desconhecido";
     precoPlano = widget.preco ?? "0";
+    token = widget.token ?? "";
     WidgetsBinding.instance.addPostFrameCallback((_) {
       calcularValorPlano(planoSelecionado, "Mensal");
     });
@@ -76,6 +77,7 @@ class _PlanoPaymentPageState
 
   @override
   Widget build(BuildContext context) {
+    log(token);
     return Scaffold(
       appBar: AppBar(title: const Text('Finalizar pagamento do plano')),
       body: BlocConsumer<PlanoController, PlanoState>(
@@ -343,6 +345,7 @@ class _PlanoPaymentPageState
                             isCard = false;
                           });
                           await gerarPix();
+                          verificarStatusPix();
                         } else {
                           await buscaPublicKey();
                           setState(() {
@@ -544,7 +547,18 @@ class _PlanoPaymentPageState
                     emailFocus: emailFocus,
                     onPagar: () async {
                       CardResponse response = await pagarCartao();
-                      verificarStatusCard(response.id!);
+
+                      if (response.status == "approved") {
+                        Navigator.of(
+                          // ignore: use_build_context_synchronously
+                          context,
+                        ).pushNamedAndRemoveUntil(Rotas.login, (_) => false);
+                      } else if (response.status == "cancelled") {
+                        showError("O pagamento falhou.");
+                      } else {
+                        showInfo("Pagamento pendente");
+                        verificarStatusCard(response.id!);
+                      }
                     },
                   ),
                 ),
@@ -644,7 +658,7 @@ class _PlanoPaymentPageState
     PixRequest request = PixRequest(
       descricao: 'Pagamento do plano $planoSelecionado',
       // valor: valorFinal,
-      valor: 10.0,
+      valor: valorFinal,
       email: "suportedente@gmail.com",
       name: "Jorge Bravo",
       cnpj: "80233616942",
@@ -805,6 +819,7 @@ class _PlanoPaymentPageState
   }
 
   void verificarStatusCard(int paymentId) {
+    log('entrou $paymentId');
     Timer(const Duration(minutes: 5), () {
       final status = controller.statusCard(paymentId);
       // ignore: unrelated_type_equality_checks

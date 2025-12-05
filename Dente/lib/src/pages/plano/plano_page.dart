@@ -24,13 +24,20 @@ class _PlanoPageState extends BaseState<PlanoPage, PlanoController> {
 
   List<PrecosModelResponse> precos = [];
 
+  String token = "";
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final route = ModalRoute.of(context);
+      final arguments =
+          (route!.settings.arguments ?? <String, dynamic>{}) as Map;
+
       final resultado = await controller.buscarPrecos();
       setState(() {
         precos = resultado;
+        token = arguments['token'];
       });
     });
   }
@@ -137,12 +144,16 @@ class _PlanoPageState extends BaseState<PlanoPage, PlanoController> {
     );
   }
 
-  void navegarPaymentPlano({String? plano, String? preco}) async {
+  void navegarPaymentPlano({
+    String? plano,
+    String? preco,
+    String? token,
+  }) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => Provider.value(
           value: Provider.of<PlanoController>(context, listen: false),
-          child: PlanoPaymentPage(plano: plano, preco: preco),
+          child: PlanoPaymentPage(plano: plano, preco: preco, token: token),
         ),
       ),
     );

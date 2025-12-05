@@ -76,7 +76,10 @@ class PlanoRepository {
 
   Future<CardStatusResponse> statusCard(int paymentId) async {
     try {
-      final response = await restClient.unauth.get("/plano/card-status");
+      final response = await restClient.unauth.get(
+        "/plano/card-status",
+        queryParameters: {"paymentId": paymentId},
+      );
       return CardStatusResponse.fromMap(response.data);
     } catch (e, s) {
       log('Erro ao verificar status do pagamento', error: e, stackTrace: s);

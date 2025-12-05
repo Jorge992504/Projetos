@@ -28,8 +28,8 @@ public class PlanoController {
         return planoService.pagarPix(body);
     }
     @GetMapping("/pix-status")
-    public PixStatusResponse statusPix(@RequestParam Long paymentId){
-        return planoService.statusPix(paymentId);
+    public PixStatusResponse statusPix(@RequestParam Long paymentId, @RequestParam String token){
+        return planoService.statusPix(paymentId,token);
     }
 
 //    pagamento com cartoes
@@ -44,7 +44,8 @@ public class PlanoController {
     }
 
     @GetMapping("/card-status")
-    public CardStatusResponse statusCard(@RequestParam Long paymentId) throws MPException, MPApiException {
-        return planoService.statusCard(paymentId);
+    public CardStatusResponse statusCard(@RequestParam Long paymentId,@RequestParam String token) throws MPException, MPApiException {
+        System.out.println("paymentId: "+paymentId);
+        return planoService.statusCard(paymentId,token);
     }
 }

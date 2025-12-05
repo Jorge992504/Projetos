@@ -21,6 +21,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.time.*;
@@ -94,12 +95,8 @@ public class PlanoService {
     }
 
     @Transactional
-    private void assinarPlano(){
-        String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
-        if (empresa.isEmpty()){
-            throw new ErrorException("Realizar login novamente");
-        }
+    private void assinarPlano(String token,Payment payment){
+
     }
 
 //    PIX
@@ -155,11 +152,14 @@ public class PlanoService {
         }
     }
 
-    public PixStatusResponse statusPix(Long paymentId){
+    public PixStatusResponse statusPix(Long paymentId,String token){
         try {
             MercadoPagoConfig.setAccessToken(servicesGerais.accessToken);
             PaymentClient paymentClient = new PaymentClient();
             Payment payment = paymentClient.get(paymentId);
+            if (payment.getStatus().equals("approved")){
+                assinarPlano(token,payment);
+            }
             return new PixStatusResponse(payment.getStatus());
         }catch (MPException e){
             throw new ErrorException("MPException, erro no mp: " + e.getMessage());
@@ -224,11 +224,14 @@ public class PlanoService {
         }
     }
 
-    public CardStatusResponse statusCard(Long paymentId) throws MPException, MPApiException {
+    public CardStatusResponse statusCard(Long paymentId,String token) throws MPException, MPApiException {
         try {
             MercadoPagoConfig.setAccessToken(servicesGerais.accessToken);
             PaymentClient paymentClient = new PaymentClient();
             Payment payment = paymentClient.get(paymentId);
+            if (payment.getStatus().equals("approved")){
+                assinarPlano(token,payment);
+            }
             return new CardStatusResponse(payment.getStatus());
         }catch (MPException e){
             throw new ErrorException("MPException, erro no mp: " + e.getMessage());

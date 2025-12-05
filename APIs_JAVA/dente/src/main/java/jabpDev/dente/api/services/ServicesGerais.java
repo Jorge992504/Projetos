@@ -321,5 +321,21 @@ public class ServicesGerais {
         }
     }
 
+    public String getEmailToken(String token){
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            if (claims.get("email") != null){
+                return claims.get("email").toString();
+            }
+            return claims.getSubject();
+        }catch (Exception e){
+            throw new ErrorException("Erro ao buscar email");
+        }
+    }
+
 
 }
