@@ -53,11 +53,13 @@ class _LoginPageState extends BaseState<LoginPage, LoginController> {
                 context,
                 listen: false,
               ).atualizarUsuario();
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(
-                  context,
-                ).pushNamedAndRemoveUntil(Rotas.home, (route) => false);
-              });
+              await validarPlano();
+              // WidgetsBinding.instance.addPostFrameCallback((_) async {
+              //   Navigator.of(
+              //     // ignore: use_build_context_synchronously
+              //     context,
+              //   ).pushNamedAndRemoveUntil(Rotas.home, (route) => false);
+              // });
             },
           );
         },
@@ -236,6 +238,10 @@ class _LoginPageState extends BaseState<LoginPage, LoginController> {
       showPlanoDialog('Plano');
       return;
     }
+    Navigator.of(
+      // ignore: use_build_context_synchronously
+      context,
+    ).pushNamedAndRemoveUntil(Rotas.home, (route) => false);
   }
 
   Future<void> showPlanoDialog(String value) async {
@@ -266,10 +272,16 @@ class _LoginPageState extends BaseState<LoginPage, LoginController> {
           actions: [
             TextButton(
               onPressed: () {
-                Provider.of<AuthProvider>(context, listen: false).logout();
-                Navigator.of(
+                final token = Provider.of<AuthProvider>(
                   context,
-                ).pushNamedAndRemoveUntil(Rotas.premium, (route) => false);
+                  listen: false,
+                ).token;
+
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  Rotas.premium,
+                  (route) => false,
+                  arguments: {"token": token},
+                );
               },
               child: Text(
                 'OK',

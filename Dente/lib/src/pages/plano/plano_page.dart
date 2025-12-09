@@ -147,7 +147,7 @@ class _PlanoPageState extends BaseState<PlanoPage, PlanoController> {
   void navegarPaymentPlano({
     String? plano,
     String? preco,
-    String? token,
+    // String? token,
   }) async {
     await Navigator.of(context).push(
       MaterialPageRoute(

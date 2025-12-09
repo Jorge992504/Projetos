@@ -12,7 +12,7 @@ copiar o .jar para a aws => scp dente-0.0.1-SNAPSHOT.jar ec2-user@3.128.31.51:/h
 
 acessar ao banco => psql -h pg-jabpdev.cv2m40igmifd.us-east-2.rds.amazonaws.com -U postgres
 
-para de rodar o script => sudo systemctl stop dente
+para de rodar o script => sudo systemctl start dente
 inicia o script => sudo systemctl stop dente
 verifica o status da api => sudo systemctl status dente
 

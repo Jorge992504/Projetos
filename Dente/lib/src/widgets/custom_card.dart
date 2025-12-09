@@ -15,6 +15,7 @@ class CustomCard extends StatelessWidget {
   final String? status;
   final String? sala;
   final String? statusPayment;
+  final String? plano;
   final Function()? onPressedCancelado;
   final Function()? onPressedConfirmado;
   final Function()? onPressedHisotorico;
@@ -42,6 +43,7 @@ class CustomCard extends StatelessWidget {
     this.sala,
     this.onPressedPagamento,
     this.statusPayment,
+    this.plano,
   });
 
   @override
@@ -78,14 +80,14 @@ class CustomCard extends StatelessWidget {
                 fontSize: 14,
               ),
             ),
-            Text(
-              sala ?? "Sala 01",
-              style: context.cusotomFontes.textBoldItalic.copyWith(
-                color: ColorsConstants.letrasColor,
-                fontSize: 14,
-              ),
-            ),
 
+            // Text(
+            //   sala ?? "",
+            //   style: context.cusotomFontes.textBoldItalic.copyWith(
+            //     color: ColorsConstants.letrasColor,
+            //     fontSize: 14,
+            //   ),
+            // ),
             Container(
               alignment: Alignment.center,
               width: 80,
@@ -118,7 +120,7 @@ class CustomCard extends StatelessWidget {
             Row(
               children: [
                 Visibility(
-                  visible: status == 'Pendente',
+                  visible: status == 'Pendente' && plano != "Basico",
                   child: IconButton(
                     tooltip: 'Confirmar consulta',
                     padding: EdgeInsets.zero, // remove o padding padrão
@@ -143,7 +145,7 @@ class CustomCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 25),
                 Visibility(
-                  visible: status == 'Pendente',
+                  visible: status == 'Pendente' && plano != "Basico",
                   child: IconButton(
                     tooltip: 'Cancelar agendamento',
                     padding: EdgeInsets.zero, // remove o padding padrão
@@ -169,66 +171,18 @@ class CustomCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 25),
-                IconButton(
-                  tooltip: 'Historico de consultas',
-                  padding: EdgeInsets.zero, // remove o padding padrão
-                  constraints: BoxConstraints(),
-                  onPressed: onPressedHisotoricoPaciente,
-                  style: ButtonStyle(
-                    overlayColor: WidgetStateProperty.resolveWith<Color?>((
-                      Set<WidgetState> states,
-                    ) {
-                      if (states.contains(WidgetState.hovered)) {
-                        return ColorsConstants.appBarColor.withOpacity(
-                          0.3,
-                        ); // cor de hover
-                      }
-                      return null; // cor padrão
-                    }),
-                  ),
-                  icon: Icon(
-                    Icons.list_alt_outlined,
-                    color: ColorsConstants.appBarColor,
-                    size: 25,
-                  ),
-                ),
-                const SizedBox(width: 25),
-                IconButton(
-                  tooltip: 'Historico do paciente',
-                  padding: EdgeInsets.zero, // remove o padding padrão
-                  constraints: BoxConstraints(),
-                  onPressed: onPressedHisotorico,
-                  style: ButtonStyle(
-                    overlayColor: WidgetStateProperty.resolveWith<Color?>((
-                      Set<WidgetState> states,
-                    ) {
-                      if (states.contains(WidgetState.hovered)) {
-                        return ColorsConstants.appBarColor.withOpacity(
-                          0.3,
-                        ); // cor de hover
-                      }
-                      return null; // cor padrão
-                    }),
-                  ),
-                  icon: Icon(
-                    Icons.filter_list_sharp,
-                    color: ColorsConstants.appBarColor,
-                    size: 25,
-                  ),
-                ),
-                const SizedBox(width: 25),
                 Visibility(
-                  visible: status == 'Realizado' && statusPayment == 'Pendente',
+                  visible: plano != "Basico" && plano != "Pro",
                   child: IconButton(
-                    tooltip: 'Concluir pagamento',
+                    tooltip: 'Historico de consultas',
                     padding: EdgeInsets.zero, // remove o padding padrão
                     constraints: BoxConstraints(),
-                    onPressed: onPressedPagamento,
+                    onPressed: onPressedHisotoricoPaciente,
                     style: ButtonStyle(
-                      overlayColor: MaterialStateProperty.resolveWith<Color?>((
-                        Set<MaterialState> states,
+                      overlayColor: WidgetStateProperty.resolveWith<Color?>((
+                        Set<WidgetState> states,
                       ) {
-                        if (states.contains(MaterialState.hovered)) {
+                        if (states.contains(WidgetState.hovered)) {
                           return ColorsConstants.appBarColor.withOpacity(
                             0.3,
                           ); // cor de hover
@@ -237,9 +191,67 @@ class CustomCard extends StatelessWidget {
                       }),
                     ),
                     icon: Icon(
-                      Icons.payments_outlined,
+                      Icons.list_alt_outlined,
                       color: ColorsConstants.appBarColor,
                       size: 25,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 25),
+                Visibility(
+                  visible: plano != "Basico" && plano != "Pro",
+                  child: IconButton(
+                    tooltip: 'Historico do paciente',
+                    padding: EdgeInsets.zero, // remove o padding padrão
+                    constraints: BoxConstraints(),
+                    onPressed: onPressedHisotorico,
+                    style: ButtonStyle(
+                      overlayColor: WidgetStateProperty.resolveWith<Color?>((
+                        Set<WidgetState> states,
+                      ) {
+                        if (states.contains(WidgetState.hovered)) {
+                          return ColorsConstants.appBarColor.withOpacity(
+                            0.3,
+                          ); // cor de hover
+                        }
+                        return null; // cor padrão
+                      }),
+                    ),
+                    icon: Icon(
+                      Icons.filter_list_sharp,
+                      color: ColorsConstants.appBarColor,
+                      size: 25,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 25),
+                Visibility(
+                  visible: plano != "Basico" && plano != "Pro",
+                  child: Visibility(
+                    visible:
+                        status == 'Realizado' && statusPayment == 'Pendente',
+                    child: IconButton(
+                      tooltip: 'Concluir pagamento',
+                      padding: EdgeInsets.zero, // remove o padding padrão
+                      constraints: BoxConstraints(),
+                      onPressed: onPressedPagamento,
+                      style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                          (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.hovered)) {
+                              return ColorsConstants.appBarColor.withOpacity(
+                                0.3,
+                              ); // cor de hover
+                            }
+                            return null; // cor padrão
+                          },
+                        ),
+                      ),
+                      icon: Icon(
+                        Icons.payments_outlined,
+                        color: ColorsConstants.appBarColor,
+                        size: 25,
+                      ),
                     ),
                   ),
                 ),

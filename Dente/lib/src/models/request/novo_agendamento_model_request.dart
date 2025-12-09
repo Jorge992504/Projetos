@@ -4,30 +4,39 @@ import 'dart:convert';
 class NovoAgendamentoModelRequest {
   String? dataHora;
   String? cpfPaciente;
+  String? observacoes;
+  String? nomePaciente;
+  String? email;
   int? dentistaId;
   int? servicoId;
-  String? observacoes;
+
   NovoAgendamentoModelRequest({
     this.dataHora,
     this.cpfPaciente,
+    this.observacoes,
+    this.nomePaciente,
+    this.email,
     this.dentistaId,
     this.servicoId,
-    this.observacoes,
   });
 
   NovoAgendamentoModelRequest copyWith({
     String? dataHora,
     String? cpfPaciente,
+    String? observacoes,
+    String? nomePaciente,
+    String? email,
     int? dentistaId,
     int? servicoId,
-    String? observacoes,
   }) {
     return NovoAgendamentoModelRequest(
       dataHora: dataHora ?? this.dataHora,
       cpfPaciente: cpfPaciente ?? this.cpfPaciente,
+      observacoes: observacoes ?? this.observacoes,
+      nomePaciente: nomePaciente ?? this.nomePaciente,
+      email: email ?? this.email,
       dentistaId: dentistaId ?? this.dentistaId,
       servicoId: servicoId ?? this.servicoId,
-      observacoes: observacoes ?? this.observacoes,
     );
   }
 
@@ -35,9 +44,11 @@ class NovoAgendamentoModelRequest {
     return <String, dynamic>{
       'dataHora': dataHora,
       'cpfPaciente': cpfPaciente,
+      'observacoes': observacoes,
+      'nomePaciente': nomePaciente,
+      'email': email,
       'dentistaId': dentistaId,
       'servicoId': servicoId,
-      'observacoes': observacoes,
     };
   }
 
@@ -45,9 +56,11 @@ class NovoAgendamentoModelRequest {
     return NovoAgendamentoModelRequest(
       dataHora: map['dataHora'] ?? "",
       cpfPaciente: map['cpfPaciente'] ?? "",
+      observacoes: map['observacoes'] ?? "",
+      nomePaciente: map['nomePaciente'] ?? "",
+      email: map['email'] ?? "",
       dentistaId: map['dentistaId'] ?? 0,
       servicoId: map['servicoId'] ?? 0,
-      observacoes: map['observacoes'] ?? "",
     );
   }
 
@@ -60,7 +73,7 @@ class NovoAgendamentoModelRequest {
 
   @override
   String toString() {
-    return 'NovoAgendamentoModelRequest(dataHora: $dataHora, cpfPaciente: $cpfPaciente, dentistaId: $dentistaId, servicoId: $servicoId, observacoes: $observacoes)';
+    return 'NovoAgendamentoModelRequest(dataHora: $dataHora, cpfPaciente: $cpfPaciente, observacoes: $observacoes, nomePaciente: $nomePaciente, email: $email, dentistaId: $dentistaId, servicoId: $servicoId)';
   }
 
   @override
@@ -69,17 +82,21 @@ class NovoAgendamentoModelRequest {
 
     return other.dataHora == dataHora &&
         other.cpfPaciente == cpfPaciente &&
+        other.observacoes == observacoes &&
+        other.nomePaciente == nomePaciente &&
+        other.email == email &&
         other.dentistaId == dentistaId &&
-        other.servicoId == servicoId &&
-        other.observacoes == observacoes;
+        other.servicoId == servicoId;
   }
 
   @override
   int get hashCode {
     return dataHora.hashCode ^
         cpfPaciente.hashCode ^
+        observacoes.hashCode ^
+        nomePaciente.hashCode ^
+        email.hashCode ^
         dentistaId.hashCode ^
-        servicoId.hashCode ^
-        observacoes.hashCode;
+        servicoId.hashCode;
   }
 }

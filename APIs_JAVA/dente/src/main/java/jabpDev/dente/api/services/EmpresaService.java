@@ -5,8 +5,10 @@ import io.jsonwebtoken.Claims;
 import jabpDev.dente.api.dto.request.RegistrarEmpresaDtoRequest;
 import jabpDev.dente.api.dto.response.EmpresaDtoResponse;
 import jabpDev.dente.api.entitys.Empresa;
+import jabpDev.dente.api.entitys.Plano;
 import jabpDev.dente.api.exceptions.ErrorException;
 import jabpDev.dente.api.repositories.EmpresaRepository;
+import jabpDev.dente.api.repositories.PlanoRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -23,6 +25,7 @@ import java.util.Optional;
 public class EmpresaService {
     private final EmpresaRepository empresaRepository;
     private final ServicesGerais servicesGerais;
+    private final PlanoRepository planoRepository;
 
 
 
@@ -40,6 +43,7 @@ public class EmpresaService {
                 }else{
                     foto = servicesGerais.httpRemote + optionalEmpresa.get().getId() + "/" + optionalEmpresa.get().getFoto();
                 }
+                Optional<Plano> plano = planoRepository.findByEmpresaId(optionalEmpresa.get().getId());
                 return new EmpresaDtoResponse(foto,
                         optionalEmpresa.get().getNomeClinica(),
                         optionalEmpresa.get().getEmailClinica(),
@@ -47,7 +51,8 @@ public class EmpresaService {
                         optionalEmpresa.get().getEndereco(),
                         optionalEmpresa.get().getCnpj(),
                         optionalEmpresa.get().getDataRegistro(),
-                        optionalEmpresa.get().getFilial()
+                        optionalEmpresa.get().getFilial(),
+                        plano.get().getTipoPlano()
                         );
             }else{
                 throw new ErrorException("Empresa não encontrada");

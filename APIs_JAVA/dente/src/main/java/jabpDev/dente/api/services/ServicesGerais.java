@@ -158,7 +158,7 @@ public class ServicesGerais {
         javaMailSender.send(message);
     }
 
-    public void enviarEmailConfirmacaoAgendamento(Paciente paciente, Dentista dentista, Agendamento agendamento, String emailClinica) {
+    public void enviarEmailConfirmacaoAgendamento(Paciente paciente,  Agendamento agendamento, String emailClinica) {
         String dataHoraStr = agendamento.getDataHora(); // exemplo: "24/10/2025 - 13:57"
 
         DateTimeFormatter parser = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm");
@@ -167,6 +167,12 @@ public class ServicesGerais {
         String dataFormatada = dataHora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         String horaFormatada = dataHora.format(DateTimeFormatter.ofPattern("HH:mm"));
 
+
+        Dentista dentista = agendamento.getDentista();
+        String nomeDentista ="Em plantão";
+        if (agendamento.getDentista() != null){
+            nomeDentista = dentista.getNome();
+        }
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(paciente.getEmail());
@@ -190,38 +196,39 @@ public class ServicesGerais {
         paciente.getNome(),
         dataFormatada,
         horaFormatada,
-        dentista.getNome()
+        nomeDentista
         );
         message.setText(textoPaciente);
         javaMailSender.send(message);
 
+        if (agendamento.getDentista() != null){
+            message.setTo(agendamento.getDentista().getEmail());
+            message.setFrom(emailClinica);
+            message.setSubject("Novo Agendamento Confirmado - 🦷 Dente Saúde");
 
-        message.setTo(dentista.getEmail());
-        message.setFrom(emailClinica);
-        message.setSubject("Novo Agendamento Confirmado - 🦷 Dente Saúde");
+            String textoDentista = String.format("""
+            Olá Dr(a). %s! 🦷
+            
+            Um novo agendamento foi realizado:
+            
+            📅 Data: %s
+            ⏰ Hora: %s
+            👤 Paciente: %s
+            
+            Prepare-se para atender e proporcionar a melhor experiência ao paciente.
+            
+            Atenciosamente,
+            Equipe Dente Saúde 💙
+            """,
+                    agendamento.getDentista().getNome(),
+                    dataFormatada,
+                    horaFormatada,
+                    paciente.getNome()
+                );
 
-        String textoDentista = String.format("""
-        Olá Dr(a). %s! 🦷
-        
-        Um novo agendamento foi realizado:
-        
-        📅 Data: %s
-        ⏰ Hora: %s
-        👤 Paciente: %s
-        
-        Prepare-se para atender e proporcionar a melhor experiência ao paciente.
-        
-        Atenciosamente,
-        Equipe Dente Saúde 💙
-        """,
-                dentista.getNome(),
-                dataFormatada,
-                horaFormatada,
-                paciente.getNome()
-        );
-
-        message.setText(textoDentista);
-        javaMailSender.send(message);
+                message.setText(textoDentista);
+                javaMailSender.send(message);
+        }
     }
 
 
@@ -324,16 +331,13 @@ public class ServicesGerais {
     public String getEmailToken(String token){
         try {
             Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
+                    .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-            if (claims.get("email") != null){
-                return claims.get("email").toString();
-            }
-            return claims.getSubject();
+            return claims.get("email").toString();
         }catch (Exception e){
-            throw new ErrorException("Erro ao buscar email");
+            throw new ErrorException("Erro ao buscar email: " + e.getMessage());
         }
     }
 

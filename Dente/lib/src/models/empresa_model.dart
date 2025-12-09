@@ -9,6 +9,7 @@ class EmpresaModel {
   String? endereco;
   String? passowrd;
   String? cnpj;
+  String? plano;
   int? filialClinica;
 
   EmpresaModel({
@@ -19,6 +20,7 @@ class EmpresaModel {
     this.endereco,
     this.passowrd,
     this.cnpj,
+    this.plano,
     this.filialClinica,
   });
 
@@ -30,6 +32,7 @@ class EmpresaModel {
     String? endereco,
     String? passowrd,
     String? cnpj,
+    String? plano,
     int? filialClinica,
   }) {
     return EmpresaModel(
@@ -40,6 +43,7 @@ class EmpresaModel {
       endereco: endereco ?? this.endereco,
       passowrd: passowrd ?? this.passowrd,
       cnpj: cnpj ?? this.cnpj,
+      plano: plano ?? this.plano,
       filialClinica: filialClinica ?? this.filialClinica,
     );
   }
@@ -53,6 +57,7 @@ class EmpresaModel {
       'endereco': endereco,
       'passowrd': passowrd,
       'cnpj': cnpj,
+      'plano': plano,
       'filialClinica': filialClinica,
     };
   }
@@ -66,6 +71,7 @@ class EmpresaModel {
       endereco: map['endereco'] ?? "",
       passowrd: map['passowrd'] ?? "",
       cnpj: map['cnpj'] ?? "",
+      plano: map['plano'] ?? "",
       filialClinica: map['filialClinica'] ?? 0,
     );
   }
@@ -77,7 +83,7 @@ class EmpresaModel {
 
   @override
   String toString() {
-    return 'EmpresaModel(foto: $foto, nomeClinica: $nomeClinica, emailClinica: $emailClinica, telefone: $telefone, endereco: $endereco, passowrd: $passowrd, cnpj: $cnpj, filialClinica: $filialClinica)';
+    return 'EmpresaModel(foto: $foto, nomeClinica: $nomeClinica, emailClinica: $emailClinica, telefone: $telefone, endereco: $endereco, passowrd: $passowrd, cnpj: $cnpj, plano: $plano, filialClinica: $filialClinica)';
   }
 
   @override
@@ -91,6 +97,7 @@ class EmpresaModel {
         other.endereco == endereco &&
         other.passowrd == passowrd &&
         other.cnpj == cnpj &&
+        other.plano == plano &&
         other.filialClinica == filialClinica;
   }
 
@@ -103,6 +110,7 @@ class EmpresaModel {
         endereco.hashCode ^
         passowrd.hashCode ^
         cnpj.hashCode ^
+        plano.hashCode ^
         filialClinica.hashCode;
   }
 }

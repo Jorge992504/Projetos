@@ -55,6 +55,7 @@ public class RegistrarEmpresaService {
         Plano premium = Plano.builder()
                 .dataTeste(LocalDate.now())
                 .periodoTeste(true)
+                .plano(false)
                 .empresa(response)
                 .build();
         premiumRepository.save(premium);

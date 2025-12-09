@@ -12,6 +12,7 @@ public record EmpresaDtoResponse(
         String endereco,
         String cnpj,
         LocalDate dataRegistro,
-        Long filialCLinica
+        Long filialCLinica,
+        String plano
 ) {
 }

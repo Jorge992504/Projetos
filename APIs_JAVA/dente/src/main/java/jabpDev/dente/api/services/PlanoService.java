@@ -10,6 +10,7 @@ import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.payment.Payment;
 import jabpDev.dente.api.dto.request.CardRequest;
+import jabpDev.dente.api.dto.request.PagamentoStatusRequest;
 import jabpDev.dente.api.dto.request.PixRequest;
 import jabpDev.dente.api.dto.response.*;
 import jabpDev.dente.api.entitys.Empresa;
@@ -40,62 +41,84 @@ public class PlanoService {
     @Transactional
     public String verificaPlano(){
 
-        String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
-        if (empresa.isEmpty()){
-            throw new ErrorException("Realizar login novamente");
-        }
-
-        Optional<Plano> plano = planoRepository.findByEmpresaId(empresa.get().getId());
-        LocalDate dataAtual = LocalDate.now();
-        if (plano.get().getPeriodoTeste()){
-            if (!dataAtual.isAfter(plano.get().getDataTeste().plusDays(30))){
-                return "Teste";
-            }else{
-                Plano planoAtualizar = plano.get();
-                planoAtualizar.setPeriodoTeste(false);
-                planoRepository.save(planoAtualizar);
-                return "!Teste";
+        try {
+            String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
+            Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
+            if (empresa.isEmpty()){
+                throw new ErrorException("Realizar login novamente");
             }
-        }else if (plano.get().getPlano()){
-            String periodo = plano.get().getPeriodo();
-            if (periodo.equals("Mensal")){
-                if (!dataAtual.isAfter(plano.get().getDataInicio().plusDays(30))){
-                    return "Plano";
-                }else{
-                    Plano planoAtualizar = plano.get();
-                    planoAtualizar.setPlano(false);
-                    planoRepository.save(planoAtualizar);
-                    return "Finalizado";
-                }
-            }else if(periodo.equals("Semestral")){
-                LocalDate fimSemestre = plano.get().getDataInicio().plusDays(180);
-                if (!dataAtual.isAfter(fimSemestre)) {
-                    return "Plano";
-                } else {
-                    Plano planoAtualizar = plano.get();
-                    planoAtualizar.setPlano(false);
-                    planoRepository.save(planoAtualizar);
-                    return "Finalizado";
-                }
-            }else if(periodo.equals("Anual")){
-                LocalDate fimAno = plano.get().getDataInicio().plusDays(365);
 
-                if (!dataAtual.isAfter(fimAno)) {
-                    return "Plano";
-                } else {
-                    Plano planoAtualizar = plano.get();
-                    planoAtualizar.setPlano(false);
-                    planoRepository.save(planoAtualizar);
-                    return "Finalizado";
+            Optional<Plano> plano = planoRepository.findByEmpresaId(empresa.get().getId());
+            LocalDate dataAtual = LocalDate.now();
+            if (plano.isPresent()){
+                if (plano.get().getPeriodoTeste()){
+                    if (!dataAtual.isAfter(plano.get().getDataTeste().plusDays(30))){
+                        return "Teste";
+                    }else{
+                        Plano planoAtualizar = plano.get();
+                        planoAtualizar.setPeriodoTeste(false);
+                        planoRepository.save(planoAtualizar);
+                        return "!Teste";
+                    }
+                }else if (plano.get().getPlano() ){
+                    String periodo = plano.get().getPeriodo();
+                    if (periodo.equals("Mensal")){
+                        if (!dataAtual.isAfter(plano.get().getDataInicio().plusDays(30))){
+                            return "Plano";
+                        }else{
+                            Plano planoAtualizar = plano.get();
+                            planoAtualizar.setPlano(false);
+                            planoRepository.save(planoAtualizar);
+                            return "Finalizado";
+                        }
+                    }else if(periodo.equals("Semestral")){
+                        LocalDate fimSemestre = plano.get().getDataInicio().plusDays(180);
+                        if (!dataAtual.isAfter(fimSemestre)) {
+                            return "Plano";
+                        } else {
+                            Plano planoAtualizar = plano.get();
+                            planoAtualizar.setPlano(false);
+                            planoRepository.save(planoAtualizar);
+                            return "Finalizado";
+                        }
+                    }else if(periodo.equals("Anual")){
+                        LocalDate fimAno = plano.get().getDataInicio().plusDays(365);
+
+                        if (!dataAtual.isAfter(fimAno)) {
+                            return "Plano";
+                        } else {
+                            Plano planoAtualizar = plano.get();
+                            planoAtualizar.setPlano(false);
+                            planoRepository.save(planoAtualizar);
+                            return "Finalizado";
+                        }
+                    }
                 }
             }
+            return "!Plano";
+        }catch (Exception e){
+            throw new ErrorException("Erro oa verificar plano");
         }
-        return "!Plano";
     }
 
     @Transactional
-    private void assinarPlano(String token,Payment payment){
+    private void assinarPlano(PagamentoStatusRequest body,Payment payment){
+        String email = servicesGerais.getEmailToken(body.token());
+        Optional<Empresa> empresa = empresaRepository.findByEmailClinica(email);
+        Optional<Plano> plano = planoRepository.findByEmpresaId(empresa.get().getId());
+        Plano planoSave = plano.get();
+        planoSave.setDataInicio(LocalDate.now());
+        planoSave.setDataPagamento(payment.getDateApproved().toLocalDate());
+        planoSave.setPaymentId(payment.getId());
+        planoSave.setPaymentStatus(payment.getStatus());
+        planoSave.setPeriodo(body.periodo());
+        planoSave.setPlano(true);
+        planoSave.setPeriodoTeste(false);
+        planoSave.setTipoPlano(body.tipoPlano());
+        planoSave.setValor(body.valor());
+        planoSave.setEmpresa(empresa.get());
+        planoSave.setPaymentType(payment.getPaymentTypeId());
+        planoRepository.save(planoSave);
 
     }
 
@@ -152,22 +175,22 @@ public class PlanoService {
         }
     }
 
-    public PixStatusResponse statusPix(Long paymentId,String token){
-        try {
-            MercadoPagoConfig.setAccessToken(servicesGerais.accessToken);
-            PaymentClient paymentClient = new PaymentClient();
-            Payment payment = paymentClient.get(paymentId);
-            if (payment.getStatus().equals("approved")){
-                assinarPlano(token,payment);
-            }
-            return new PixStatusResponse(payment.getStatus());
-        }catch (MPException e){
-            throw new ErrorException("MPException, erro no mp: " + e.getMessage());
-        }catch (MPApiException e){
-            throw new ErrorException("MPApiException, erro na api: " + e.getMessage() + " \n " + "Status: " + e.getApiResponse().getStatusCode() + " \n " + "Content: " + e.getApiResponse().getContent());
-        }
-
-    }
+//    public PixStatusResponse statusPix(Long paymentId,String token){
+//        try {
+//            MercadoPagoConfig.setAccessToken(servicesGerais.accessToken);
+//            PaymentClient paymentClient = new PaymentClient();
+//            Payment payment = paymentClient.get(paymentId);
+//            if (payment.getStatus().equals("approved")){
+//                assinarPlano(token,payment);
+//            }
+//            return new PixStatusResponse(payment.getStatus());
+//        }catch (MPException e){
+//            throw new ErrorException("MPException, erro no mp: " + e.getMessage());
+//        }catch (MPApiException e){
+//            throw new ErrorException("MPApiException, erro na api: " + e.getMessage() + " \n " + "Status: " + e.getApiResponse().getStatusCode() + " \n " + "Content: " + e.getApiResponse().getContent());
+//        }
+//
+//    }
 
 //    pagamento com cartao
     public PublicKeyResponse getPublicKey(){
@@ -220,17 +243,17 @@ public class PlanoService {
         }catch (MPException e){
             throw new ErrorException("MPException, erro no mp: " + e.getMessage());
         }catch (MPApiException e){
-            throw new ErrorException("MPApiException, erro na api: " + e.getMessage() + " \n " + "Status: " + e.getApiResponse().getStatusCode() + " \n " + "Content: " + e.getApiResponse().getContent());
+            throw new ErrorException("MPApiException, erro na api: " + e.getMessage());
         }
     }
 
-    public CardStatusResponse statusCard(Long paymentId,String token) throws MPException, MPApiException {
+    public CardStatusResponse statusPagamento(PagamentoStatusRequest body) throws MPException, MPApiException {
         try {
             MercadoPagoConfig.setAccessToken(servicesGerais.accessToken);
             PaymentClient paymentClient = new PaymentClient();
-            Payment payment = paymentClient.get(paymentId);
+            Payment payment = paymentClient.get(body.paymentId());
             if (payment.getStatus().equals("approved")){
-                assinarPlano(token,payment);
+                assinarPlano(body,payment);
             }
             return new CardStatusResponse(payment.getStatus());
         }catch (MPException e){

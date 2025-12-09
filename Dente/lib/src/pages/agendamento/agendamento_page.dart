@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:dente/core/router/rotas.dart';
 import 'package:dente/core/ui/base/base_state.dart';
 import 'package:dente/core/ui/style/custom_colors.dart';
 import 'package:dente/core/ui/style/fontes_letras.dart';
 import 'package:dente/core/ui/style/size_extension.dart';
+import 'package:dente/src/models/paciente_model.dart';
 import 'package:dente/src/models/request/novo_agendamento_model_request.dart';
 import 'package:dente/src/models/response/busca_servicos_dentistas_agendamento_response.dart';
 import 'package:dente/src/pages/agendamento/agendamento_controller.dart';
@@ -42,9 +45,17 @@ class _AgendamentoPageState
   int idServico = 0;
 
   String data = '';
+  String plano = '';
 
   List<BuscaServicosAgendamentoResponse> servicosDisponiveis = [];
   List<BuscaDentistasAgendamentoResponse> dentistasDisponiveis = [];
+
+  PacienteModel pacienteModel = PacienteModel();
+  final nomeController = TextEditingController();
+  final emailController = TextEditingController();
+
+  final nomeFocus = FocusNode();
+  final emailFocus = FocusNode();
 
   @override
   void initState() {
@@ -61,6 +72,7 @@ class _AgendamentoPageState
       final arguments =
           (route!.settings.arguments ?? <String, dynamic>{}) as Map;
       setState(() {
+        plano = arguments['plano'];
         data = arguments['data'];
         if (data.isNotEmpty) {
           dataController.text = data;
@@ -77,6 +89,8 @@ class _AgendamentoPageState
     horaController.dispose();
     servicoController.dispose();
     obsController.dispose();
+    nomeController.dispose();
+    emailController.dispose();
 
     super.dispose();
   }
@@ -116,26 +130,30 @@ class _AgendamentoPageState
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          width: 400,
+                          width: plano == "Basico" ? 800 : 400,
                           height: 60,
                           padding: EdgeInsets.all(8),
                           //Todo: vai ser um campo de busqueda por cpf
                           child: TextField(
                             decoration: InputDecoration(
-                              labelText: "CPF do paciente",
-                              hintText: "Informe o CPF para agendamento",
+                              labelText: "CPF ou nome do paciente",
+                              hintText:
+                                  "Informe o CPF ou o nome para agendamento",
 
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  Navigator.of(context).pushNamed(
-                                    Rotas.registrarPaciente,
-                                    arguments: {"cpf": cpfController.text},
-                                  );
-                                },
-                                icon: Icon(
-                                  Icons.add_circle_outline,
-                                  size: 25,
-                                  color: ColorsConstants.appBarColor,
+                              suffixIcon: Visibility(
+                                visible: plano != "Basico",
+                                child: IconButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pushNamed(
+                                      Rotas.registrarPaciente,
+                                      arguments: {"cpf": cpfController.text},
+                                    );
+                                  },
+                                  icon: Icon(
+                                    Icons.add_circle_outline,
+                                    size: 25,
+                                    color: ColorsConstants.appBarColor,
+                                  ),
                                 ),
                               ),
                             ),
@@ -143,107 +161,192 @@ class _AgendamentoPageState
                             cursorHeight: 15,
                             cursorErrorColor: ColorsConstants.errorColor,
                             autofocus: true,
-                            inputFormatters: [cpfFormatter],
-                            keyboardType: TextInputType.number,
+                            // inputFormatters: [cpfFormatter],
+                            keyboardType: TextInputType.text,
                             textInputAction: TextInputAction.next,
                             controller: cpfController,
                             focusNode: cpfFocus,
-                            onSubmitted: (value) {
-                              nmDentistaFocus.requestFocus();
+                            onSubmitted: (value) async {
+                              log("entrou");
+
+                              //!chama função q buscar os dados do paciente
+                              final response = await controller
+                                  .filtraDadosPaciente(value);
+                              setState(() {
+                                pacienteModel = response ?? PacienteModel();
+                              });
+                              if (pacienteModel.nome!.isEmpty) {
+                                nomeController.text = cpfController.text;
+                              } else {
+                                nomeController.text = pacienteModel.nome ?? "";
+                                cpfController.text = pacienteModel.cpf ?? "";
+                              }
+                              if (pacienteModel.email!.isEmpty) {
+                                emailFocus.requestFocus();
+                              } else {
+                                emailController.text =
+                                    pacienteModel.email ?? "";
+                                dataFocus.requestFocus();
+                              }
                             },
+                            onChanged: (value) {
+                              // Se contém letras -> não aplica máscara
+                              if (RegExp(r'[A-Za-z]').hasMatch(value)) {
+                                // remove máscara
+                                setState(() {
+                                  cpfController.value = cpfController.value
+                                      .copyWith(
+                                        text: value,
+                                        selection: TextSelection.collapsed(
+                                          offset: value.length,
+                                        ),
+                                      );
+                                });
+                              } else {
+                                // Somente números → aplica máscara CPF
+                                final masked = cpfFormatter.maskText(value);
+                                setState(() {
+                                  cpfController.value = cpfController.value
+                                      .copyWith(
+                                        text: masked,
+                                        selection: TextSelection.collapsed(
+                                          offset: masked.length,
+                                        ),
+                                      );
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                        Visibility(
+                          visible: plano != "Basico",
+                          child: Container(
+                            width: 400,
+                            height: 60,
+                            padding: const EdgeInsets.all(8),
+                            child: DropdownButtonFormField2<String>(
+                              focusNode: nmDentistaFocus,
+                              value: nmDentistaController.text.isEmpty
+                                  ? null
+                                  : nmDentistaController.text,
+                              decoration: InputDecoration(
+                                labelText: "Nome do dentista",
+                                hintText: "Informe o nome do dentista",
+                                labelStyle: TextStyle(
+                                  color: ColorsConstants.appBarColor,
+                                ),
+                                hintStyle: TextStyle(
+                                  color: ColorsConstants.appBarColor,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: ColorsConstants.appBarColor,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: ColorsConstants.appBarColor,
+                                    width: 2,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 12,
+                                ),
+                              ),
+                              isExpanded: true,
+                              iconStyleData: IconStyleData(
+                                icon: Icon(
+                                  Icons.arrow_drop_down_circle_outlined,
+                                  color: ColorsConstants.appBarColor,
+                                ),
+                              ),
+                              dropdownStyleData: DropdownStyleData(
+                                direction: DropdownDirection
+                                    .textDirection, // 👈 força abrir para baixo
+                                maxHeight: 300,
+                                offset: const Offset(
+                                  0,
+                                  8,
+                                ), // pequeno espaçamento abaixo do campo
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: ColorsConstants.primaryColor,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: ColorsConstants.appBarColor,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              items: dentistasDisponiveis.map((dentista) {
+                                dentista.id;
+                                return DropdownMenuItem<String>(
+                                  value: dentista.nome,
+                                  child: Text(
+                                    dentista.nome ?? '',
+                                    style: context.cusotomFontes.textRegular
+                                        .copyWith(
+                                          fontSize: 16,
+                                          color: ColorsConstants.appBarColor,
+                                        ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  nmDentistaController.text = value ?? '';
+                                  dentistasDisponiveis
+                                      .where(
+                                        (dentista) =>
+                                            dentista.nome == value.toString(),
+                                      )
+                                      .forEach((dentista) {
+                                        idDentista = dentista.id!;
+                                      });
+                                });
+                                FocusScope.of(context).requestFocus(dataFocus);
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 400,
+                          height: 60,
+                          padding: EdgeInsets.all(8),
+                          child: TextField(
+                            decoration: InputDecoration(labelText: "Nome"),
+                            cursorColor: ColorsConstants.appBarColor,
+                            cursorHeight: 15,
+                            controller: nomeController,
+                            focusNode: nomeFocus,
+                            textInputAction: TextInputAction.next,
                           ),
                         ),
                         Container(
                           width: 400,
                           height: 60,
-                          padding: const EdgeInsets.all(8),
-                          child: DropdownButtonFormField2<String>(
-                            focusNode: nmDentistaFocus,
-                            value: nmDentistaController.text.isEmpty
-                                ? null
-                                : nmDentistaController.text,
+                          padding: EdgeInsets.all(8),
+                          child: TextField(
                             decoration: InputDecoration(
-                              labelText: "Nome do dentista",
-                              hintText: "Informe o nome do dentista",
-                              labelStyle: TextStyle(
-                                color: ColorsConstants.appBarColor,
-                              ),
-                              hintStyle: TextStyle(
-                                color: ColorsConstants.appBarColor,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: ColorsConstants.appBarColor,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: ColorsConstants.appBarColor,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 12,
-                              ),
+                              labelText: "E-mail",
+                              hintText: "Informe o email para confirmação",
                             ),
-                            isExpanded: true,
-                            iconStyleData: IconStyleData(
-                              icon: Icon(
-                                Icons.arrow_drop_down_circle_outlined,
-                                color: ColorsConstants.appBarColor,
-                              ),
-                            ),
-                            dropdownStyleData: DropdownStyleData(
-                              direction: DropdownDirection
-                                  .textDirection, // 👈 força abrir para baixo
-                              maxHeight: 300,
-                              offset: const Offset(
-                                0,
-                                8,
-                              ), // pequeno espaçamento abaixo do campo
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: ColorsConstants.primaryColor,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: ColorsConstants.appBarColor,
-                                    blurRadius: 4,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            items: dentistasDisponiveis.map((dentista) {
-                              dentista.id;
-                              return DropdownMenuItem<String>(
-                                value: dentista.nome,
-                                child: Text(
-                                  dentista.nome ?? '',
-                                  style: context.cusotomFontes.textRegular
-                                      .copyWith(
-                                        fontSize: 16,
-                                        color: ColorsConstants.appBarColor,
-                                      ),
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                nmDentistaController.text = value ?? '';
-                                dentistasDisponiveis
-                                    .where(
-                                      (dentista) =>
-                                          dentista.nome == value.toString(),
-                                    )
-                                    .forEach((dentista) {
-                                      idDentista = dentista.id!;
-                                    });
-                              });
-                              FocusScope.of(context).requestFocus(dataFocus);
-                            },
+                            cursorColor: ColorsConstants.appBarColor,
+                            cursorHeight: 15,
+                            controller: emailController,
+                            focusNode: emailFocus,
+                            textInputAction: TextInputAction.next,
+                            enabled: pacienteModel.email != null,
                           ),
                         ),
                       ],
@@ -316,114 +419,120 @@ class _AgendamentoPageState
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          width: 400,
-                          height: 60,
-                          padding: const EdgeInsets.all(8),
-                          child: DropdownButtonFormField2<String>(
-                            focusNode: servicoFocus,
+                        Visibility(
+                          visible: plano != "Basico",
+                          child: Container(
+                            width: 400,
+                            height: 60,
+                            padding: const EdgeInsets.all(8),
+                            child: DropdownButtonFormField2<String>(
+                              focusNode: servicoFocus,
 
-                            value: servicoController.text.isEmpty
-                                ? null
-                                : servicoController.text,
-                            decoration: InputDecoration(
-                              labelText: "Serviço",
-                              hintText: "Informe o serviço desejado",
-                              labelStyle: TextStyle(
-                                color: ColorsConstants.appBarColor,
-                              ),
-                              hintStyle: TextStyle(
-                                color: ColorsConstants.appBarColor,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                              value: servicoController.text.isEmpty
+                                  ? null
+                                  : servicoController.text,
+                              decoration: InputDecoration(
+                                labelText: "Serviço",
+                                hintText: "Informe o serviço desejado",
+                                labelStyle: TextStyle(
                                   color: ColorsConstants.appBarColor,
                                 ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                hintStyle: TextStyle(
                                   color: ColorsConstants.appBarColor,
-                                  width: 2,
                                 ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 12,
-                              ),
-                            ),
-                            isExpanded: true,
-                            iconStyleData: IconStyleData(
-                              icon: Icon(
-                                Icons.arrow_drop_down_circle_outlined,
-                                color: ColorsConstants.appBarColor,
-                              ),
-                            ),
-                            dropdownStyleData: DropdownStyleData(
-                              direction: DropdownDirection
-                                  .textDirection, // 👈 força abrir para baixo
-                              maxHeight: 300,
-                              offset: const Offset(
-                                0,
-                                8,
-                              ), // pequeno espaçamento abaixo do campo
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: ColorsConstants.primaryColor,
-                                boxShadow: [
-                                  BoxShadow(
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
                                     color: ColorsConstants.appBarColor,
-                                    blurRadius: 4,
-                                    offset: Offset(0, 2),
                                   ),
-                                ],
-                              ),
-                            ),
-                            items: servicosDisponiveis.map((servico) {
-                              return DropdownMenuItem<String>(
-                                value: servico.nome,
-                                child: Text(
-                                  servico.nome ?? '',
-                                  style: context.cusotomFontes.textRegular
-                                      .copyWith(
-                                        fontSize: 16,
-                                        color: ColorsConstants.appBarColor,
-                                      ),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                servicoController.text = value ?? '';
-                                servicosDisponiveis
-                                    .where(
-                                      (servico) =>
-                                          servico.nome == value.toString(),
-                                    )
-                                    .forEach((servico) {
-                                      idServico = servico.id!;
-                                    });
-                              });
-                              FocusScope.of(context).requestFocus(obsFocus);
-                            },
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: ColorsConstants.appBarColor,
+                                    width: 2,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 12,
+                                ),
+                              ),
+                              isExpanded: true,
+                              iconStyleData: IconStyleData(
+                                icon: Icon(
+                                  Icons.arrow_drop_down_circle_outlined,
+                                  color: ColorsConstants.appBarColor,
+                                ),
+                              ),
+                              dropdownStyleData: DropdownStyleData(
+                                direction: DropdownDirection
+                                    .textDirection, // 👈 força abrir para baixo
+                                maxHeight: 300,
+                                offset: const Offset(
+                                  0,
+                                  8,
+                                ), // pequeno espaçamento abaixo do campo
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: ColorsConstants.primaryColor,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: ColorsConstants.appBarColor,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              items: servicosDisponiveis.map((servico) {
+                                return DropdownMenuItem<String>(
+                                  value: servico.nome,
+                                  child: Text(
+                                    servico.nome ?? '',
+                                    style: context.cusotomFontes.textRegular
+                                        .copyWith(
+                                          fontSize: 16,
+                                          color: ColorsConstants.appBarColor,
+                                        ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  servicoController.text = value ?? '';
+                                  servicosDisponiveis
+                                      .where(
+                                        (servico) =>
+                                            servico.nome == value.toString(),
+                                      )
+                                      .forEach((servico) {
+                                        idServico = servico.id!;
+                                      });
+                                });
+                                FocusScope.of(context).requestFocus(obsFocus);
+                              },
+                            ),
                           ),
                         ),
-                        Container(
-                          width: 400,
-                          height: 60,
-                          padding: EdgeInsets.all(8),
-                          child: TextField(
-                            decoration: InputDecoration(
-                              labelText: "Observações",
-                              hintText: "Observações sobre o paciente",
+                        Visibility(
+                          visible: plano != "Basico",
+                          child: Container(
+                            width: 400,
+                            height: 60,
+                            padding: EdgeInsets.all(8),
+                            child: TextField(
+                              decoration: InputDecoration(
+                                labelText: "Observações",
+                                hintText: "Observações sobre o paciente",
+                              ),
+                              cursorColor: ColorsConstants.appBarColor,
+                              cursorHeight: 15,
+                              cursorErrorColor: ColorsConstants.errorColor,
+                              controller: obsController,
+                              focusNode: obsFocus,
+                              textInputAction: TextInputAction.done,
                             ),
-                            cursorColor: ColorsConstants.appBarColor,
-                            cursorHeight: 15,
-                            cursorErrorColor: ColorsConstants.errorColor,
-                            controller: obsController,
-                            focusNode: obsFocus,
-                            textInputAction: TextInputAction.done,
                           ),
                         ),
                       ],
@@ -568,6 +677,8 @@ class _AgendamentoPageState
       dentistaId: idDentista,
       servicoId: idServico,
       observacoes: obsController.text,
+      email: emailController.text,
+      nomePaciente: nomeController.text,
     );
     await controller.criaNovoAgendamento(body);
   }

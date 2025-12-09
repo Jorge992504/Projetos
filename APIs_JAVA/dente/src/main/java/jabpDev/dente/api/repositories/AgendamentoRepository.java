@@ -31,8 +31,8 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
                         s.vl,
                         s.id
                     FROM agendamento a
-                    JOIN paciente p ON p.id = a.paciente_id
-                    JOIN servicos s ON s.id = a.servico_id
+                    LEFT JOIN paciente p ON p.id = a.paciente_id
+                    LEFT JOIN servicos s ON s.id = a.servico_id
                     WHERE a.empresa_id = :empresaId
                       AND a.id IN (:ids)
                       AND a.data_hora LIKE :data%;

@@ -62,14 +62,17 @@ class _ConvenioPageState extends BaseState<ConvenioPage, ConvenioController> {
     return Scaffold(
       appBar: AppBar(
         title: Text(isPesquisa == true ? 'Convenios' : 'Incluir convenio'),
-        leading: Visibility(
-          visible: isPesquisa,
-          child: IconButton(
-            onPressed: () {
+        leading: IconButton(
+          onPressed: () {
+            if (isPesquisa) {
               Navigator.pop(context);
-            },
-            icon: Icon(Icons.arrow_back),
-          ),
+            } else {
+              setState(() {
+                isPesquisa = true;
+              });
+            }
+          },
+          icon: Icon(Icons.arrow_back),
         ),
       ),
       body: BlocConsumer<ConvenioController, ConvenioState>(
@@ -321,17 +324,18 @@ class _ConvenioPageState extends BaseState<ConvenioPage, ConvenioController> {
                           width: 900,
                           child: ElevatedButton(
                             onPressed: () async {
-                              if (isVoltar) {
-                                setState(() {
-                                  isPesquisa = !isPesquisa;
-                                });
-                              } else {
-                                await registrarConvenio();
-                                refresh();
-                              }
+                              // if (isVoltar) {
+                              //   setState(() {
+                              //     isPesquisa = !isPesquisa;
+                              //   });
+                              // } else {
+
+                              // }
+                              await registrarConvenio();
+                              refresh();
                             },
                             child: Text(
-                              isVoltar ? "Voltar" : 'Salvar dados',
+                              'Salvar dados',
                               style: context.cusotomFontes.textItalic.copyWith(
                                 color: ColorsConstants.primaryColor,
                               ),

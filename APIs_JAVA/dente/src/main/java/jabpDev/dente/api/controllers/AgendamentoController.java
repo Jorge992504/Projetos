@@ -7,6 +7,7 @@ import jabpDev.dente.api.dto.response.AgendamentoPorPacienteResponse;
 import jabpDev.dente.api.dto.response.BuscaAgendamentosDtoResponse;
 import jabpDev.dente.api.dto.response.HistoricoAgendamentosResponse;
 import jabpDev.dente.api.dto.response.ServicosDentistasDtoResponse;
+import jabpDev.dente.api.entitys.Paciente;
 import jabpDev.dente.api.services.AgendamentoService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -54,5 +55,10 @@ public class AgendamentoController {
     @GetMapping("/busca/consultas-paciente")
     public List<HistoricoAgendamentosResponse> buscaHistoricoAgendamentos(@RequestParam Long pacienteId){
         return agendamentoService.buscaHistoricoAgendamentos(pacienteId);
+    }
+
+    @GetMapping("/filtra-paciente")
+    public Paciente filtraPaciente(@RequestParam String paciente){
+        return agendamentoService.filtraPaciente(paciente);
     }
 }

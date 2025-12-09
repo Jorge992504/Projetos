@@ -6,6 +6,7 @@ import 'package:dente/core/ui/base/base_state.dart';
 import 'package:dente/core/ui/style/custom_colors.dart';
 import 'package:dente/core/ui/style/fontes_letras.dart';
 import 'package:dente/src/models/request/card_request.dart';
+import 'package:dente/src/models/request/pagamento_status_request.dart';
 import 'package:dente/src/models/request/pix_request.dart';
 import 'package:dente/src/models/response/card_response.dart';
 import 'package:dente/src/models/response/pix_response.dart';
@@ -34,6 +35,7 @@ class _PlanoPaymentPageState
   late String precoPlano;
   final metodoPagamentoController = TextEditingController();
   final periodoController = TextEditingController();
+  String periodoFinal = "";
 
   String periodoSelecionado = "";
   String metodoPagamentoSelecionado = "";
@@ -77,7 +79,6 @@ class _PlanoPaymentPageState
 
   @override
   Widget build(BuildContext context) {
-    log(token);
     return Scaffold(
       appBar: AppBar(title: const Text('Finalizar pagamento do plano')),
       body: BlocConsumer<PlanoController, PlanoState>(
@@ -345,7 +346,7 @@ class _PlanoPaymentPageState
                             isCard = false;
                           });
                           await gerarPix();
-                          verificarStatusPix();
+                          verificarStatusPagemento(pixResponse.paymentId);
                         } else {
                           await buscaPublicKey();
                           setState(() {
@@ -547,17 +548,33 @@ class _PlanoPaymentPageState
                     emailFocus: emailFocus,
                     onPagar: () async {
                       CardResponse response = await pagarCartao();
-
                       if (response.status == "approved") {
-                        Navigator.of(
-                          // ignore: use_build_context_synchronously
-                          context,
-                        ).pushNamedAndRemoveUntil(Rotas.login, (_) => false);
+                        final valorFormatado = formatarValor(
+                          valorComDescontoPlano,
+                        );
+                        num valorFinal = num.tryParse(valorFormatado) ?? 0.0;
+                        PagamentoStatusRequest body = PagamentoStatusRequest(
+                          paymentId: response.id,
+                          token: token,
+                          periodo: periodoFinal,
+                          tipoPlano: planoSelecionado,
+                          valor: valorFinal,
+                        );
+                        controller.verificarStatusPagamento(body);
+                        WidgetsBinding.instance.addPostFrameCallback((_) async {
+                          Navigator.of(
+                            // ignore: use_build_context_synchronously
+                            context,
+                          ).pushNamedAndRemoveUntil(
+                            Rotas.home,
+                            (route) => false,
+                          );
+                        });
                       } else if (response.status == "cancelled") {
                         showError("O pagamento falhou.");
                       } else {
                         showInfo("Pagamento pendente");
-                        verificarStatusCard(response.id!);
+                        verificarStatusPagemento(response.id!);
                       }
                     },
                   ),
@@ -580,6 +597,7 @@ class _PlanoPaymentPageState
     if (plano == "Basico") {
       if (periodo == "Mensal") {
         setState(() {
+          periodoFinal = periodo;
           periodoSelecionado = "0% off";
           valorPlano = "R\$ 85.00";
           valorComDescontoPlano = "R\$ 85.00";
@@ -587,6 +605,7 @@ class _PlanoPaymentPageState
         return;
       } else if (periodo == "Semestral") {
         setState(() {
+          periodoFinal = periodo;
           periodoSelecionado = "10% off";
           valorPlano = "R\$ 510.00";
           valorComDescontoPlano = "R\$ 459.00";
@@ -594,6 +613,7 @@ class _PlanoPaymentPageState
         return;
       } else {
         setState(() {
+          periodoFinal = periodo;
           periodoSelecionado = "20% off";
           valorPlano = "R\$ 1020.00";
           valorComDescontoPlano = "R\$ 816.00";
@@ -604,6 +624,7 @@ class _PlanoPaymentPageState
     if (plano == "Pro") {
       if (periodo == "Mensal") {
         setState(() {
+          periodoFinal = periodo;
           periodoSelecionado = "0% off";
           valorPlano = "R\$ 99.90";
           valorComDescontoPlano = "R\$ 99.90";
@@ -611,6 +632,7 @@ class _PlanoPaymentPageState
         return;
       } else if (periodo == "Semestral") {
         setState(() {
+          periodoFinal = periodo;
           periodoSelecionado = "10% off";
           valorPlano = "R\$ 599.40";
           valorComDescontoPlano = "R\$ 539.46";
@@ -618,6 +640,7 @@ class _PlanoPaymentPageState
         return;
       } else {
         setState(() {
+          periodoFinal = periodo;
           periodoSelecionado = "20% off";
           valorPlano = "R\$ 1198.80";
           valorComDescontoPlano = "R\$ 959.04";
@@ -628,6 +651,7 @@ class _PlanoPaymentPageState
     if (plano == "Premium") {
       if (periodo == "Mensal") {
         setState(() {
+          periodoFinal = periodo;
           periodoSelecionado = "0% off";
           valorPlano = "R\$ 129.90";
           valorComDescontoPlano = "R\$ 129.90";
@@ -635,6 +659,7 @@ class _PlanoPaymentPageState
         return;
       } else if (periodo == "Semestral") {
         setState(() {
+          periodoFinal = periodo;
           periodoSelecionado = "10% off";
           valorPlano = "R\$ 779.40";
           valorComDescontoPlano = "R\$ 701.46";
@@ -642,6 +667,7 @@ class _PlanoPaymentPageState
         return;
       } else {
         setState(() {
+          periodoFinal = periodo;
           periodoSelecionado = "20% off";
           valorPlano = "R\$ 1558.80";
           valorComDescontoPlano = "R\$ 1247.04";
@@ -676,16 +702,26 @@ class _PlanoPaymentPageState
         .replaceAll(",", "."); // troca vírgula por ponto
   }
 
-  void verificarStatusPix() {
-    Timer(const Duration(minutes: 5), () {
-      final status = controller.verificarStatusPagamento(
-        pixResponse.paymentId ?? 0,
-      );
+  void verificarStatusPagemento(int? paymentId) {
+    final valorFormatado = formatarValor(valorComDescontoPlano);
+    num valorFinal = num.tryParse(valorFormatado) ?? 0.0;
+    PagamentoStatusRequest body = PagamentoStatusRequest(
+      paymentId: paymentId,
+      token: token,
+      periodo: periodoSelecionado,
+      tipoPlano: planoSelecionado,
+      valor: valorFinal,
+    );
+    Timer(const Duration(minutes: 2), () {
+      final status = controller.verificarStatusPagamento(body);
       // ignore: unrelated_type_equality_checks
       if (status == "approved") {
-        Navigator.of(
-          context,
-        ).pushNamedAndRemoveUntil(Rotas.login, (_) => false);
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          Navigator.of(
+            // ignore: use_build_context_synchronously
+            context,
+          ).pushNamedAndRemoveUntil(Rotas.home, (route) => false);
+        });
         // ignore: unrelated_type_equality_checks
       } else if (status == "cancelled") {
         showError("O pagamento falhou.");
@@ -816,24 +852,6 @@ class _PlanoPaymentPageState
 
     // 🔥 Retorna só o id
     return json["id"] ?? "";
-  }
-
-  void verificarStatusCard(int paymentId) {
-    log('entrou $paymentId');
-    Timer(const Duration(minutes: 5), () {
-      final status = controller.statusCard(paymentId);
-      // ignore: unrelated_type_equality_checks
-      if (status == "approved") {
-        Navigator.of(
-          context,
-        ).pushNamedAndRemoveUntil(Rotas.login, (_) => false);
-        // ignore: unrelated_type_equality_checks
-      } else if (status == "cancelled") {
-        showError("O pagamento falhou.");
-      } else {
-        showError("Pagamento pendente.");
-      }
-    });
   }
 }
 

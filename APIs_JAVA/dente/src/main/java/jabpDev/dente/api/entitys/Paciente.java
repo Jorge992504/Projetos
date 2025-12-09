@@ -29,7 +29,7 @@ public class Paciente {
     @Column(name = "endereco")
     private String endereco;
 
-    @Column(name = "cpf", nullable = false)
+    @Column(name = "cpf")
     private String cpf;
 
     @Column(name = "rg")

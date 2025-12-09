@@ -137,7 +137,6 @@ class _SplashPageState extends State<SplashPage> {
                   context,
                   listen: false,
                 ).token;
-                Provider.of<AuthProvider>(context, listen: false).logout();
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   Rotas.premium,
                   (route) => false,

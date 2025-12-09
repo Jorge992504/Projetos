@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dente/core/exceptions/create_exception.dart';
 import 'package:dente/core/rest_client/rest_client.dart';
 import 'package:dente/src/models/request/card_request.dart';
+import 'package:dente/src/models/request/pagamento_status_request.dart';
 import 'package:dente/src/models/request/pix_request.dart';
 import 'package:dente/src/models/response/card_response.dart';
 import 'package:dente/src/models/response/card_status_response.dart';
@@ -38,11 +39,11 @@ class PlanoRepository {
     }
   }
 
-  Future<String> verificarStatusPagamento(int paymentId) async {
+  Future<String> verificarStatusPagamento(PagamentoStatusRequest body) async {
     try {
-      final response = await restClient.unauth.get(
-        "/plano/pix-status",
-        queryParameters: {'paymentId': paymentId},
+      final response = await restClient.unauth.post(
+        "/plano/pagamento-status",
+        data: body.toJson(),
       );
       return response.data['status'] ?? "";
     } catch (e, s) {

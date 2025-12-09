@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -53,6 +54,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
         context,
         listen: false,
       ).empresaModel;
+      await verificarExecucaoPeriodica();
       await refreshAgendamentos();
     });
   }
@@ -175,67 +177,85 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                         ),
                         currentAccountPictureSize: const Size.square(70),
                       ),
-                      ListTile(
-                        leading: Image.asset(
-                          ImageConstants.dentista,
-                          width: 25,
-                          height: 25,
-                          fit: BoxFit.cover,
+                      Visibility(
+                        visible:
+                            empresaModel.plano == "Pro" ||
+                            empresaModel.plano == "Premium",
+                        child: ListTile(
+                          leading: Image.asset(
+                            ImageConstants.dentista,
+                            width: 25,
+                            height: 25,
+                            fit: BoxFit.cover,
+                          ),
+                          title: Text(
+                            "Dentistas",
+                            style: context.cusotomFontes.textBoldItalic,
+                          ),
+                          onTap: () async {
+                            Navigator.of(context).pushNamed(Rotas.dentista);
+                          },
                         ),
-                        title: Text(
-                          "Dentistas",
-                          style: context.cusotomFontes.textBoldItalic,
-                        ),
-                        onTap: () async {
-                          Navigator.of(context).pushNamed(Rotas.dentista);
-                        },
                       ),
-                      ListTile(
-                        leading: Image.asset(
-                          ImageConstants.servicos,
-                          width: 25,
-                          height: 25,
-                          fit: BoxFit.cover,
+                      Visibility(
+                        visible:
+                            empresaModel.plano == "Pro" ||
+                            empresaModel.plano == "Premium",
+                        child: ListTile(
+                          leading: Image.asset(
+                            ImageConstants.servicos,
+                            width: 25,
+                            height: 25,
+                            fit: BoxFit.cover,
+                          ),
+                          title: Text(
+                            "Serviços",
+                            style: context.cusotomFontes.textBoldItalic,
+                          ),
+                          onTap: () async {
+                            Navigator.of(context).pushNamed(Rotas.servicos);
+                          },
                         ),
-                        title: Text(
-                          "Serviços",
-                          style: context.cusotomFontes.textBoldItalic,
-                        ),
-                        onTap: () async {
-                          Navigator.of(context).pushNamed(Rotas.servicos);
-                        },
                       ),
-                      ListTile(
-                        leading: Image.asset(
-                          ImageConstants.cliente,
-                          width: 25,
-                          height: 25,
-                          fit: BoxFit.cover,
+                      Visibility(
+                        visible:
+                            empresaModel.plano == "Pro" ||
+                            empresaModel.plano == "Premium",
+                        child: ListTile(
+                          leading: Image.asset(
+                            ImageConstants.cliente,
+                            width: 25,
+                            height: 25,
+                            fit: BoxFit.cover,
+                          ),
+                          title: Text(
+                            "Pacientes",
+                            style: context.cusotomFontes.textBoldItalic,
+                          ),
+                          onTap: () async {
+                            Navigator.of(
+                              context,
+                            ).pushNamed(Rotas.registrarPaciente);
+                          },
                         ),
-                        title: Text(
-                          "Pacientes",
-                          style: context.cusotomFontes.textBoldItalic,
-                        ),
-                        onTap: () async {
-                          Navigator.of(
-                            context,
-                          ).pushNamed(Rotas.registrarPaciente);
-                        },
                       ),
-                      ListTile(
-                        leading: Image.asset(
-                          ImageConstants.convenio,
-                          width: 25,
-                          height: 25,
-                          fit: BoxFit.cover,
+                      Visibility(
+                        visible: empresaModel.plano == "Premium",
+                        child: ListTile(
+                          leading: Image.asset(
+                            ImageConstants.convenio,
+                            width: 25,
+                            height: 25,
+                            fit: BoxFit.cover,
+                          ),
+                          title: Text(
+                            "Convenios",
+                            style: context.cusotomFontes.textBoldItalic,
+                          ),
+                          onTap: () async {
+                            Navigator.of(context).pushNamed(Rotas.convenio);
+                          },
                         ),
-                        title: Text(
-                          "Convenios",
-                          style: context.cusotomFontes.textBoldItalic,
-                        ),
-                        onTap: () async {
-                          Navigator.of(context).pushNamed(Rotas.convenio);
-                        },
                       ),
                       ListTile(
                         leading: Image.asset(
@@ -249,27 +269,33 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                           style: context.cusotomFontes.textBoldItalic,
                         ),
                         onTap: () async {
-                          Navigator.of(
-                            context,
-                          ).pushNamed(Rotas.agendamento).then((_) async {
-                            await refreshAgendamentos(); // método que já atualiza tudo corretamente
-                          });
+                          Navigator.of(context)
+                              .pushNamed(
+                                Rotas.agendamento,
+                                arguments: {"plano": empresaModel.plano},
+                              )
+                              .then((_) async {
+                                await refreshAgendamentos(); // método que já atualiza tudo corretamente
+                              });
                         },
                       ),
-                      ListTile(
-                        leading: Image.asset(
-                          ImageConstants.dashboard,
-                          width: 25,
-                          height: 25,
-                          fit: BoxFit.cover,
+                      Visibility(
+                        visible: empresaModel.plano == "Premium",
+                        child: ListTile(
+                          leading: Image.asset(
+                            ImageConstants.dashboard,
+                            width: 25,
+                            height: 25,
+                            fit: BoxFit.cover,
+                          ),
+                          title: Text(
+                            "Dashboard",
+                            style: context.cusotomFontes.textBoldItalic,
+                          ),
+                          onTap: () async {
+                            Navigator.of(context).pushNamed(Rotas.dashboard);
+                          },
                         ),
-                        title: Text(
-                          "Dashboard",
-                          style: context.cusotomFontes.textBoldItalic,
-                        ),
-                        onTap: () async {
-                          Navigator.of(context).pushNamed(Rotas.dashboard);
-                        },
                       ),
                       ListTile(
                         leading: Image.asset(
@@ -343,12 +369,15 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                       width: 950,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Navigator.of(
-                          //   context,
-                          // ).pushNamed(Rotas.agendamento).then((_) async {
-                          //   await refreshAgendamentos(); // método que já atualiza tudo corretamente
-                          // });
-                          Navigator.of(context).pushNamed(Rotas.premium);
+                          Navigator.of(context)
+                              .pushNamed(
+                                Rotas.agendamento,
+                                arguments: {"plano": empresaModel.plano},
+                              )
+                              .then((_) async {
+                                await refreshAgendamentos(); // método que já atualiza tudo corretamente
+                              });
+                          // Navigator.of(context).pushNamed(Rotas.premium);
                         },
                         child: Text(
                           'Novo agendamento',
@@ -444,7 +473,8 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                             ),
                                           );
                                         }
-                                        if (request.isNotEmpty) {
+                                        if (request.isNotEmpty &&
+                                            empresaModel.plano != "Basico") {
                                           agendamentosDetalhes =
                                               await controller
                                                   .buscarDadosDosAgendamentos(
@@ -468,7 +498,10 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                         Navigator.of(context)
                                             .pushNamed(
                                               Rotas.agendamento,
-                                              arguments: {'data': data},
+                                              arguments: {
+                                                'data': data,
+                                                "plano": empresaModel.plano,
+                                              },
                                             )
                                             .then((_) async {
                                               await refreshAgendamentos(); // método que já atualiza tudo corretamente
@@ -530,7 +563,9 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                           return Tooltip(
                             message:
                                 agendamentoDetalhe.status != 'Cancelado' &&
-                                    agendamentoDetalhe.status != 'Realizado'
+                                    agendamentoDetalhe.status != 'Realizado' &&
+                                    empresaModel.plano != "Basico" &&
+                                    empresaModel.plano != "Pro"
                                 ? 'Começar o atendimento'
                                 : '',
                             child: InkWell(
@@ -544,52 +579,62 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                     )
                                   : WidgetStateProperty.all(Colors.transparent),
 
-                              onTap: () {
-                                if (agendamentoDetalhe.status != 'Cancelado' &&
-                                    agendamentoDetalhe.status != 'Realizado') {
-                                  // Navigator.of(context).pushNamed(
-                                  //   Rotas.atendimento,
-                                  //   arguments: {
-                                  //     'agendamentoDetalhe': agendamentoDetalhe,
-                                  //   },
-                                  // );
+                              onTap:
+                                  empresaModel.plano != "Basico" &&
+                                      empresaModel.plano != "Pro"
+                                  ? () {
+                                      if (agendamentoDetalhe.status !=
+                                              'Cancelado' &&
+                                          agendamentoDetalhe.status !=
+                                              'Realizado' &&
+                                          empresaModel.plano != "Basico" &&
+                                          empresaModel.plano != "Pro") {
+                                        // Navigator.of(context).pushNamed(
+                                        //   Rotas.atendimento,
+                                        //   arguments: {
+                                        //     'agendamentoDetalhe': agendamentoDetalhe,
+                                        //   },
+                                        // );
 
-                                  Navigator.of(context)
-                                      .pushNamed(
-                                        Rotas.atendimento,
-                                        arguments: {
-                                          'agendamentoDetalhe':
-                                              agendamentoDetalhe,
-                                        },
-                                      )
-                                      .then((_) {
-                                        List<AgendamentoPorPacienteRequest>
-                                        request = [];
-                                        for (var agendamento
-                                            in agendamentosDiaRefresh) {
-                                          request.add(
-                                            AgendamentoPorPacienteRequest(
-                                              data: DateFormat(
-                                                'yyyy-MM-dd',
-                                              ).format(agendamento.data!),
-                                              id: agendamento.id,
-                                            ),
-                                          );
-                                        }
-                                        if (request.isNotEmpty) {
-                                          setState(() async {
-                                            agendamentosDetalhes =
-                                                await controller
-                                                    .buscarDadosDosAgendamentos(
-                                                      request,
-                                                    );
-                                          });
-                                        } else {
-                                          agendamentosDetalhes = [];
-                                        }
-                                      });
-                                }
-                              },
+                                        Navigator.of(context)
+                                            .pushNamed(
+                                              Rotas.atendimento,
+                                              arguments: {
+                                                'agendamentoDetalhe':
+                                                    agendamentoDetalhe,
+                                              },
+                                            )
+                                            .then((_) {
+                                              List<
+                                                AgendamentoPorPacienteRequest
+                                              >
+                                              request = [];
+                                              for (var agendamento
+                                                  in agendamentosDiaRefresh) {
+                                                request.add(
+                                                  AgendamentoPorPacienteRequest(
+                                                    data: DateFormat(
+                                                      'yyyy-MM-dd',
+                                                    ).format(agendamento.data!),
+                                                    id: agendamento.id,
+                                                  ),
+                                                );
+                                              }
+                                              if (request.isNotEmpty) {
+                                                setState(() async {
+                                                  agendamentosDetalhes =
+                                                      await controller
+                                                          .buscarDadosDosAgendamentos(
+                                                            request,
+                                                          );
+                                                });
+                                              } else {
+                                                agendamentosDetalhes = [];
+                                              }
+                                            });
+                                      }
+                                    }
+                                  : null,
                               child: CustomCard(
                                 // width: 1000,
                                 // height: 80,
@@ -597,6 +642,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                                 servico: agendamentoDetalhe.servico,
                                 horario: agendamentoDetalhe.datahorario,
                                 statusPayment: "Pendente",
+                                plano: empresaModel.plano,
 
                                 onPressedCancelado: () async {
                                   await controller
@@ -762,5 +808,117 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
         listen: false,
       ).empresaModel;
     });
+  }
+
+  //! validar plano
+  Future<void> validarPlano() async {
+    String isPlano = await Provider.of<AuthProvider>(
+      // ignore: use_build_context_synchronously
+      context,
+      listen: false,
+    ).verificarPlano();
+    if (isPlano == '!Teste') {
+      showPlanoDialog('Teste');
+      return;
+    }
+    if (isPlano == '!Plano') {
+      showPlanoDialog('Outro');
+      return;
+    }
+    if (isPlano == 'Finalizado') {
+      showPlanoDialog('Plano');
+      return;
+    }
+    Navigator.of(
+      // ignore: use_build_context_synchronously
+      context,
+    ).pushNamedAndRemoveUntil(Rotas.home, (route) => false);
+  }
+
+  Future<void> showPlanoDialog(String value) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            value == "Teste"
+                ? "Periodo de Teste Encerrado"
+                : value == "Plano"
+                ? "Plano Expirado"
+                : 'Sem plano ativo',
+            style: context.cusotomFontes.textBold.copyWith(
+              color: ColorsConstants.appBarColor,
+            ),
+          ),
+          content: Text(
+            value == "Teste"
+                ? 'Seu período de teste gratuito chegou ao fim.\nPara continuar aproveitando os benefícios realize a assinatura.'
+                : value == "Plano"
+                ? 'Seu plano expirou.\nPara continuar aproveitando os benefícios realize a assinatura.'
+                : 'Você não possui um plano ativo.\nPara continuar aproveitando os benefícios realize a assinatura.',
+            style: context.cusotomFontes.textRegular.copyWith(
+              color: ColorsConstants.appBarColor,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                final token = Provider.of<AuthProvider>(
+                  context,
+                  listen: false,
+                ).token;
+
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  Rotas.premium,
+                  (route) => false,
+                  arguments: {"token": token},
+                );
+              },
+              child: Text(
+                'OK',
+                style: context.cusotomFontes.textBoldItalic.copyWith(
+                  color: ColorsConstants.appBarColor,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> verificarExecucaoPeriodica() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final agora = DateTime.now();
+    final ultimaExecucaoMillis = prefs.getInt('ultima_execucao_30_dias');
+
+    if (ultimaExecucaoMillis == null) {
+      /// Nunca foi executado → executa agora
+      await validarPlano();
+
+      await prefs.setInt(
+        'ultima_execucao_30_dias',
+        agora.millisecondsSinceEpoch,
+      );
+      return;
+    }
+
+    final ultimaExecucao = DateTime.fromMillisecondsSinceEpoch(
+      ultimaExecucaoMillis,
+    );
+
+    final diferencaDias = agora.difference(ultimaExecucao).inDays;
+
+    if (diferencaDias >= 30) {
+      /// Já passaram 30 dias → executa a função
+      await validarPlano();
+
+      /// Atualiza a data
+      await prefs.setInt(
+        'ultima_execucao_30_dias',
+        agora.millisecondsSinceEpoch,
+      );
+    }
   }
 }

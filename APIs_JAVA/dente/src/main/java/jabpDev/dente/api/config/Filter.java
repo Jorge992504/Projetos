@@ -17,7 +17,7 @@ public class Filter {
     public String pixStatus = "/plano/pix-status";
 
     public String card = "/plano/card";
-    public String cardStatus = "/plano/card-status";
+    public String cardStatus = "/plano/pagamento-status";
     public String cardPublicKey = "/plano/public-key";
     public String precoFind = "/preco/find";
 }

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:dente/core/exceptions/repository_exception.dart';
 import 'package:dente/src/models/request/card_request.dart';
+import 'package:dente/src/models/request/pagamento_status_request.dart';
 import 'package:dente/src/models/request/pix_request.dart';
 import 'package:dente/src/models/response/card_response.dart';
 import 'package:dente/src/models/response/card_status_response.dart';
@@ -50,11 +51,11 @@ class PlanoController extends Cubit<PlanoState> {
     }
   }
 
-  Future<String> verificarStatusPagamento(int paymentId) async {
+  Future<String> verificarStatusPagamento(PagamentoStatusRequest body) async {
     try {
       emit(state.copyWith(status: PlanoStatus.loading));
 
-      final result = await _repository.verificarStatusPagamento(paymentId);
+      final result = await _repository.verificarStatusPagamento(body);
 
       emit(state.copyWith(status: PlanoStatus.loaded, errorMessage: null));
       return result;

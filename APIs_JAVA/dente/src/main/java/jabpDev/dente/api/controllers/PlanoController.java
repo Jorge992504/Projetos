@@ -4,6 +4,7 @@ package jabpDev.dente.api.controllers;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import jabpDev.dente.api.dto.request.CardRequest;
+import jabpDev.dente.api.dto.request.PagamentoStatusRequest;
 import jabpDev.dente.api.dto.request.PixRequest;
 import jabpDev.dente.api.dto.response.*;
 import jabpDev.dente.api.services.PlanoService;
@@ -27,10 +28,10 @@ public class PlanoController {
     public PixResponse pagarPix(@RequestBody PixRequest body) throws MPException, MPApiException {
         return planoService.pagarPix(body);
     }
-    @GetMapping("/pix-status")
-    public PixStatusResponse statusPix(@RequestParam Long paymentId, @RequestParam String token){
-        return planoService.statusPix(paymentId,token);
-    }
+//    @GetMapping("/pix-status")
+//    public PixStatusResponse statusPix(@RequestParam Long paymentId, @RequestParam String token){
+//        return planoService.statusPix(paymentId,token);
+//    }
 
 //    pagamento com cartoes
     @GetMapping("/public-key")
@@ -43,9 +44,8 @@ public class PlanoController {
         return planoService.pagarCartao(body);
     }
 
-    @GetMapping("/card-status")
-    public CardStatusResponse statusCard(@RequestParam Long paymentId,@RequestParam String token) throws MPException, MPApiException {
-        System.out.println("paymentId: "+paymentId);
-        return planoService.statusCard(paymentId,token);
+    @PostMapping("/pagamento-status")
+    public CardStatusResponse statusPagamento(@RequestBody PagamentoStatusRequest body) throws MPException, MPApiException {
+        return planoService.statusPagamento(body);
     }
 }

@@ -11,14 +11,13 @@ import jabpDev.dente.api.exceptions.ErrorException;
 import jabpDev.dente.api.repositories.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,38 +71,63 @@ public class AgendamentoService {
         String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
         if (empresa.isEmpty()){
-            throw new ErrorException("Sem permissão para cadastrar dentista.\nRealizar login novamente");
+            throw new ErrorException("Realizar login");
         }
-
         Optional<Dentista> dentista = dentistaRepository.findByIdAndEmpresaId(body.dentistaId(), empresa.get().getId());
-        if (dentista.isEmpty()){
-            throw new ErrorException("Dentista não encontrado para a clinica.");
-        }
+        Optional<Servicos> servicos = servicosRepository.findByIdAndEmpresaId(body.servicoId(), empresa.get().getId());
 
-        Optional<Paciente> paciente = pacienteRepository.findByCpfAndEmpresaId(body.cpfPaciente(), empresa.get().getId());
-        if (paciente.isEmpty()){
-            throw new ErrorException("Paciente não encontrado para a clinica.");
+        Optional<Paciente> paciente = Optional.empty();
+        Optional<Paciente> pacienteCpf = pacienteRepository.findByCpfAndEmpresaId(body.cpfPaciente(), empresa.get().getId());
+        if (!pacienteCpf.isPresent()){
+            Optional<Paciente> pacienteNome = pacienteRepository.findByNomeAndEmpresaId(body.nomePaciente(),empresa.get().getId());
+            if (!pacienteNome.isPresent()){
+                Paciente pacienteNew = Paciente.builder()
+                        .email(body.email())
+                        .empresa(empresa.get())
+                        .nome(body.nomePaciente())
+                        .tipo("Paciente")
+                        .build();
+                Paciente response = pacienteRepository.save(pacienteNew);
+                if (response.getId() > 0){
+                    paciente = Optional.of(response);
+                }
+            }else{
+                paciente = pacienteNome;
+            }
+        }else{
+            paciente = pacienteCpf;
         }
+        Agendamento agendamento = new Agendamento();
+        if (!servicos.isPresent() && dentista.isPresent()){
+            agendamento.setEmpresa(empresa.get());
+            agendamento.setPaciente(paciente.get());
 
-        Optional<Servicos> servico = servicosRepository.findByIdAndEmpresaId(body.servicoId(), empresa.get().getId());
-        if (servico.isEmpty()){
-            throw new ErrorException("Serviço não encontrado para a clinica.");
+            agendamento.setDentista(dentista.get());
+            agendamento.setDataHora(body.dataHora());
+            agendamento.setObservacoes(body.observacoes());
+            agendamento.setStatus("Pendente");
         }
-        Agendamento agendamento = Agendamento.builder()
-                .empresa(empresa.get())
-                .paciente(paciente.get())
-                .servico(servico.get())
-                .dentista(dentista.get())
-                .dataHora(body.dataHora())
-                .observacoes(body.observacoes())
-                .status("Pendente")
-                .build();
+        if (!dentista.isPresent()  && servicos.isPresent()){
+            agendamento.setEmpresa(empresa.get());
+            agendamento.setPaciente(paciente.get());
+
+            agendamento.setServico(servicos.get());
+            agendamento.setDataHora(body.dataHora());
+            agendamento.setObservacoes(body.observacoes());
+            agendamento.setStatus("Pendente");
+        }
+        if (!servicos.isPresent() && !dentista.isPresent()){
+            agendamento.setEmpresa(empresa.get());
+            agendamento.setPaciente(paciente.get());
+            agendamento.setDataHora(body.dataHora());
+            agendamento.setObservacoes(body.observacoes());
+            agendamento.setStatus("Pendente");
+        }
 
         Agendamento response =  agendamentoRepository.save(agendamento);
         if (response.getId() > 0){
             servicesGerais.enviarEmailConfirmacaoAgendamento(
                     paciente.get(),
-                    dentista.get(),
                     response,
                     empresa.get().getEmailClinica()
             );
@@ -112,6 +136,7 @@ public class AgendamentoService {
             throw new ErrorException("Erro ao criar agendamento.");
         }
     }
+
 
 
     public List<BuscaAgendamentosDtoResponse> buscaAgendamentos() {
@@ -227,4 +252,36 @@ public class AgendamentoService {
 
         return agendamento;
     }
+
+    public Paciente filtraPaciente(String paciente){
+        String nmEmpresa =  SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Empresa> empresa = empresaRepository.findByEmailClinica(nmEmpresa);
+        if (!empresa.isPresent()){
+            throw new ErrorException("Realizar login");
+        }
+
+        Optional<Paciente> pacienteModel;
+        if (isCPF(paciente)){
+            Optional<Paciente> pacienteCpf = pacienteRepository.findByCpfAndEmpresaId(paciente, empresa.get().getId());
+            if (!pacienteCpf.isPresent()){
+                return ResponseEntity.ok(Paciente.builder()).getBody().build();
+            }else{
+                pacienteModel = pacienteCpf;
+            }
+        }else{
+            Optional<Paciente> pacienteNome = pacienteRepository.findByNomeAndEmpresaId(paciente, empresa.get().getId());
+            if(!pacienteNome.isPresent()){
+                return ResponseEntity.ok(Paciente.builder()).getBody().build();
+            }else{
+                pacienteModel = pacienteNome;
+            }
+        }
+        return pacienteModel.get();
+    }
+
+    private boolean isCPF(String value) {
+        String digits = value.replaceAll("[^0-9]", "");
+        return digits.length() == 11;
+    }
+
 }
