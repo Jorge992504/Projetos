@@ -1,0 +1,31 @@
+sealed class ImageConstants {
+  static const add = 'assets/image/add.png';
+  static const addGeral = 'assets/image/add-geral.png';
+  static const addVegan = 'assets/image/add-vegan.png';
+  static const back = 'assets/image/back.png';
+  static const burger = 'assets/image/burger.png';
+  static const camera = 'assets/image/camera.png';
+  static const car = 'assets/image/car.png';
+  static const chat = 'assets/image/chat.png';
+  static const cola = 'assets/image/cola.png';
+  static const edit = 'assets/image/edit.png';
+  static const exit = 'assets/image/exit.png';
+  static const expand = 'assets/image/expand.png';
+  static const fav = 'assets/image/fav.png';
+  static const hamburguer = 'assets/image/hamburger.png';
+  static const home = 'assets/image/home.png';
+  static const meat = 'assets/image/meat.png';
+  static const nfav = 'assets/image/Nfav.png';
+  static const notification = 'assets/image/notification.png';
+  static const order = 'assets/image/order.png';
+  static const person = 'assets/image/person.png';
+  static const pizza = 'assets/image/pizza.png';
+  static const recent = 'assets/image/recent.png';
+  static const refri = 'assets/image/refri.png';
+  static const remove = 'assets/image/remove.png';
+  static const salad = 'assets/image/salad.png';
+  static const search = 'assets/image/search.png';
+  static const security = 'assets/image/security.png';
+  static const sushi = 'assets/image/sushi.png';
+  static const user = 'assets/image/user.png';
+}

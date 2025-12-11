@@ -1,0 +1,64 @@
+name: servicespro
+description: "A new Flutter project."
+
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  
+  cupertino_icons: ^1.0.8
+  provider: ^6.1.5
+  dio: ^5.9.0
+  shared_preferences: ^2.5.4
+  flutter_dotenv: ^6.0.0
+  bloc: ^9.1.0
+  flutter_bloc: ^9.1.1
+  loading_animation_widget: ^1.2.0
+  top_snackbar_flutter: ^3.1.0
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+  image_picker: ^1.1.1
+  mask_text_input_formatter: ^2.8.0
+  package_info_plus: ^9.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.9
+  match: ^0.4.1
+  dotenv: ^4.2.0
+
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/image/
+    - assets/logo/
+    - assets/ico/
+    - .env
+  
+  fonts:
+    - family: mplus1
+      fonts:
+        - asset: assets/fontes/mplus/black.ttf
+        - asset: assets/fontes/mplus/regular.ttf
+        - asset: assets/fontes/mplus/bold.ttf
+        - asset: assets/fontes/mplus/extraBold.ttf
+        - asset: assets/fontes/mplus/semiBold.ttf
+        - asset: assets/fontes/mplus/medium.ttf
+        - asset: assets/fontes/mplus/light.ttf
+        - asset: assets/fontes/mplus/extraLight.ttf
+        - asset: assets/fontes/mplus/thin.ttf

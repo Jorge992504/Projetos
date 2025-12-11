@@ -1,1 +1,0 @@
-provider dio shared_preferences dotenv flutter_dotenv bloc loading_animation_widget top_snackbar_flutter
