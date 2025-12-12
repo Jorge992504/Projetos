@@ -17,7 +17,7 @@ class ConfigTheme {
       appBarTheme: AppBarTheme(
         centerTitle: true,
         elevation: 0,
-        backgroundColor: ColorsConstants.azulColor,
+        backgroundColor: ColorsConstants.primaryColor,
         foregroundColor: ColorsConstants.primaryColor,
 
         titleTextStyle: TextStyle(
@@ -27,7 +27,11 @@ class ConfigTheme {
         ),
         iconTheme: IconThemeData(color: ColorsConstants.primaryColor),
       ),
-
+      cardTheme: CardThemeData(
+        elevation: 6,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        color: ColorsConstants.azulColor,
+      ),
       // Elevated Button Theme
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -43,7 +47,12 @@ class ConfigTheme {
           iconColor: ColorsConstants.letrasColor,
         ),
       ),
-
+      iconButtonTheme: IconButtonThemeData(
+        style: ButtonStyle(
+          iconColor: WidgetStateProperty.all(ColorsConstants.azulColor),
+          overlayColor: WidgetStateProperty.all(ColorsConstants.secundaryColor),
+        ),
+      ),
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -77,6 +86,30 @@ class ConfigTheme {
         hintStyle: TextStyle(color: ColorsConstants.letrasColor),
         iconColor: ColorsConstants.letrasColor,
       ),
+      navigationBarTheme: NavigationBarThemeData(
+        height: 64,
+        backgroundColor: ColorsConstants.letrasColor, // fundo claro
+        indicatorColor: ColorsConstants.azulColor,
+        surfaceTintColor: Colors.transparent,
+
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return IconThemeData(color: ColorsConstants.primaryColor);
+          }
+          return IconThemeData(color: ColorsConstants.primaryColor);
+        }),
+
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return TextStyle(
+              color: ColorsConstants.primaryColor,
+              fontWeight: FontWeight.w900,
+              fontFamily: 'mplus',
+            );
+          }
+          return TextStyle(color: ColorsConstants.primaryColor);
+        }),
+      ),
 
       // Text Theme
       textTheme: TextTheme(
@@ -101,10 +134,7 @@ class ConfigTheme {
           color: ColorsConstants.letrasColor,
         ),
         bodyLarge: TextStyle(fontSize: 16, color: ColorsConstants.letrasColor),
-        bodyMedium: TextStyle(
-          fontSize: 14,
-          color: ColorsConstants.secundaryColor,
-        ),
+        bodyMedium: TextStyle(fontSize: 14, color: ColorsConstants.letrasColor),
       ),
 
       iconTheme: IconThemeData(color: ColorsConstants.letrasColor, size: 24),
@@ -126,7 +156,7 @@ class ConfigTheme {
       appBarTheme: AppBarTheme(
         centerTitle: true,
         elevation: 0,
-        backgroundColor: ColorsConstants.azulColor,
+        backgroundColor: ColorsConstants.letrasColor,
         foregroundColor: ColorsConstants.primaryColor,
         titleTextStyle: TextStyle(
           fontSize: 20,
@@ -145,12 +175,43 @@ class ConfigTheme {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         ),
       ),
+
       cardTheme: CardThemeData(
         elevation: 6,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        color: ColorsConstants.primaryColor,
+        color: ColorsConstants.azulColor,
       ),
       scaffoldBackgroundColor: ColorsConstants.letrasColor,
+      iconButtonTheme: IconButtonThemeData(
+        style: ButtonStyle(
+          iconColor: WidgetStateProperty.all(ColorsConstants.primaryColor),
+          overlayColor: WidgetStateProperty.all(ColorsConstants.primaryColor),
+        ),
+      ),
+
+      navigationBarTheme: NavigationBarThemeData(
+        height: 64,
+        backgroundColor: ColorsConstants.azulColor, // fundo escuro
+        indicatorColor: ColorsConstants.primaryColor,
+        surfaceTintColor: Colors.transparent,
+
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return IconThemeData(color: ColorsConstants.azulColor);
+          }
+          return IconThemeData(color: ColorsConstants.primaryColor);
+        }),
+
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return TextStyle(
+              color: ColorsConstants.primaryColor,
+              fontWeight: FontWeight.w600,
+            );
+          }
+          return TextStyle(color: ColorsConstants.primaryColor);
+        }),
+      ),
 
       // Text Theme
       textTheme: TextTheme(
