@@ -1,6 +1,5 @@
 sealed class ImageConstants {
   static const automotivo = 'assets/image/automotivo.png';
-
   static const belezaEstetica = 'assets/image/belezaEstetica.png';
   static const consultorias = 'assets/image/consultorias.png';
   static const eventos = 'assets/image/eventos.png';

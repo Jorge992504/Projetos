@@ -4,14 +4,14 @@ import 'package:servicespro/core/ui/style/custom_images.dart';
 import 'package:servicespro/core/ui/style/fontes_letras.dart';
 import 'package:servicespro/core/ui/style/size_extension.dart';
 
-class CustomScreen extends StatefulWidget {
-  const CustomScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<CustomScreen> createState() => _CustomScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _CustomScreenState extends State<CustomScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -31,9 +31,7 @@ class _CustomScreenState extends State<CustomScreen> {
                       "Encontre profissionais\nconfiáveis.",
                       style: context.cusotomFontes.bold.copyWith(
                         fontSize: 20,
-                        color: isDark
-                            ? ColorsConstants.primaryColor
-                            : ColorsConstants.azulColor,
+                        color: ColorsConstants.primaryColor,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -43,9 +41,7 @@ class _CustomScreenState extends State<CustomScreen> {
                     overflow: TextOverflow.visible,
                     style: context.cusotomFontes.medium.copyWith(
                       fontSize: 13,
-                      color: isDark
-                          ? ColorsConstants.primaryColor
-                          : ColorsConstants.azulColor,
+                      color: ColorsConstants.primaryColor,
                     ),
                   ),
                 ],

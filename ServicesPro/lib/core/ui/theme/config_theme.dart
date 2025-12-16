@@ -23,7 +23,7 @@ class ConfigTheme {
         titleTextStyle: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          color: ColorsConstants.primaryColor,
+          color: ColorsConstants.letrasColor,
         ),
         iconTheme: IconThemeData(color: ColorsConstants.primaryColor),
       ),
@@ -49,7 +49,7 @@ class ConfigTheme {
       ),
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
-          iconColor: WidgetStateProperty.all(ColorsConstants.azulColor),
+          iconColor: WidgetStateProperty.all(ColorsConstants.letrasColor),
           overlayColor: WidgetStateProperty.all(ColorsConstants.secundaryColor),
         ),
       ),
@@ -65,16 +65,11 @@ class ConfigTheme {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: ColorsConstants.secundaryColor.withValues(alpha: 0.3),
-          ),
+          borderSide: BorderSide(color: ColorsConstants.letrasColor),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: ColorsConstants.secundaryColor,
-            width: 2,
-          ),
+          borderSide: BorderSide(color: ColorsConstants.letrasColor, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -87,14 +82,14 @@ class ConfigTheme {
         iconColor: ColorsConstants.letrasColor,
       ),
       navigationBarTheme: NavigationBarThemeData(
-        height: 64,
-        backgroundColor: ColorsConstants.letrasColor, // fundo claro
-        indicatorColor: ColorsConstants.azulColor,
+        height: 60,
+        backgroundColor: ColorsConstants.azulColor, // fundo claro
+        indicatorColor: ColorsConstants.primaryColor,
         surfaceTintColor: Colors.transparent,
 
         iconTheme: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return IconThemeData(color: ColorsConstants.primaryColor);
+            return IconThemeData(color: ColorsConstants.azulColor);
           }
           return IconThemeData(color: ColorsConstants.primaryColor);
         }),
@@ -105,6 +100,7 @@ class ConfigTheme {
               color: ColorsConstants.primaryColor,
               fontWeight: FontWeight.w900,
               fontFamily: 'mplus',
+              fontSize: 12,
             );
           }
           return TextStyle(color: ColorsConstants.primaryColor);
@@ -163,6 +159,7 @@ class ConfigTheme {
           fontWeight: FontWeight.bold,
           color: ColorsConstants.primaryColor,
         ),
+        iconTheme: IconThemeData(color: ColorsConstants.primaryColor),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
