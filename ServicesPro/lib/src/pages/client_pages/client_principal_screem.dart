@@ -1,28 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:servicespro/core/ui/style/custom_colors.dart';
 import 'package:servicespro/core/ui/style/fontes_letras.dart';
-import 'package:servicespro/src/pages/pedidos_screen.dart';
+import 'package:servicespro/src/pages/client_pages/client_criar_pedido_screen.dart';
+import 'package:servicespro/src/pages/client_pages/client_pedidos_screen.dart';
 import 'package:servicespro/src/pages/perfil_screen.dart';
-import 'package:servicespro/src/pages/servicos_screen.dart';
-import 'package:servicespro/src/pages/splash_screen.dart';
-import 'package:servicespro/src/pages/home_screen.dart';
+import 'package:servicespro/src/pages/client_pages/client_home_screen.dart';
 
-class PrincipalScreem extends StatefulWidget {
-  const PrincipalScreem({super.key});
+class ClientPrincipalScreem extends StatefulWidget {
+  const ClientPrincipalScreem({super.key});
 
   @override
-  State<PrincipalScreem> createState() => _PrincipalScreemState();
+  State<ClientPrincipalScreem> createState() => _ClientPrincipalScreemState();
 }
 
-class _PrincipalScreemState extends State<PrincipalScreem> {
+class _ClientPrincipalScreemState extends State<ClientPrincipalScreem> {
   int _currentIndex = 0;
-  bool isServicos = false;
-
-  final List<Widget> pages = [
-    PrincipalScreem(),
-    SplashScreen(),
-    ServicosScreen(),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +23,7 @@ class _PrincipalScreemState extends State<PrincipalScreem> {
       appBar: AppBar(
         title: _currentIndex == 1
             ? Text(
-                "Serviços disponíveis",
+                "Publicar serviço",
                 style: context.cusotomFontes.medium.copyWith(
                   color: isDark
                       ? ColorsConstants.primaryColor
@@ -40,7 +32,7 @@ class _PrincipalScreemState extends State<PrincipalScreem> {
               )
             : _currentIndex == 2
             ? Text(
-                "Pedidos realizados",
+                "Meus Pedidos",
                 style: context.cusotomFontes.medium.copyWith(
                   color: isDark
                       ? ColorsConstants.primaryColor
@@ -71,7 +63,7 @@ class _PrincipalScreemState extends State<PrincipalScreem> {
             NavigationDestination(
               icon: Icon(Icons.work_outline, size: 20),
               selectedIcon: Icon(Icons.work, size: 20),
-              label: 'Serviços',
+              label: 'Serviço',
             ),
 
             NavigationDestination(
@@ -88,10 +80,9 @@ class _PrincipalScreemState extends State<PrincipalScreem> {
         ),
       ),
       body: <Widget>[
-        HomeScreen(),
-        ServicosScreen(),
-
-        PedidosScreen(),
+        ClientHomeScreen(),
+        ClientCriarPedidoScreen(),
+        ClientPedidosScreen(),
         PerfilScreen(),
       ][_currentIndex],
     );

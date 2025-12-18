@@ -3,5 +3,7 @@ mixin Rotas {
   static const String home = "/home";
   static const String login = "/login";
   static const String register = "/register";
-  static const String criarPedido = "/criar-pedido";
+  static const String clientHistoricoServico = "/client/hisotrico-servico";
+  static const String clientFinalizarServico = "/client/finalizar-servico";
+  static const String clientPerfil = "/client/perfil";
 }

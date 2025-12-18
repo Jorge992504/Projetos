@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:servicespro/core/router/rotas.dart';
 import 'package:servicespro/core/ui/theme/config_theme.dart';
-import 'package:servicespro/src/pages/criar_pedido_screen.dart';
-import 'package:servicespro/src/pages/principal_screem.dart';
+import 'package:servicespro/src/pages/client_pages/client_perfil_screen.dart';
+import 'package:servicespro/src/pages/finalizar_servico_screen.dart';
+import 'package:servicespro/src/pages/client_pages/client_historico_servico_screen.dart';
+import 'package:servicespro/src/pages/client_pages/client_principal_screem.dart';
 import 'package:servicespro/src/pages/splash_screen.dart';
 
 class ServicesProApp extends StatelessWidget {
@@ -23,8 +25,11 @@ class ServicesProApp extends StatelessWidget {
       supportedLocales: const [Locale('pt', 'BR')],
       routes: {
         Rotas.splash: (context) => SplashScreen(),
-        Rotas.home: (context) => PrincipalScreem(),
-        Rotas.criarPedido: (context) => CriarPedidoScreen(),
+        Rotas.home: (context) => ClientPrincipalScreem(),
+        Rotas.clientHistoricoServico: (context) =>
+            ClientHistoricoServicoScreen(),
+        Rotas.clientFinalizarServico: (context) => FinalizarServicoScreen(),
+        Rotas.clientPerfil: (context) => ClientPerfilScreen(),
       },
     );
   }

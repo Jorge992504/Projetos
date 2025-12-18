@@ -19,7 +19,8 @@ class ConfigTheme {
         elevation: 0,
         backgroundColor: ColorsConstants.primaryColor,
         foregroundColor: ColorsConstants.primaryColor,
-
+        surfaceTintColor: Colors.transparent, // 👈 REMOVE o efeito
+        scrolledUnderElevation: 0, // 👈 REMOVE sombra ao scroll
         titleTextStyle: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -154,6 +155,8 @@ class ConfigTheme {
         elevation: 0,
         backgroundColor: ColorsConstants.letrasColor,
         foregroundColor: ColorsConstants.primaryColor,
+        surfaceTintColor: Colors.transparent, // 👈 REMOVE o efeito
+        scrolledUnderElevation: 0, // 👈 REMOVE sombra ao scroll
         titleTextStyle: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,

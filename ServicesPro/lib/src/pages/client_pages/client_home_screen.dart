@@ -4,14 +4,14 @@ import 'package:servicespro/core/ui/style/custom_images.dart';
 import 'package:servicespro/core/ui/style/fontes_letras.dart';
 import 'package:servicespro/core/ui/style/size_extension.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class ClientHomeScreen extends StatefulWidget {
+  const ClientHomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ClientHomeScreen> createState() => _ClientHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ClientHomeScreenState extends State<ClientHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;

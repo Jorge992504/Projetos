@@ -8,9 +8,8 @@ class PedidosScreen extends StatefulWidget {
 }
 
 class _PedidosScreenState extends State<PedidosScreen> {
-  String typeUser = "User";
   @override
   Widget build(BuildContext context) {
-    return;
+    return Center();
   }
 }

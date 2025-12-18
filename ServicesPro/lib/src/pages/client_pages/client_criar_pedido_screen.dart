@@ -5,16 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:servicespro/core/ui/style/custom_colors.dart';
 import 'package:servicespro/core/ui/style/fontes_letras.dart';
 import 'package:servicespro/core/ui/style/size_extension.dart';
-import 'package:servicespro/core/ui/widgets/formater_value.dart';
 
-class CriarPedidoScreen extends StatefulWidget {
-  const CriarPedidoScreen({super.key});
+class ClientCriarPedidoScreen extends StatefulWidget {
+  const ClientCriarPedidoScreen({super.key});
 
   @override
-  State<CriarPedidoScreen> createState() => _CriarPedidoScreenState();
+  State<ClientCriarPedidoScreen> createState() =>
+      _ClientCriarPedidoScreenState();
 }
 
-class _CriarPedidoScreenState extends State<CriarPedidoScreen> {
+class _ClientCriarPedidoScreenState extends State<ClientCriarPedidoScreen> {
   List<Categorias> categorias = [
     Categorias(id: 1, nome: "Serviços Domésticos"),
     Categorias(id: 2, nome: "Reparos e Manutenção"),
@@ -35,15 +35,6 @@ class _CriarPedidoScreenState extends State<CriarPedidoScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Publicar Serviço'),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(Icons.arrow_back),
-        ),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
@@ -228,58 +219,7 @@ class _CriarPedidoScreenState extends State<CriarPedidoScreen> {
               ),
 
               const SizedBox(height: 14),
-              Text(
-                "Valor oferecido (desde).",
-                style: context.cusotomFontes.bold.copyWith(fontSize: 14),
-              ),
-              const SizedBox(height: 10),
-              Container(
-                width: context.percentWidth(0.9),
-                height: 50,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? Theme.of(context).colorScheme.surface
-                      : ColorsConstants.primaryColor,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: TextField(
-                  textAlignVertical: TextAlignVertical.center,
-                  cursorHeight: 18,
-                  decoration: InputDecoration(
-                    hintText: 'Ex: 80',
-                    border: InputBorder.none,
-                  ),
-                  inputFormatters: [FormaterValue()],
-                ),
-              ),
-              const SizedBox(height: 14),
-              Text(
-                "Valor oferecido (até).",
-                style: context.cusotomFontes.bold.copyWith(fontSize: 14),
-              ),
-              const SizedBox(height: 10),
-              Container(
-                width: context.percentWidth(0.9),
-                height: 50,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? Theme.of(context).colorScheme.surface
-                      : ColorsConstants.primaryColor,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: TextField(
-                  textAlignVertical: TextAlignVertical.center,
-                  cursorHeight: 18,
-                  decoration: InputDecoration(
-                    hintText: 'Ex: 180',
-                    border: InputBorder.none,
-                  ),
-                  inputFormatters: [FormaterValue()],
-                ),
-              ),
-              const SizedBox(height: 14),
+
               Text(
                 "Endereço.",
                 style: context.cusotomFontes.bold.copyWith(fontSize: 14),

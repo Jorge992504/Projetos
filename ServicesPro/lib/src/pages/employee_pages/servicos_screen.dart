@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:servicespro/core/router/rotas.dart';
 import 'package:servicespro/core/ui/style/custom_colors.dart';
 import 'package:servicespro/core/ui/style/fontes_letras.dart';
 import 'package:servicespro/core/ui/style/size_extension.dart';
-import 'package:servicespro/src/widgets/servicos/card_servico.dart';
+import 'package:servicespro/src/widgets/employee/servicos/card_servico.dart';
 
 class ServicosScreen extends StatefulWidget {
   const ServicosScreen({super.key});
@@ -146,7 +145,7 @@ class _ServicosScreenState extends State<ServicosScreen> {
                 const SizedBox(width: 14),
                 IconButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed(Rotas.criarPedido);
+                    // Navigator.of(context).pushNamed(Rotas.criarPedido);
                   },
                   icon: CircleAvatar(
                     radius: 15,
