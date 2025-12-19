@@ -46,7 +46,7 @@ class _ClientHistoricoServicoScreenState
     ),
   ];
   Color activeColor = ColorsConstants.azulColor;
-  Color inactiveColor = Colors.grey.shade300;
+  Color inactiveColor = ColorsConstants.primaryColor;
 
   @override
   Widget build(BuildContext context) {

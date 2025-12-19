@@ -60,7 +60,9 @@ class _PerfilScreenState extends State<PerfilScreen> {
               ),
               const SizedBox(height: 14),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).pushNamed(Rotas.suporte);
+                },
                 child: CardPerfil(
                   isDark: isDark,
                   titulo: "Ajuda e Suporte",

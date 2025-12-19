@@ -136,7 +136,7 @@ class ConfigTheme {
 
       iconTheme: IconThemeData(color: ColorsConstants.letrasColor, size: 24),
 
-      scaffoldBackgroundColor: ColorsConstants.primaryColor,
+      scaffoldBackgroundColor: ColorsConstants.telaColor,
     );
   }
 

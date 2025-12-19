@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:servicespro/core/ui/style/custom_colors.dart';
 import 'package:servicespro/src/models/client/historico_servico/client_timeline_item.dart';
 
 class LinhaTempoHistoricoServico extends StatelessWidget {
@@ -55,9 +56,9 @@ class LinhaTempoHistoricoServico extends StatelessWidget {
                     children: [
                       Text(
                         item.date,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: ColorsConstants.letrasColor,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(

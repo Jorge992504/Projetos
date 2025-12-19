@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:servicespro/core/router/rotas.dart';
 import 'package:servicespro/core/ui/style/custom_colors.dart';
 import 'package:servicespro/core/ui/style/custom_images.dart';
 import 'package:servicespro/core/ui/style/fontes_letras.dart';
@@ -326,39 +327,47 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
               ),
             ),
 
-            Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 1,
-                  color: isDark
-                      ? ColorsConstants.primaryColor
-                      : ColorsConstants.letrasColor,
+            InkWell(
+              onTap: () {
+                Navigator.of(context).pushNamed(
+                  Rotas.clientCategoriasServicos,
+                  arguments: {"categoriasModel": ""},
+                );
+              },
+              child: Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                    color: isDark
+                        ? ColorsConstants.primaryColor
+                        : ColorsConstants.letrasColor,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: Image.asset(
-                      ImageConstants.mais,
-                      width: 50,
-                      fit: BoxFit.contain,
-                      color: isDark
-                          ? ColorsConstants.primaryColor
-                          : ColorsConstants.letrasColor,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: Image.asset(
+                        ImageConstants.mais,
+                        width: 50,
+                        fit: BoxFit.contain,
+                        color: isDark
+                            ? ColorsConstants.primaryColor
+                            : ColorsConstants.letrasColor,
+                      ),
                     ),
-                  ),
-                  Text(
-                    "Mais",
-                    textAlign: TextAlign.center,
-                    style: context.cusotomFontes.black,
-                  ),
-                ],
+                    Text(
+                      "Mais",
+                      textAlign: TextAlign.center,
+                      style: context.cusotomFontes.black,
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

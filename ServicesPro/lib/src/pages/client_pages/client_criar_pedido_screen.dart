@@ -63,7 +63,7 @@ class _ClientCriarPedidoScreenState extends State<ClientCriarPedidoScreen> {
                 decoration: BoxDecoration(
                   color: isDark
                       ? Theme.of(context).colorScheme.surface
-                      : ColorsConstants.primaryColor,
+                      : ColorsConstants.telaColor,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextField(
@@ -88,12 +88,12 @@ class _ClientCriarPedidoScreenState extends State<ClientCriarPedidoScreen> {
                 decoration: BoxDecoration(
                   color: isDark
                       ? Theme.of(context).colorScheme.surface
-                      : ColorsConstants.primaryColor,
+                      : ColorsConstants.telaColor,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextField(
                   maxLines: null, // permite infinitas linhas
-                  minLines: 3, // começa com 3 linhas
+                  minLines: 4, // começa com 3 linhas
                   keyboardType: TextInputType.multiline,
                   textAlignVertical:
                       TextAlignVertical.top, // melhor para multiline
@@ -105,7 +105,7 @@ class _ClientCriarPedidoScreenState extends State<ClientCriarPedidoScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 10),
               Text(
                 "Categoria.",
                 style: context.cusotomFontes.bold.copyWith(fontSize: 14),
@@ -118,7 +118,7 @@ class _ClientCriarPedidoScreenState extends State<ClientCriarPedidoScreen> {
                 decoration: BoxDecoration(
                   color: isDark
                       ? Theme.of(context).colorScheme.surface
-                      : ColorsConstants.primaryColor,
+                      : ColorsConstants.telaColor,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: DropdownButtonFormField2<String>(
@@ -232,7 +232,7 @@ class _ClientCriarPedidoScreenState extends State<ClientCriarPedidoScreen> {
                 decoration: BoxDecoration(
                   color: isDark
                       ? Theme.of(context).colorScheme.surface
-                      : ColorsConstants.primaryColor,
+                      : ColorsConstants.telaColor,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextField(

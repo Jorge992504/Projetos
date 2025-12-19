@@ -2,6 +2,7 @@ import 'dart:ui';
 
 sealed class ColorsConstants {
   static const primaryColor = Color(0xFFF6F9FC);
+  static const telaColor = Color.fromARGB(255, 196, 204, 211);
   static const secundaryColor = Color(0xff42a5f5);
   static const azulColor = Color(0xff1976d2);
   static const errorColor = Color(0xFFe57373);
