@@ -17,6 +17,7 @@ class CustomTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final int? maxLines;
   final double? height;
+  final double? width;
   const CustomTextField({
     super.key,
     required this.isDark,
@@ -33,18 +34,19 @@ class CustomTextField extends StatelessWidget {
     this.suffixIcon,
     this.maxLines = 1,
     this.height,
+    this.width,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: context.percentWidth(0.9),
+      width: width ?? context.percentWidth(0.9),
       height: height ?? 50,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
         color: isDark
             ? Theme.of(context).colorScheme.surface
-            : ColorsConstants.telaColor,
+            : ColorsConstants.primaryColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: TextField(
@@ -65,6 +67,7 @@ class CustomTextField extends StatelessWidget {
         decoration: InputDecoration(
           border: InputBorder.none,
           hint: Text(label),
+          label: Text(label),
           prefixIcon: prefixIcon,
           suffixIcon: suffixIcon,
           labelText: labelText,

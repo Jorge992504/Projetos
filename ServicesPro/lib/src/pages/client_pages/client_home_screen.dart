@@ -13,6 +13,50 @@ class ClientHomeScreen extends StatefulWidget {
 }
 
 class _ClientHomeScreenState extends State<ClientHomeScreen> {
+  List<ClientCategoriasModel> categorias = [
+    ClientCategoriasModel(
+      id: 1,
+      nome: "Serviços Domésticos",
+      icone: ImageConstants.servicosDomesticos,
+    ),
+    ClientCategoriasModel(
+      id: 2,
+      nome: "Reparos e Manutenção",
+      icone: ImageConstants.reparosManutencao,
+    ),
+
+    ClientCategoriasModel(
+      id: 4,
+      nome: "Beleza e Estética",
+      icone: ImageConstants.belezaEstetica,
+    ),
+    ClientCategoriasModel(
+      id: 5,
+      nome: "Tecnologia",
+      icone: ImageConstants.tecnologia,
+    ),
+    ClientCategoriasModel(
+      id: 6,
+      nome: "Área Pet",
+      icone: ImageConstants.autpetomotivo,
+    ),
+    ClientCategoriasModel(
+      id: 7,
+      nome: "Fitness e Bem-estar",
+      icone: ImageConstants.fitnessBem,
+    ),
+
+    ClientCategoriasModel(
+      id: 11,
+      nome: "Reforma e Construção",
+      icone: ImageConstants.reformaConstrucao,
+    ),
+    ClientCategoriasModel(
+      id: 12,
+      nome: "Segurança",
+      icone: ImageConstants.seguranca,
+    ),
+  ];
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -64,34 +108,42 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 12,
           children: [
-            Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: isDark
-                      ? ColorsConstants.primaryColor
-                      : ColorsConstants.letrasColor,
+            InkWell(
+              onTap: () {
+                Navigator.of(context).pushNamed(
+                  Rotas.clientPrestadoresCategorias,
+                  // arguments: {"arguments": categorias.id},
+                );
+              },
+              child: Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: isDark
+                        ? ColorsConstants.primaryColor
+                        : ColorsConstants.letrasColor,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: Image.asset(
-                      ImageConstants.servicosDomesticos,
-                      width: 50,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: Image.asset(
+                        ImageConstants.servicosDomesticos,
+                        width: 50,
+                      ),
                     ),
-                  ),
-                  Text(
-                    "Serviços\nDomésticos",
-                    textAlign: TextAlign.center,
-                    style: context.cusotomFontes.black,
-                  ),
-                ],
+                    Text(
+                      "Serviços\nDomésticos",
+                      textAlign: TextAlign.center,
+                      style: context.cusotomFontes.black,
+                    ),
+                  ],
+                ),
               ),
             ),
 
@@ -375,4 +427,11 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
       ],
     );
   }
+}
+
+class ClientCategoriasModel {
+  int? id;
+  String? nome;
+  String? icone;
+  ClientCategoriasModel({this.id, this.nome, this.icone});
 }

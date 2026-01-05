@@ -57,7 +57,7 @@ class ConfigTheme {
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: ColorsConstants.primaryColor,
+        fillColor: ColorsConstants.telaColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
@@ -81,6 +81,7 @@ class ConfigTheme {
         ),
         hintStyle: TextStyle(color: ColorsConstants.letrasColor),
         iconColor: ColorsConstants.letrasColor,
+        focusColor: ColorsConstants.letrasColor,
       ),
       navigationBarTheme: NavigationBarThemeData(
         height: 60,
