@@ -12,8 +12,13 @@ import 'package:servicespro/src/pages/finalizar_servico_screen.dart';
 import 'package:servicespro/src/pages/client_pages/client_historico_servico_screen.dart';
 import 'package:servicespro/src/pages/client_pages/client_principal_screem.dart';
 import 'package:servicespro/src/pages/login_screen.dart';
+import 'package:servicespro/src/pages/receber_codigo_redefinir_senha_screen.dart';
+import 'package:servicespro/src/pages/redefinir_senha_screen.dart';
+import 'package:servicespro/src/pages/register_client_employee_screen.dart';
+import 'package:servicespro/src/pages/register_screen.dart';
 import 'package:servicespro/src/pages/splash_screen.dart';
 import 'package:servicespro/src/pages/suporte_screen.dart';
+import 'package:servicespro/src/pages/termos_politica_screen.dart';
 
 class ServicesProApp extends StatelessWidget {
   const ServicesProApp({super.key});
@@ -46,6 +51,12 @@ class ServicesProApp extends StatelessWidget {
             EmployeeDetalhesPedidoScreen(),
         Rotas.chat: (context) => ChatScreen(),
         Rotas.login: (context) => LoginScreen(),
+        Rotas.register: (context) => RegisterScreen(),
+        Rotas.termosPolitica: (context) => TermosPoliticaScreen(),
+        Rotas.registerClientEmployee: (context) =>
+            RegisterClientEmployeeScreen(),
+        Rotas.receberCodigo: (context) => ReceberCodigoRedefinirSenhaScreen(),
+        Rotas.redefinirSenha: (context) => RedefinirSenhaScreen(),
       },
     );
   }

@@ -5,6 +5,10 @@ mixin Rotas {
   static const String register = "/register";
   static const String suporte = "/suporte";
   static const String chat = "/chat";
+  static const String termosPolitica = "/termos/politica";
+  static const String registerClientEmployee = "/register/client-employee";
+  static const String receberCodigo = "/receber-codigo";
+  static const String redefinirSenha = "/redefinir-senha";
   //** Rotas do cliente */
   static const String clientHome = "/client/home";
   static const String clientHistoricoServico = "/client/hisotrico-servico";

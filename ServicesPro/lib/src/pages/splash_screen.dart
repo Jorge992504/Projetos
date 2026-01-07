@@ -85,7 +85,14 @@ class _SplashScreenState extends State<SplashScreen> {
                     onPressed: () {
                       Navigator.pushReplacementNamed(context, Rotas.login);
                     },
-                    child: Text("Relaizar login"),
+                    child: Text("Realizar login"),
+                  ),
+                  const SizedBox(height: 14),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, Rotas.register);
+                    },
+                    child: Text("Realizar cadastro"),
                   ),
                 ],
               ),

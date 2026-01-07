@@ -83,6 +83,12 @@ class ConfigTheme {
         iconColor: ColorsConstants.letrasColor,
         focusColor: ColorsConstants.letrasColor,
       ),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: ColorsConstants.letrasColor, // cor do cursor
+        selectionColor: ColorsConstants.letrasColor.withValues(alpha: 0.3),
+        selectionHandleColor: ColorsConstants.letrasColor,
+      ),
+
       navigationBarTheme: NavigationBarThemeData(
         height: 60,
         backgroundColor: ColorsConstants.azulColor, // fundo claro
@@ -188,6 +194,11 @@ class ConfigTheme {
           iconColor: WidgetStateProperty.all(ColorsConstants.primaryColor),
           overlayColor: WidgetStateProperty.all(ColorsConstants.primaryColor),
         ),
+      ),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: ColorsConstants.primaryColor, // cor do cursor
+        selectionColor: ColorsConstants.primaryColor.withValues(alpha: 0.3),
+        selectionHandleColor: ColorsConstants.primaryColor,
       ),
 
       navigationBarTheme: NavigationBarThemeData(
