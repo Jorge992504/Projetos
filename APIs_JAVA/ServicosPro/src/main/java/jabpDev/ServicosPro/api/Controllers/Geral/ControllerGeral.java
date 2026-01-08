@@ -3,16 +3,17 @@ package jabpDev.ServicosPro.api.Controllers.Geral;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jabpDev.ServicosPro.api.Dto.Request.RequestCategorias;
 import jabpDev.ServicosPro.api.Services.Geral.ServicosGeral;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/controller")
@@ -21,14 +22,8 @@ public class ControllerGeral {
 
     private final ServicosGeral servicosGerais;
 
-    @GetMapping
-    public ResponseEntity<String> controllerGeral(){
-        String token = Jwts.builder()
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(Date.from(LocalDateTime.now().plusDays(servicosGerais.getTimeExpirationToken()).atZone(ZoneId.systemDefault()).toInstant()))
-                .signWith(Keys.hmacShaKeyFor(servicosGerais.getSecretKey().getBytes()), SignatureAlgorithm.HS256)
-                .compact();
-        return ResponseEntity.ok("Requesição realizada com sucesso");
+    @PostMapping("/registrar/categorias")
+    public ResponseEntity<String> registrarCategorias(@RequestBody List<RequestCategorias> categoriasList)throws IOException {
+        return ResponseEntity.ok(String.valueOf(servicosGerais.registrarCategorias(categoriasList)));
     }
 }
-//eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3Njc4MDgzNDEsImV4cCI6MTc2ODQxMzE0MX0.xw3hWYhOO0F4Q9WlR0XRn0EVnpQrh8QJR82jxvt_ZZU

@@ -7,6 +7,8 @@ import jabpDev.ServicosPro.api.Repositorys.RepositoryUsuario;
 import jabpDev.ServicosPro.api.Services.Geral.ServicosGeral;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -70,8 +72,29 @@ public class ServiceRegistrarUsuario {
                 repositoryUsuario.save(response);
             }
             return servicosGeral.gerarToken(response.getEmail());
-        }catch (IOException io){
-            throw new CustomException("Não foi possível realizar sue cadastro. Tentar mais tarde.");
+        }catch (CustomException customException){
+            throw new CustomException(customException.getMessage());
         }
+    }
+
+    @Transactional
+    public ResponseEntity<?> registrarCategoriaUsuario(RequestUsuario requestUsuario){
+            Usuario usuario = servicosGeral.getUsuario();
+            usuario.setTipoUsuario(requestUsuario.tipoUsuario());
+            usuario.setTipoPessoa(requestUsuario.tipoPessoa());
+            usuario.setCpf_cnpj(requestUsuario.cpf_cnpj());
+            usuario.setDataNascimento(requestUsuario.dataNascimento());
+            usuario.setTelefone(requestUsuario.telefone());
+            usuario.setEndereco(requestUsuario.endereco());
+            if (requestUsuario.categoriaPrestador() > 0){
+                //função para busacr a categoria do fornecedor no banco e validar
+                //usuario.setCategoriaPrestador(requestUsuario.categoriaPrestador());
+            }
+            Usuario response = repositoryUsuario.save(usuario);
+            if (!response.getTipoUsuario().isEmpty()){
+                return ResponseEntity.status(201).build();
+            }else{
+                return ResponseEntity.status(401).build();
+            }
     }
 }

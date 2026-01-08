@@ -54,8 +54,9 @@ public class Usuario implements UserDetails {
     @Column(name = "endereco")
     private String endereco;
 
-    @Column(name = "categoriaPrestador")
-    private Long categoriaPrestador;
+    @OneToOne
+    @JoinColumn(name = "categoriaPrestador")
+    private Categorias categoriaPrestador;
 
     @Column(name = "termosPolitica",nullable = false)
     private Boolean termosPolitica;
