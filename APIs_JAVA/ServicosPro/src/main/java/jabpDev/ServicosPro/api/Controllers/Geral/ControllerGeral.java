@@ -22,8 +22,5 @@ public class ControllerGeral {
 
     private final ServicosGeral servicosGerais;
 
-    @PostMapping("/registrar/categorias")
-    public ResponseEntity<String> registrarCategorias(@RequestBody List<RequestCategorias> categoriasList)throws IOException {
-        return ResponseEntity.ok(String.valueOf(servicosGerais.registrarCategorias(categoriasList)));
-    }
+
 }

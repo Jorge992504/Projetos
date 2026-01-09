@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jabpDev.ServicosPro.api.Dto.Request.RequestCategorias;
+import jabpDev.ServicosPro.api.Dto.Response.ResponseCategorias;
 import jabpDev.ServicosPro.api.Entitys.Categorias;
 import jabpDev.ServicosPro.api.Entitys.Usuario;
 import jabpDev.ServicosPro.api.Exceptions.CustomExeception.CustomException;
@@ -37,10 +38,9 @@ public class ServicosGeral {
     private String urlInterna;
 
     private final RepositoryUsuario repositoryUsuario;
-    private final RepositoryCategorias repositoryCategorias;
+
     public ServicosGeral(RepositoryUsuario repositoryUsuario,RepositoryCategorias repositoryCategorias){
         this.repositoryUsuario = repositoryUsuario;
-        this.repositoryCategorias = repositoryCategorias;
     }
 
 
@@ -74,21 +74,5 @@ public class ServicosGeral {
             throw new CustomException("Usuário sem permissão");
         }
         return usuario.get();
-    }
-
-    public ResponseEntity<String> registrarCategorias(List<RequestCategorias> categoriasList)throws IOException {
-        try{
-            List<Categorias> categorias = new ArrayList<>();
-            for (RequestCategorias req : categoriasList) {
-                Categorias categorias1 = new Categorias();
-                categorias1.setId(req.id());
-                categorias1.setNome(req.nome());
-                categorias.add(categorias1);
-            }
-            repositoryCategorias.saveAll(categorias);
-            return ResponseEntity.ok("Registradas com sucesso");
-        }catch (Exception e){
-            throw new CustomException("Erro ao registrar as categorias");
-        }
     }
 }

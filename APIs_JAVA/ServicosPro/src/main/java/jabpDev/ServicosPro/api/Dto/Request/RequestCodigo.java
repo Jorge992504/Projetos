@@ -1,4 +1,4 @@
 package jabpDev.ServicosPro.api.Dto.Request;
 
-public record RequestCodigo() {
+public record RequestCodigo(String codigo) {
 }

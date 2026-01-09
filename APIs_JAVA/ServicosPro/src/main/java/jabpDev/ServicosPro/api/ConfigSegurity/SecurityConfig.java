@@ -28,6 +28,8 @@ public class SecurityConfig {
                         .requestMatchers(filtrosLiberados.getLogin()).permitAll()
                         .requestMatchers(filtrosLiberados.getRegistrar()).permitAll()
                         .requestMatchers(filtrosLiberados.getRedefinirSenha()).permitAll()
+                        .requestMatchers(filtrosLiberados.getReceberEmail()).permitAll()
+                        .requestMatchers(filtrosLiberados.getValidarCodigo()).permitAll()
                         .anyRequest().authenticated()
                 );
         httpSecurity.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);

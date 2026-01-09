@@ -25,7 +25,7 @@ public class ControllerRegistrarUsuario {
         return new  ResponseToken(serviceRegistrarUsuario.registrarUsuario(requestUsuario));
     }
 
-    @PostMapping("/categoria")
+    @PostMapping("/completar")
     public ResponseEntity<?> registrarCategoriaUsuario(@RequestBody RequestUsuario requestUsuario){
         return ResponseEntity.ok(serviceRegistrarUsuario.registrarCategoriaUsuario(requestUsuario));
     }

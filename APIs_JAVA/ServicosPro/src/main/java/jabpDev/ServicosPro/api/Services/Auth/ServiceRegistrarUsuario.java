@@ -1,9 +1,12 @@
 package jabpDev.ServicosPro.api.Services.Auth;
 
 import jabpDev.ServicosPro.api.Dto.Request.RequestUsuario;
+import jabpDev.ServicosPro.api.Entitys.Categorias;
 import jabpDev.ServicosPro.api.Entitys.Usuario;
 import jabpDev.ServicosPro.api.Exceptions.CustomExeception.CustomException;
+import jabpDev.ServicosPro.api.Repositorys.RepositoryCategorias;
 import jabpDev.ServicosPro.api.Repositorys.RepositoryUsuario;
+import jabpDev.ServicosPro.api.Services.Email.ServiceEmail;
 import jabpDev.ServicosPro.api.Services.Geral.ServicosGeral;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -26,6 +29,8 @@ public class ServiceRegistrarUsuario {
     private RepositoryUsuario repositoryUsuario;
     private ServicosGeral servicosGeral;
     private PasswordEncoder passwordEncoder;
+    private RepositoryCategorias repositoryCategorias;
+    private ServiceEmail serviceEmail;
 
     @Transactional
     public String registrarUsuario(RequestUsuario requestUsuario)throws IOException {
@@ -87,11 +92,12 @@ public class ServiceRegistrarUsuario {
             usuario.setTelefone(requestUsuario.telefone());
             usuario.setEndereco(requestUsuario.endereco());
             if (requestUsuario.categoriaPrestador() > 0){
-                //função para busacr a categoria do fornecedor no banco e validar
-                //usuario.setCategoriaPrestador(requestUsuario.categoriaPrestador());
+                Optional<Categorias> categoria = repositoryCategorias.findById(requestUsuario.categoriaPrestador());
+                categoria.ifPresent(usuario::setCategoriaPrestador);
             }
             Usuario response = repositoryUsuario.save(usuario);
             if (!response.getTipoUsuario().isEmpty()){
+                serviceEmail.enviarEmailCadastro(response.getEmail(),response.getNome());
                 return ResponseEntity.status(201).build();
             }else{
                 return ResponseEntity.status(401).build();

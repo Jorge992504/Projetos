@@ -33,7 +33,12 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         String header = request.getHeader("Authorization");
 
-        if (path.equals(filtrosLiberados.getLogin()) || path.equals(filtrosLiberados.getRegistrar()) || path.equals(filtrosLiberados.getRedefinirSenha())){
+        if (path.equals(filtrosLiberados.getLogin()) ||
+                path.equals(filtrosLiberados.getRegistrar()) ||
+                path.equals(filtrosLiberados.getRedefinirSenha()) ||
+                path.equals(filtrosLiberados.getReceberEmail()) ||
+                path.equals(filtrosLiberados.getValidarCodigo())
+        ){
             filterChain.doFilter(request,response);
             return;
         }

@@ -54,6 +54,9 @@ public class Usuario implements UserDetails {
     @Column(name = "endereco")
     private String endereco;
 
+    @Column(name = "codigo")
+    private Integer codigo;
+
     @OneToOne
     @JoinColumn(name = "categoriaPrestador")
     private Categorias categoriaPrestador;
