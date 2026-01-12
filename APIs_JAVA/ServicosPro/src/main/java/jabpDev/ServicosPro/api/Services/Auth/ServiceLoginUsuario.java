@@ -1,5 +1,6 @@
 package jabpDev.ServicosPro.api.Services.Auth;
 
+import jabpDev.ServicosPro.api.Dto.Response.ResponseGeral;
 import jabpDev.ServicosPro.api.Entitys.Usuario;
 import jabpDev.ServicosPro.api.Exceptions.CustomExeception.CustomException;
 import jabpDev.ServicosPro.api.Repositorys.RepositoryUsuario;
@@ -52,7 +53,7 @@ public class ServiceLoginUsuario {
         serviceEmail.enviarEmailRedefinirSenha(salvarCodigo.getEmail(), salvarCodigo.getNome(),salvarCodigo.getCodigo());
     }
 
-    public ResponseEntity<?> validarCodigo(int codigo,String email){
+    public void validarCodigo(int codigo, String email){
         Optional<Usuario> usuario = repositoryUsuario.findByEmail(email);
         if (!usuario.isPresent()){
             throw new CustomException("E-mail não cadastrado");
@@ -60,10 +61,9 @@ public class ServiceLoginUsuario {
         if(!Objects.equals(codigo, usuario.get().getCodigo())){
             throw new CustomException("Código de verificação errado ou vencido");
         }
-        return ResponseEntity.ok(201);
     }
 
-    public ResponseEntity<?> redefinirSenha(String email, String senha){
+    public void redefinirSenha(String email, String senha){
         Optional<Usuario> usuario = repositoryUsuario.findByEmail(email);
         if (!usuario.isPresent()){
             throw new CustomException("E-mail não cadastrado");
@@ -71,6 +71,6 @@ public class ServiceLoginUsuario {
         String password = passwordEncoder.encode(senha);
         Usuario salvarSenhaNova = usuario.get();
         salvarSenhaNova.setSenha(password);
-        return ResponseEntity.ok(201);
+        repositoryUsuario.save(salvarSenhaNova);
     }
 }

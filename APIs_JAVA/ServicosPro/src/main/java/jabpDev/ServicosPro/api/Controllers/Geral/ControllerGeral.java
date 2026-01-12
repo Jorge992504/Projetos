@@ -22,5 +22,8 @@ public class ControllerGeral {
 
     private final ServicosGeral servicosGerais;
 
-
+    @GetMapping("/valid/token")
+    public void validarToken(@RequestHeader("Authorization") String header){
+        servicosGerais.validarTokenAuth(header);
+    }
 }

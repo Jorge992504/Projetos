@@ -1,8 +1,6 @@
 package jabpDev.ServicosPro.api.Services.Geral;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jabpDev.ServicosPro.api.Dto.Request.RequestCategorias;
 import jabpDev.ServicosPro.api.Dto.Response.ResponseCategorias;
@@ -55,6 +53,27 @@ public class ServicosGeral {
             return  Jwts.claims();
         }
     }
+
+    public void validarTokenAuth(String header) {
+        if (header == null || !header.startsWith("Bearer ")) {
+            throw new CustomException("Usuário não autenticado");
+        }
+
+        String token = header.substring(7);
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                    .build()
+                    .parseClaimsJws(token); // valida assinatura + expiração
+
+        } catch (ExpiredJwtException e) {
+            throw new CustomException("Token expirado, faça login novamente");
+
+        } catch (JwtException e) {
+            throw new CustomException("Token inválido");
+        }
+    }
+
 
     public String gerarToken(String email){
         Map<String,Object> claims = new HashMap<>();

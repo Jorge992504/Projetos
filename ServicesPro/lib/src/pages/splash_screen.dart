@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:servicespro/core/router/rotas.dart';
 import 'package:servicespro/core/ui/style/custom_colors.dart';
 import 'package:servicespro/core/ui/style/custom_images.dart';
+import 'package:servicespro/src/models/usuario_model.dart';
+import 'package:servicespro/src/providers/auth_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,7 +18,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    loading();
+    Future.delayed(Duration(seconds: 5), () {
+      if (mounted) {
+        loadingPage();
+      }
+    });
   }
 
   @override
@@ -50,56 +57,41 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  Future<void> loading() async {
-    Future.delayed(Duration(seconds: 3), () {
-      if (mounted) {
-        // Navigator.pushReplacementNamed(context, Rotas.employeeHome);
-        // Navigator.pushReplacementNamed(context, Rotas.clientHome);
-        // Navigator.pushReplacementNamed(context, Rotas.login);
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Selecione o tipo de usuário"),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, Rotas.clientHome);
-                    },
-                    child: Text("Cliente"),
-                  ),
-                  const SizedBox(height: 14),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(
-                        context,
-                        Rotas.employeeHome,
-                      );
-                    },
-                    child: Text("Funcionário"),
-                  ),
-                  const SizedBox(height: 14),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, Rotas.login);
-                    },
-                    child: Text("Realizar login"),
-                  ),
-                  const SizedBox(height: 14),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, Rotas.register);
-                    },
-                    child: Text("Realizar cadastro"),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
+  Future<void> loadingPage() async {
+    bool isAuth = Provider.of<AuthProvider>(context, listen: false).isAuth;
+    if (isAuth) {
+      bool validarToken = await Provider.of<AuthProvider>(
+        context,
+        listen: false,
+      ).validarToken();
+      if (!mounted) return;
+      if (validarToken) {
+        UsuarioModel usuarioModel = Provider.of<AuthProvider>(
+          context,
+          listen: false,
+        ).usuarioModel;
+        if (usuarioModel.tipoUsuario == "Cliente") {
+          await Provider.of<AuthProvider>(
+            context,
+            listen: false,
+          ).salvarDadosUsuario();
+          if (mounted) {
+            Navigator.of(context).pushReplacementNamed(Rotas.clientHome);
+          }
+        } else if (usuarioModel.tipoUsuario == "Prestador") {
+          await Provider.of<AuthProvider>(
+            context,
+            listen: false,
+          ).salvarDadosUsuario();
+          if (mounted) {
+            Navigator.of(context).pushReplacementNamed(Rotas.employeeHome);
+          }
+        } else {
+          Navigator.of(context).pushReplacementNamed(Rotas.login);
+        }
       }
-    });
+    } else {
+      Navigator.of(context).pushReplacementNamed(Rotas.login);
+    }
   }
 }

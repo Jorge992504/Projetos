@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:servicespro/core/rest_client/rest_client.dart';
+import 'package:servicespro/src/providers/auth_provider.dart';
+import 'package:servicespro/src/repository/login_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApplicationBanding extends StatelessWidget {
@@ -18,16 +21,16 @@ class ApplicationBanding extends StatelessWidget {
         return MultiProvider(
           providers: [
             Provider<SharedPreferences>(create: (context) => snapshot.data!),
-            // Provider(create: (context) => RestClient()),
-            // Provider<LoginRepository>(
-            //   create: (context) => LoginRepository(restClient: RestClient()),
-            // ),
-            // ChangeNotifierProvider(
-            //   create: (context) => AuthProvider(
-            //     prefs: snapshot.data!,
-            //     loginRepository: context.read<LoginRepository>(),
-            //   ),
-            // ),
+            Provider(create: (context) => RestClient()),
+            Provider<LoginRepository>(
+              create: (context) => LoginRepository(restClient: RestClient()),
+            ),
+            ChangeNotifierProvider(
+              create: (context) => AuthProvider(
+                sharedPreferences: snapshot.data!,
+                loginRepository: context.read<LoginRepository>(),
+              ),
+            ),
             // BlocProvider(
             //   create: (context) => RegistrarEmpresaController(
             //     RegistrarEmpresaRepository(

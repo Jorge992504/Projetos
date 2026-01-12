@@ -2,6 +2,7 @@ package jabpDev.ServicosPro.api.Controllers.Auth;
 
 import jabpDev.ServicosPro.api.Dto.Request.RequestCodigo;
 import jabpDev.ServicosPro.api.Dto.Request.RequestUsuario;
+import jabpDev.ServicosPro.api.Dto.Response.ResponseGeral;
 import jabpDev.ServicosPro.api.Dto.Response.ResponseToken;
 import jabpDev.ServicosPro.api.Services.Auth.ServiceLoginUsuario;
 import lombok.AllArgsConstructor;
@@ -29,13 +30,13 @@ public class ControllerLoginUsuario {
     }
 
     @GetMapping("/red/cod/val")
-    public ResponseEntity<?> validarCodigo(@RequestParam int codigo, @RequestParam String email){
-        return ResponseEntity.ok(serviceLoginUsuario.validarCodigo(codigo,email));
+    public void validarCodigo(@RequestParam int codigo, @RequestParam String email){
+        serviceLoginUsuario.validarCodigo(codigo,email);
     }
 
     @GetMapping("/red/password")
-    public ResponseEntity<?> redefinirSenha(@RequestParam String email, @RequestParam String senha){
-        return ResponseEntity.ok(serviceLoginUsuario.redefinirSenha(email,senha));
+    public void redefinirSenha(@RequestParam String email, @RequestParam String senha){
+        serviceLoginUsuario.redefinirSenha(email,senha);
     }
 
 }

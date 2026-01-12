@@ -35,10 +35,7 @@ class _RegisterClientEmployeeScreenState
     CategoriasClientEmployee(id: 5, nome: "Tecnologia"),
     CategoriasClientEmployee(id: 6, nome: "Área Pet"),
     CategoriasClientEmployee(id: 7, nome: "Fitness e Bem-estar"),
-    CategoriasClientEmployee(
-      id: 8,
-      nome: "Consultoria e Profissionais Especializados",
-    ),
+    CategoriasClientEmployee(id: 8, nome: "Consultoria e Profissionais Especializados",),
     CategoriasClientEmployee(id: 9, nome: "Eventos"),
     CategoriasClientEmployee(id: 10, nome: "Automotivo"),
     CategoriasClientEmployee(id: 11, nome: "Reforma e Construção"),
