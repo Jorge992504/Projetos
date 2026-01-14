@@ -34,7 +34,7 @@ mixin CustomMessages<T extends StatefulWidget> on State<T> {
       displayDuration: const Duration(milliseconds: 300),
 
       /// 🎬 tempo da animação
-      animationDuration: const Duration(milliseconds: 300),
+      animationDuration: const Duration(milliseconds: 600),
     );
   }
 
@@ -60,7 +60,7 @@ mixin CustomMessages<T extends StatefulWidget> on State<T> {
       displayDuration: const Duration(milliseconds: 300),
 
       /// 🎬 tempo da animação
-      animationDuration: const Duration(milliseconds: 300),
+      animationDuration: const Duration(milliseconds: 600),
     );
   }
 
@@ -79,7 +79,7 @@ mixin CustomMessages<T extends StatefulWidget> on State<T> {
           child: Icon(Icons.task_alt_outlined, size: 32),
         ),
       ),
-      displayDuration: const Duration(milliseconds: 300),
+      displayDuration: const Duration(milliseconds: 600),
 
       /// 🎬 tempo da animação
       animationDuration: const Duration(milliseconds: 300),

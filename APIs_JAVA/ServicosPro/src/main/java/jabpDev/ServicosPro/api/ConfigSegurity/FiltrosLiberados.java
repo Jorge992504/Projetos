@@ -11,4 +11,5 @@ public class FiltrosLiberados {
     public String receberEmail = "/auth/red/email";
     public String validarCodigo = "/auth/red/cod/val";
     public String redefinirSenha = "/auth/red/password";
+    public String validarConexao = "/controller/auth/valid/cone";
 }

@@ -4,6 +4,7 @@ import 'dart:convert';
 class UsuarioModel {
   String? nome;
   String? email;
+  String? senha;
   String? foto;
   String? tipoUsuario;
   String? tipoPessoa;
@@ -13,26 +14,30 @@ class UsuarioModel {
   int? categoriaPrestador;
   String? nomeCategoria;
   num? avalicao;
-  int? qtdeServico;
+  int? qtdeServicos;
+  bool? termosPolitica;
   UsuarioModel({
     this.nome,
     this.email,
     this.foto,
     this.tipoUsuario,
     this.tipoPessoa,
+    this.senha,
     this.dataNascimento,
     this.telefone,
     this.endereco,
     this.categoriaPrestador,
     this.nomeCategoria,
     this.avalicao,
-    this.qtdeServico,
+    this.qtdeServicos,
+    this.termosPolitica,
   });
 
   UsuarioModel copyWith({
     String? nome,
     String? email,
     String? foto,
+    String? senha,
     String? tipoUsuario,
     String? tipoPessoa,
     DateTime? dataNascimento,
@@ -41,7 +46,8 @@ class UsuarioModel {
     int? categoriaPrestador,
     String? nomeCategoria,
     num? avalicao,
-    int? qtdeServico,
+    int? qtdeServicos,
+    bool? termosPolitica,
   }) {
     return UsuarioModel(
       nome: nome ?? this.nome,
@@ -55,7 +61,9 @@ class UsuarioModel {
       categoriaPrestador: categoriaPrestador ?? this.categoriaPrestador,
       nomeCategoria: nomeCategoria ?? this.nomeCategoria,
       avalicao: avalicao ?? this.avalicao,
-      qtdeServico: qtdeServico ?? this.qtdeServico,
+      qtdeServicos: qtdeServicos ?? this.qtdeServicos,
+      senha: senha ?? this.senha,
+      termosPolitica: termosPolitica ?? this.termosPolitica,
     );
   }
 
@@ -77,7 +85,9 @@ class UsuarioModel {
       'categoriaPrestador': categoriaPrestador,
       'nomeCategoria': nomeCategoria,
       'avalicao': avalicao,
-      'qtdeServico': qtdeServico,
+      'qtdeServicos': qtdeServicos,
+      'senha': senha,
+      'termosPolitica': termosPolitica,
     };
   }
 
@@ -104,9 +114,11 @@ class UsuarioModel {
           ? map['nomeCategoria'] as String
           : null,
       avalicao: map['avalicao'] != null ? map['avalicao'] as num : null,
-      qtdeServico: map['qtdeServico'] != null
-          ? map['qtdeServico'] as int
+      qtdeServicos: map['qtdeServicos'] != null
+          ? map['qtdeServicos'] as int
           : null,
+      senha: map['senha'] ?? "",
+      termosPolitica: map['termosPolitica'] ?? false,
     );
   }
 
@@ -117,7 +129,7 @@ class UsuarioModel {
 
   @override
   String toString() {
-    return 'UsuarioModel(nome: $nome, email: $email, foto: $foto, tipoUsuario: $tipoUsuario, tipoPessoa: $tipoPessoa, dataNascimento: $dataNascimento, telefone: $telefone, endereco: $endereco, categoriaPrestador: $categoriaPrestador, nomeCategoria: $nomeCategoria, avalicao: $avalicao, qtdeServico: $qtdeServico)';
+    return 'UsuarioModel(nome: $nome, email: $email, foto: $foto, tipoUsuario: $tipoUsuario, tipoPessoa: $tipoPessoa, dataNascimento: $dataNascimento, telefone: $telefone, endereco: $endereco, categoriaPrestador: $categoriaPrestador, nomeCategoria: $nomeCategoria, avalicao: $avalicao, qtdeServicos: $qtdeServicos, senha: $senha, termosPolitica: $termosPolitica)';
   }
 
   @override
@@ -135,7 +147,9 @@ class UsuarioModel {
         other.categoriaPrestador == categoriaPrestador &&
         other.nomeCategoria == nomeCategoria &&
         other.avalicao == avalicao &&
-        other.qtdeServico == qtdeServico;
+        other.qtdeServicos == qtdeServicos &&
+        other.senha == senha &&
+        other.termosPolitica == termosPolitica;
   }
 
   @override
@@ -151,6 +165,8 @@ class UsuarioModel {
         categoriaPrestador.hashCode ^
         nomeCategoria.hashCode ^
         avalicao.hashCode ^
-        qtdeServico.hashCode;
+        qtdeServicos.hashCode ^
+        senha.hashCode ^
+        termosPolitica.hashCode;
   }
 }

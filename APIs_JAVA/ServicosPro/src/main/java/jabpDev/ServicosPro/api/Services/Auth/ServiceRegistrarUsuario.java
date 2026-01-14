@@ -54,7 +54,7 @@ public class ServiceRegistrarUsuario {
             if(response.getId()< 0){
                 throw new CustomException("Não foi possível realizar o cadastro");
             }
-            if (!requestUsuario.foto().isEmpty()){
+            if (requestUsuario.foto() != null && !requestUsuario.foto().isEmpty()){
                 String uploadDir = new File(servicosGeral.getUrlInterna()+ response.getId()).getAbsolutePath();
                 File directorio = new File(uploadDir);
                 if (!directorio.exists()){

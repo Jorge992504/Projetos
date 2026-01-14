@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:servicespro/core/router/rotas.dart';
 import 'package:servicespro/core/ui/style/custom_colors.dart';
 import 'package:servicespro/core/ui/style/fontes_letras.dart';
+import 'package:servicespro/src/models/usuario_model.dart';
+import 'package:servicespro/src/providers/auth_provider.dart';
 import 'package:servicespro/src/widgets/employee/home/container_avaliacao_trabalhos.dart';
 import 'package:servicespro/src/widgets/employee/home/container_servicos_disponiveis.dart';
 
@@ -13,6 +16,20 @@ class EmployeeHomeScreen extends StatefulWidget {
 }
 
 class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
+  UsuarioModel usuarioModel = UsuarioModel();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      setState(() {
+        usuarioModel = Provider.of<AuthProvider>(
+          context,
+          listen: false,
+        ).usuarioModel;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +48,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Bem-vindo, Jorge!',
+                    'Bem-vindo, ${usuarioModel.nome}!',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -57,18 +74,22 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
               const SizedBox(height: 14),
               Row(
                 children: [
-                  ContainerAvaliacaoTrabalhos(
-                    label1: '4.8',
-                    label2: 'De avaliação',
-                    icon: Icons.star,
-                    color: Colors.yellow,
+                  Expanded(
+                    child: ContainerAvaliacaoTrabalhos(
+                      label1: usuarioModel.avalicao.toString(),
+                      label2: 'De avaliação',
+                      icon: Icons.star,
+                      color: Colors.yellow,
+                    ),
                   ),
                   const SizedBox(width: 5),
-                  ContainerAvaliacaoTrabalhos(
-                    label1: '17',
-                    label2: 'Serviços concluídos',
-                    icon: Icons.home_repair_service_outlined,
-                    color: Colors.white,
+                  Expanded(
+                    child: ContainerAvaliacaoTrabalhos(
+                      label1: usuarioModel.qtdeServicos.toString(),
+                      label2: 'Serviços concluídos',
+                      icon: Icons.home_repair_service_outlined,
+                      color: Colors.white,
+                    ),
                   ),
                 ],
               ),

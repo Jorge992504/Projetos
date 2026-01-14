@@ -22,24 +22,30 @@ class AuthProvider extends ChangeNotifier {
        _loginRepository = loginRepository {
     if (_sharedPreferences.containsKey(Keys.token)) {
       _token = _sharedPreferences.getString(Keys.token) ?? "";
-      _usuarioModel = UsuarioModel.fromJson(
-        _sharedPreferences.getString(Keys.usuarioModel) ?? "",
-      );
+
+      final usuarioJson = _sharedPreferences.getString(Keys.usuarioModel);
+
+      if (usuarioJson != null && usuarioJson.isNotEmpty) {
+        _usuarioModel = UsuarioModel.fromJson(usuarioJson);
+      } else {
+        _usuarioModel = UsuarioModel();
+      }
+
       _isAuth = _token.isNotEmpty;
-      notifyListeners();
     } else {
       _token = "";
       _usuarioModel = UsuarioModel();
       _isAuth = false;
-      notifyListeners();
     }
+
+    notifyListeners();
   }
 
-  Future<void> salvarToken(String token) async {
-    if (token.isNotEmpty) {
-      _token = token;
+  Future<void> salvarToken(String tokenRequest) async {
+    if (tokenRequest.isNotEmpty) {
+      _token = tokenRequest;
       _isAuth = true;
-      await _sharedPreferences.setString(Keys.token, token);
+      await _sharedPreferences.setString(Keys.token, tokenRequest);
       notifyListeners();
     } else {
       _token = "";
@@ -76,6 +82,10 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  String get token => _token;
+  bool get isAuth => _isAuth;
+  UsuarioModel get usuarioModel => _usuarioModel;
+
   Future<void> logout() async {
     _isAuth = false;
     _token = "";
@@ -85,8 +95,4 @@ class AuthProvider extends ChangeNotifier {
     await _sharedPreferences.clear();
     notifyListeners();
   }
-
-  String get token => _token;
-  bool get isAuth => _isAuth;
-  UsuarioModel get usuarioModel => _usuarioModel;
 }

@@ -8,18 +8,23 @@ import 'package:servicespro/core/ui/widgets/formatar_cpf.dart';
 import 'package:servicespro/core/ui/widgets/formatar_data.dart';
 import 'package:servicespro/core/ui/widgets/formatar_telefone.dart';
 import 'package:servicespro/core/ui/widgets/tema_sistema.dart';
-import 'package:servicespro/src/pages/register_client_employee_screen.dart';
+import 'package:servicespro/src/models/categorias_model.dart';
 
 class CustomEmployeeDados extends StatelessWidget {
   final TextEditingController dataController;
   final TextEditingController cpfController;
   final TextEditingController telefoneController;
+  final TextEditingController enderecoController;
+  final FocusNode dataFocus;
+  final FocusNode cpfFocus;
+  final FocusNode telefoneFocus;
+  final FocusNode enderecoFocus;
   final List<String> tiposPessoa;
   final String pessoaSelecionada;
   final void Function(String?)? onChangedPF;
   final void Function(String?)? onChangedPJ;
   final void Function(String?)? onChangedSleecionaCategoria;
-  final List<CategoriasClientEmployee> categorias;
+  final List<CategoriasModel> categorias;
   const CustomEmployeeDados({
     super.key,
     required this.dataController,
@@ -31,6 +36,11 @@ class CustomEmployeeDados extends StatelessWidget {
     this.onChangedPJ,
     this.onChangedSleecionaCategoria,
     required this.categorias,
+    required this.enderecoController,
+    required this.dataFocus,
+    required this.cpfFocus,
+    required this.telefoneFocus,
+    required this.enderecoFocus,
   });
 
   @override
@@ -105,12 +115,14 @@ class CustomEmployeeDados extends StatelessWidget {
           textAlign: TextAlign.left,
           keyboardType: TextInputType.number,
           controller: cpfController,
+          textInputAction: TextInputAction.next,
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
             pessoaSelecionada == 'PF'
                 ? CpfInputFormatter()
                 : CnpjInputFormatter(),
           ],
+          focusNode: cpfFocus,
         ),
         const SizedBox(height: 16),
         TextFormField(
@@ -142,6 +154,8 @@ class CustomEmployeeDados extends StatelessWidget {
           cursorHeight: 18,
           textAlign: TextAlign.left,
           keyboardType: TextInputType.datetime,
+          textInputAction: TextInputAction.next,
+          focusNode: dataFocus,
         ),
         const SizedBox(height: 16),
         TextFormField(
@@ -171,6 +185,8 @@ class CustomEmployeeDados extends StatelessWidget {
           keyboardType: TextInputType.number,
           inputFormatters: [TelefoneInputFormatter()],
           controller: telefoneController,
+          textInputAction: TextInputAction.next,
+          focusNode: telefoneFocus,
         ),
         const SizedBox(height: 16),
         TextFormField(
@@ -198,6 +214,9 @@ class CustomEmployeeDados extends StatelessWidget {
           cursorHeight: 18,
           textAlign: TextAlign.left,
           keyboardType: TextInputType.streetAddress,
+          textInputAction: TextInputAction.done,
+          controller: enderecoController,
+          focusNode: enderecoFocus,
         ),
         const SizedBox(height: 16),
         Align(

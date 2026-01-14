@@ -5,6 +5,7 @@ class ContainerAvaliacaoTrabalhos extends StatelessWidget {
   final String label2;
   final IconData? icon;
   final Color? color;
+
   const ContainerAvaliacaoTrabalhos({
     super.key,
     required this.label1,
@@ -16,31 +17,36 @@ class ContainerAvaliacaoTrabalhos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      height: 40,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
         color: Colors.blueAccent,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: color, size: 20),
-          SizedBox(width: 4),
-          Text(
-            label1,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(width: 5),
-          Text(
-            label2,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+          Icon(icon, color: color, size: 18),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label1,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  label2,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 12, color: Colors.white70),
+                ),
+              ],
             ),
           ),
         ],

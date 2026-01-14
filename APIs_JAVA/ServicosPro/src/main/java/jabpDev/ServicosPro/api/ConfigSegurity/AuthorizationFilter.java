@@ -37,7 +37,8 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                 path.equals(filtrosLiberados.getRegistrar()) ||
                 path.equals(filtrosLiberados.getRedefinirSenha()) ||
                 path.equals(filtrosLiberados.getReceberEmail()) ||
-                path.equals(filtrosLiberados.getValidarCodigo())
+                path.equals(filtrosLiberados.getValidarCodigo()) ||
+                path.equals(filtrosLiberados.getValidarConexao())
         ){
             filterChain.doFilter(request,response);
             return;

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:servicespro/core/router/rotas.dart';
 import 'package:servicespro/core/ui/style/custom_colors.dart';
 import 'package:servicespro/core/ui/style/fontes_letras.dart';
 import 'package:servicespro/core/ui/style/size_extension.dart';
+import 'package:servicespro/src/providers/auth_provider.dart';
 import 'package:servicespro/src/widgets/client/finalizar_servico/avaliacao_client_employee.dart';
 import 'package:servicespro/src/widgets/custom_button.dart';
 import 'package:servicespro/src/widgets/perfil/card_perfil.dart';
@@ -25,6 +27,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
           child: Column(
             children: [
               CircleAvatar(
+                // ignore: deprecated_member_use
                 backgroundColor: ColorsConstants.secundaryColor.withOpacity(
                   0.3,
                 ),
@@ -72,6 +75,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     size: 25,
                     color: ServiceColors.fitnessBem,
                   ),
+                  // ignore: deprecated_member_use
                   backgroundColor: ServiceColors.mudancaTransporte.withOpacity(
                     0.15,
                   ),
@@ -89,9 +93,14 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 ),
                 width: context.percentWidth(1),
                 backgroundColor: WidgetStateProperty.all(
+                  // ignore: deprecated_member_use
                   ColorsConstants.iconeErrorColor.withOpacity(0.40),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  Provider.of<AuthProvider>(context, listen: false).logout();
+                  if (!mounted) return;
+                  Navigator.of(context).pushReplacementNamed(Rotas.login);
+                },
               ),
             ],
           ),

@@ -23,7 +23,8 @@ class AuthInterceptor extends Interceptor {
     final DioException(requestOptions: RequestOptions(:extra), :response) = err;
     if (extra case {'DIO_AUTH_KEY': true}) {
       if (response != null && response.statusCode == HttpStatus.forbidden ||
-          response?.statusCode == 403) {
+          response?.statusCode == 403 ||
+          response?.statusCode == 401) {
         return handler.next(err);
       }
     }

@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers(filtrosLiberados.getRedefinirSenha()).permitAll()
                         .requestMatchers(filtrosLiberados.getReceberEmail()).permitAll()
                         .requestMatchers(filtrosLiberados.getValidarCodigo()).permitAll()
+                        .requestMatchers(filtrosLiberados.getValidarConexao()).permitAll()
                         .anyRequest().authenticated()
                 );
         httpSecurity.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);

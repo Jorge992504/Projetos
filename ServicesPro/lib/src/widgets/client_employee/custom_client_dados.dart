@@ -11,11 +11,21 @@ class CustomClientDados extends StatelessWidget {
   final TextEditingController dataController;
   final TextEditingController cpfController;
   final TextEditingController telefoneController;
+  final TextEditingController enderecoController;
+  final FocusNode dataFocus;
+  final FocusNode cpfFocus;
+  final FocusNode telefoneFocus;
+  final FocusNode enderecoFocus;
   const CustomClientDados({
     super.key,
     required this.dataController,
     required this.cpfController,
     required this.telefoneController,
+    required this.enderecoController,
+    required this.dataFocus,
+    required this.cpfFocus,
+    required this.telefoneFocus,
+    required this.enderecoFocus,
   });
 
   @override
@@ -53,6 +63,8 @@ class CustomClientDados extends StatelessWidget {
             FilteringTextInputFormatter.digitsOnly,
             CpfInputFormatter(),
           ],
+          textInputAction: TextInputAction.next,
+          focusNode: cpfFocus,
         ),
         const SizedBox(height: 16),
         TextFormField(
@@ -84,6 +96,8 @@ class CustomClientDados extends StatelessWidget {
           cursorHeight: 18,
           textAlign: TextAlign.left,
           keyboardType: TextInputType.datetime,
+          textInputAction: TextInputAction.next,
+          focusNode: dataFocus,
         ),
         const SizedBox(height: 16),
         TextFormField(
@@ -113,6 +127,8 @@ class CustomClientDados extends StatelessWidget {
           keyboardType: TextInputType.number,
           inputFormatters: [TelefoneInputFormatter()],
           controller: telefoneController,
+          textInputAction: TextInputAction.next,
+          focusNode: telefoneFocus,
         ),
         const SizedBox(height: 16),
         TextFormField(
@@ -140,6 +156,9 @@ class CustomClientDados extends StatelessWidget {
           cursorHeight: 18,
           textAlign: TextAlign.left,
           keyboardType: TextInputType.streetAddress,
+          textInputAction: TextInputAction.done,
+          controller: enderecoController,
+          focusNode: enderecoFocus,
         ),
       ],
     );

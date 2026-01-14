@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jabpDev.ServicosPro.api.Dto.Request.RequestCategorias;
+import jabpDev.ServicosPro.api.Exceptions.CustomExeception.CustomException;
 import jabpDev.ServicosPro.api.Services.Geral.ServicosGeral;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +26,14 @@ public class ControllerGeral {
     @GetMapping("/valid/token")
     public void validarToken(@RequestHeader("Authorization") String header){
         servicosGerais.validarTokenAuth(header);
+    }
+
+    @GetMapping("/auth/valid/cone")
+    public ResponseEntity<?> validarConexao(){
+        try {
+            return ResponseEntity.ok(200);
+        }catch (Exception e){
+            throw new CustomException("Sem conexão");
+        }
     }
 }

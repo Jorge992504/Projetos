@@ -15,11 +15,11 @@ import 'package:servicespro/src/pages/client_pages/client_principal_screem.dart'
 import 'package:servicespro/src/pages/receber_codigo_redefinir_senha_screen.dart';
 import 'package:servicespro/src/pages/redefinir_senha_screen.dart';
 import 'package:servicespro/src/pages/register_client_employee_screen.dart';
-import 'package:servicespro/src/pages/register_screen.dart';
 import 'package:servicespro/src/pages/splash_screen.dart';
 import 'package:servicespro/src/pages/suporte_screen.dart';
 import 'package:servicespro/src/pages/termos_politica_screen.dart';
 import 'package:servicespro/src/routers/login_router.dart';
+import 'package:servicespro/src/routers/register_router.dart';
 
 class ServicesProApp extends StatelessWidget {
   const ServicesProApp({super.key});
@@ -53,7 +53,7 @@ class ServicesProApp extends StatelessWidget {
               EmployeeDetalhesPedidoScreen(),
           Rotas.chat: (context) => ChatScreen(),
           Rotas.login: (context) => LoginRouter.page(),
-          Rotas.register: (context) => RegisterScreen(),
+          Rotas.register: (context) => RegisterRouter.page(),
           Rotas.termosPolitica: (context) => TermosPoliticaScreen(),
           Rotas.registerClientEmployee: (context) =>
               RegisterClientEmployeeScreen(),
