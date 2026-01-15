@@ -72,9 +72,9 @@ class _RegisterScreenState
               await Provider.of<AuthProvider>(
                 context,
                 listen: false,
-              ).salvarToken(state.token);
+              ).salvarToken(state.token ?? '');
 
-              if (state.token.isNotEmpty) {
+              if (state.token!.isNotEmpty) {
                 // ignore: use_build_context_synchronously
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   Rotas.registerClientEmployee,

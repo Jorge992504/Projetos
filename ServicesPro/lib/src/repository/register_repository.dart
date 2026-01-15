@@ -36,4 +36,17 @@ class RegisterRepository {
           : throw CreateException.dioException(e);
     }
   }
+
+  Future<void> registrarInfosUsuario(UsuarioModel usuarioModel) async {
+    try {
+      await restClient.auth.post(
+        '/auth/register/completar',
+        data: usuarioModel.toJson(),
+      );
+    } on DioException catch (e) {
+      e.response?.statusCode == 401
+          ? {throw RepositoryException(message: "Problemas de conexão")}
+          : throw CreateException.dioException(e);
+    }
+  }
 }

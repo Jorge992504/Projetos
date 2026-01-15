@@ -16,6 +16,7 @@ class UsuarioModel {
   num? avalicao;
   int? qtdeServicos;
   bool? termosPolitica;
+  String? cpf_cnpj;
   UsuarioModel({
     this.nome,
     this.email,
@@ -31,6 +32,7 @@ class UsuarioModel {
     this.avalicao,
     this.qtdeServicos,
     this.termosPolitica,
+    this.cpf_cnpj,
   });
 
   UsuarioModel copyWith({
@@ -48,6 +50,7 @@ class UsuarioModel {
     num? avalicao,
     int? qtdeServicos,
     bool? termosPolitica,
+    String? cpf_cnpj,
   }) {
     return UsuarioModel(
       nome: nome ?? this.nome,
@@ -64,6 +67,7 @@ class UsuarioModel {
       qtdeServicos: qtdeServicos ?? this.qtdeServicos,
       senha: senha ?? this.senha,
       termosPolitica: termosPolitica ?? this.termosPolitica,
+      cpf_cnpj: cpf_cnpj ?? this.cpf_cnpj,
     );
   }
 
@@ -88,6 +92,7 @@ class UsuarioModel {
       'qtdeServicos': qtdeServicos,
       'senha': senha,
       'termosPolitica': termosPolitica,
+      'cpf_cnpj': cpf_cnpj,
     };
   }
 
@@ -119,6 +124,7 @@ class UsuarioModel {
           : null,
       senha: map['senha'] ?? "",
       termosPolitica: map['termosPolitica'] ?? false,
+      cpf_cnpj: map['cpf_cnpj'] ?? "",
     );
   }
 
@@ -129,7 +135,7 @@ class UsuarioModel {
 
   @override
   String toString() {
-    return 'UsuarioModel(nome: $nome, email: $email, foto: $foto, tipoUsuario: $tipoUsuario, tipoPessoa: $tipoPessoa, dataNascimento: $dataNascimento, telefone: $telefone, endereco: $endereco, categoriaPrestador: $categoriaPrestador, nomeCategoria: $nomeCategoria, avalicao: $avalicao, qtdeServicos: $qtdeServicos, senha: $senha, termosPolitica: $termosPolitica)';
+    return 'UsuarioModel(nome: $nome, email: $email, foto: $foto, tipoUsuario: $tipoUsuario, tipoPessoa: $tipoPessoa, dataNascimento: $dataNascimento, telefone: $telefone, endereco: $endereco, categoriaPrestador: $categoriaPrestador, nomeCategoria: $nomeCategoria, avalicao: $avalicao, qtdeServicos: $qtdeServicos, senha: $senha, termosPolitica: $termosPolitica, cpf_cnpj: $cpf_cnpj)';
   }
 
   @override
@@ -149,7 +155,8 @@ class UsuarioModel {
         other.avalicao == avalicao &&
         other.qtdeServicos == qtdeServicos &&
         other.senha == senha &&
-        other.termosPolitica == termosPolitica;
+        other.termosPolitica == termosPolitica &&
+        other.cpf_cnpj == cpf_cnpj;
   }
 
   @override
@@ -167,6 +174,7 @@ class UsuarioModel {
         avalicao.hashCode ^
         qtdeServicos.hashCode ^
         senha.hashCode ^
-        termosPolitica.hashCode;
+        termosPolitica.hashCode ^
+        cpf_cnpj.hashCode;
   }
 }

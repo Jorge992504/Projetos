@@ -24,7 +24,7 @@ class RegisterLoaded extends RegisterState {
 }
 
 class RegisterSuccess extends RegisterState {
-  final String token;
+  final String? token;
   const RegisterSuccess(this.token);
 }
 

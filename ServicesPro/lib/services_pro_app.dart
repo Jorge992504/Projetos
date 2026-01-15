@@ -6,18 +6,17 @@ import 'package:servicespro/core/ui/theme/config_theme.dart';
 import 'package:servicespro/src/pages/chat_screen.dart';
 import 'package:servicespro/src/pages/client_pages/client_categorias_screen.dart';
 import 'package:servicespro/src/pages/client_pages/client_perfil_screen.dart';
-import 'package:servicespro/src/pages/client_pages/client_prestadores_categoria_screen.dart';
 import 'package:servicespro/src/pages/employee_pages/employee_detalhes_pedido_screen.dart';
 import 'package:servicespro/src/pages/employee_pages/employee_principal_screen.dart';
 import 'package:servicespro/src/pages/finalizar_servico_screen.dart';
 import 'package:servicespro/src/pages/client_pages/client_historico_servico_screen.dart';
-import 'package:servicespro/src/pages/client_pages/client_principal_screem.dart';
 import 'package:servicespro/src/pages/receber_codigo_redefinir_senha_screen.dart';
 import 'package:servicespro/src/pages/redefinir_senha_screen.dart';
 import 'package:servicespro/src/pages/register_client_employee_screen.dart';
 import 'package:servicespro/src/pages/splash_screen.dart';
 import 'package:servicespro/src/pages/suporte_screen.dart';
 import 'package:servicespro/src/pages/termos_politica_screen.dart';
+import 'package:servicespro/src/routers/client/client_router.dart';
 import 'package:servicespro/src/routers/login_router.dart';
 import 'package:servicespro/src/routers/register_router.dart';
 
@@ -39,15 +38,14 @@ class ServicesProApp extends StatelessWidget {
         supportedLocales: const [Locale('pt', 'BR')],
         routes: {
           Rotas.splash: (context) => SplashScreen(),
-          Rotas.clientHome: (context) => ClientPrincipalScreem(),
+          Rotas.clientHome: (context) => ClientPerfilScreen(),
           Rotas.clientHistoricoServico: (context) =>
               ClientHistoricoServicoScreen(),
           Rotas.clientFinalizarServico: (context) => FinalizarServicoScreen(),
           Rotas.clientPerfil: (context) => ClientPerfilScreen(),
           Rotas.suporte: (context) => SuporteScreen(),
           Rotas.clientCategoriasServicos: (context) => ClientCategoriasScreen(),
-          Rotas.clientPrestadoresCategorias: (context) =>
-              ClientPrestadoresCategoriaScreen(),
+          Rotas.clientPrestadoresCategorias: (context) => ClientRouter.page(),
           Rotas.employeeHome: (context) => EmployeePrincipalScreen(),
           Rotas.employeeDetalhesServico: (context) =>
               EmployeeDetalhesPedidoScreen(),

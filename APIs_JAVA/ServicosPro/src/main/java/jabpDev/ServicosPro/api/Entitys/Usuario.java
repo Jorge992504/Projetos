@@ -57,7 +57,7 @@ public class Usuario implements UserDetails {
     @Column(name = "codigo")
     private Integer codigo;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "categoriaPrestador")
     private Categorias categoriaPrestador;
 

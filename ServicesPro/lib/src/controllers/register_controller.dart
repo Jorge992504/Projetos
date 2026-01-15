@@ -28,4 +28,14 @@ class RegisterController extends Cubit<RegisterState> {
       emit(RegisterFailure(errorMessage: e.message));
     }
   }
+
+  Future<void> registrarInfosUsuario(UsuarioModel usuarioModel) async {
+    try {
+      emit(RegisterInitial());
+      await _registerRepository.registrarInfosUsuario(usuarioModel);
+      emit(RegisterSuccess(""));
+    } on RepositoryException catch (e) {
+      emit(RegisterFailure(errorMessage: e.message));
+    }
+  }
 }
