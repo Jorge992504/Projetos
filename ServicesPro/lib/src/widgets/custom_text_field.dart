@@ -18,6 +18,7 @@ class CustomTextField extends StatelessWidget {
   final int? maxLines;
   final double? height;
   final double? width;
+  final bool? noLabel;
   const CustomTextField({
     super.key,
     required this.isDark,
@@ -35,6 +36,7 @@ class CustomTextField extends StatelessWidget {
     this.maxLines = 1,
     this.height,
     this.width,
+    this.noLabel,
   });
 
   @override
@@ -46,7 +48,7 @@ class CustomTextField extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark
             ? Theme.of(context).colorScheme.surface
-            : ColorsConstants.primaryColor,
+            : ColorsConstants.telaColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: TextField(
@@ -67,7 +69,7 @@ class CustomTextField extends StatelessWidget {
         decoration: InputDecoration(
           border: InputBorder.none,
           hint: Text(label),
-          label: Text(label),
+          label: noLabel == false ? Text(label) : null,
           prefixIcon: prefixIcon,
           suffixIcon: suffixIcon,
           labelText: labelText,

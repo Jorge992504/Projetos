@@ -17,7 +17,8 @@ public interface RepositoryUsuarioPrestador extends JpaRepository<UsuarioPrestad
                                               u.nome AS usuarioNome,
                                               c.id AS categoriaId,
                                               c.nome AS categoriaNome,
-                                              up.avaliacao
+                                              up.avaliacao,
+                                              u.foto
                                           FROM usuario_prestador up
                                           JOIN usuario u ON u.id = up.usuario
                                           JOIN categorias c ON c.id = up.categoria

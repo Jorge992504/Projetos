@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:servicespro/core/router/rotas.dart';
 import 'package:servicespro/core/ui/style/custom_colors.dart';
 import 'package:servicespro/core/ui/style/custom_images.dart';
 import 'package:servicespro/core/ui/style/fontes_letras.dart';
 import 'package:servicespro/core/ui/style/size_extension.dart';
+import 'package:servicespro/src/controllers/client/cliente_controller.dart';
+import 'package:servicespro/src/pages/client_pages/client_prestadores_categoria_screen.dart';
 
 class ClientHomeScreen extends StatefulWidget {
   const ClientHomeScreen({super.key});
@@ -110,10 +113,11 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
           children: [
             InkWell(
               onTap: () {
-                Navigator.of(context).pushNamed(
-                  Rotas.clientPrestadoresCategorias,
-                  arguments: {"arguments": 1},
-                );
+                // Navigator.of(context).pushNamed(
+                //   Rotas.clientPrestadoresCategorias,
+                //   arguments: {"arguments": 1},
+                // );
+                navegarEntrePaginas(1);
               },
               child: Container(
                 width: 100,
@@ -478,6 +482,19 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
           ],
         ),
       ],
+    );
+  }
+
+  void navegarEntrePaginas(int? idCategoria) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => Provider.value(
+          value: Provider.of<ClienteController>(context, listen: false),
+          child: ClientPrestadoresCategoriaScreen(
+            idCategoria: idCategoria ?? 0,
+          ),
+        ),
+      ),
     );
   }
 }

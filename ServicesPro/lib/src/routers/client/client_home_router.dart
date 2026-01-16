@@ -4,8 +4,8 @@ import 'package:servicespro/src/controllers/client/cliente_controller.dart';
 import 'package:servicespro/src/pages/client_pages/client_principal_screem.dart';
 import 'package:servicespro/src/repository/client/client_repository.dart';
 
-class ClientRouter {
-  ClientRouter._();
+class ClientHomeRouter {
+  ClientHomeRouter._();
   static Widget page() => MultiProvider(
     providers: [
       Provider<ClientRepository>(
@@ -16,6 +16,7 @@ class ClientRouter {
             ClienteController(context.read<ClientRepository>()),
       ),
     ],
-    child: ClientPrincipalScreen(),
+    child: const ClientPrincipalScreem(),
   );
 }
+//!ajustar a navegacao entre paginas para usar o mesmo context

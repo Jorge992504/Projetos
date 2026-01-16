@@ -16,7 +16,7 @@ import 'package:servicespro/src/pages/register_client_employee_screen.dart';
 import 'package:servicespro/src/pages/splash_screen.dart';
 import 'package:servicespro/src/pages/suporte_screen.dart';
 import 'package:servicespro/src/pages/termos_politica_screen.dart';
-import 'package:servicespro/src/routers/client/client_router.dart';
+import 'package:servicespro/src/routers/client/client_home_router.dart';
 import 'package:servicespro/src/routers/login_router.dart';
 import 'package:servicespro/src/routers/register_router.dart';
 
@@ -38,14 +38,13 @@ class ServicesProApp extends StatelessWidget {
         supportedLocales: const [Locale('pt', 'BR')],
         routes: {
           Rotas.splash: (context) => SplashScreen(),
-          Rotas.clientHome: (context) => ClientPerfilScreen(),
+          Rotas.clientPerfil: (context) => ClientPerfilScreen(),
           Rotas.clientHistoricoServico: (context) =>
               ClientHistoricoServicoScreen(),
           Rotas.clientFinalizarServico: (context) => FinalizarServicoScreen(),
-          Rotas.clientPerfil: (context) => ClientPerfilScreen(),
           Rotas.suporte: (context) => SuporteScreen(),
           Rotas.clientCategoriasServicos: (context) => ClientCategoriasScreen(),
-          Rotas.clientPrestadoresCategorias: (context) => ClientRouter.page(),
+          Rotas.clientHome: (context) => ClientHomeRouter.page(),
           Rotas.employeeHome: (context) => EmployeePrincipalScreen(),
           Rotas.employeeDetalhesServico: (context) =>
               EmployeeDetalhesPedidoScreen(),

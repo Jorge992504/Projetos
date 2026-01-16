@@ -7,6 +7,7 @@ import jabpDev.ServicosPro.api.Dto.Response.ResponseCategorias;
 import jabpDev.ServicosPro.api.Entitys.Categorias;
 import jabpDev.ServicosPro.api.Entitys.Usuario;
 import jabpDev.ServicosPro.api.Exceptions.CustomExeception.CustomException;
+import jabpDev.ServicosPro.api.Exceptions.CustomExeception.ExceptionToken;
 import jabpDev.ServicosPro.api.Exceptions.CustomExeception.TokenInvalidoException;
 import jabpDev.ServicosPro.api.Repositorys.RepositoryCategorias;
 import jabpDev.ServicosPro.api.Repositorys.RepositoryUsuario;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -93,5 +95,31 @@ public class ServicosGeral {
             throw new CustomException("Usuário sem permissão");
         }
         return usuario.get();
+    }
+
+    public String getTokenFromHeaders(WebSocketSession socketSession){
+        String header = socketSession.getHandshakeHeaders().getFirst("Authorization");
+        if(header == null || !header.startsWith("Bearer ")){
+            throw new CustomException("Usuário não logado");
+        }
+        String token = header.substring(7);
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            if (claims.isEmpty()){
+                throw new CustomException("Usuário não logado");
+            }else{
+                return claims.get("email", String.class);
+            }
+
+        }catch (ExpiredJwtException e) {
+            throw new CustomException("Token expirado, faça login novamente");
+
+        } catch (JwtException e) {
+            throw new CustomException("Token inválido");
+        }
     }
 }

@@ -1,6 +1,7 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
+import 'package:servicespro/core/router/rotas.dart';
 import 'package:servicespro/core/ui/base/base_state.dart';
 
 import 'package:servicespro/core/ui/style/custom_colors.dart';
@@ -9,12 +10,17 @@ import 'package:servicespro/core/ui/style/size_extension.dart';
 import 'package:servicespro/core/ui/widgets/tema_sistema.dart';
 import 'package:servicespro/src/controllers/client/cliente_controller.dart';
 import 'package:servicespro/src/models/client/usuario_prestador/usuario_prestador_model.dart';
+import 'package:servicespro/src/providers/auth_provider.dart';
 import 'package:servicespro/src/states/client/client_state.dart';
 import 'package:servicespro/src/widgets/client/finalizar_servico/avaliacao_client_employee.dart';
 import 'package:servicespro/src/widgets/perfil/custom_container_prestador.dart';
 
 class ClientPrestadoresCategoriaScreen extends StatefulWidget {
-  const ClientPrestadoresCategoriaScreen({super.key});
+  final int idCategoria;
+  const ClientPrestadoresCategoriaScreen({
+    super.key,
+    required this.idCategoria,
+  });
 
   @override
   State<ClientPrestadoresCategoriaScreen> createState() =>
@@ -24,20 +30,15 @@ class ClientPrestadoresCategoriaScreen extends StatefulWidget {
 class _ClientPrestadoresCategoriaScreenState
     extends BaseState<ClientPrestadoresCategoriaScreen, ClienteController> {
   int idCategoria = 0;
-  List<UsuarioPrestadorModel> model = [];
+  List<UsuarioPrestadorModel> usuarioPrestadorModel = [];
   List<UsuarioPrestadorModel> sugestoes = [];
+  String token = '';
 
   @override
   void initState() {
     super.initState();
+    idCategoria = widget.idCategoria;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final route = ModalRoute.of(context);
-      final arguments =
-          (route!.settings.arguments ?? <String, dynamic>{}) as Map;
-
-      setState(() {
-        idCategoria = arguments['arguments'];
-      });
       await controller.buscarPrestadoresCategoria(idCategoria);
     });
   }
@@ -45,7 +46,7 @@ class _ClientPrestadoresCategoriaScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Prestadores da Categoria $idCategoria')),
+      appBar: AppBar(title: Text('Prestadores da Categoria')),
       body: BlocConsumer<ClienteController, ClientState>(
         listener: (context, state) async {
           switch (state) {
@@ -56,7 +57,7 @@ class _ClientPrestadoresCategoriaScreenState
             case ClientLoaded():
               hideLoader();
               setState(() {
-                model = state.usuarioPrestadorModel;
+                usuarioPrestadorModel = state.usuarioPrestadorModel;
               });
               break;
 
@@ -115,27 +116,51 @@ class _ClientPrestadoresCategoriaScreenState
                 Expanded(
                   child: ListView.builder(
                     itemCount: sugestoes.isEmpty
-                        ? model.length
+                        ? usuarioPrestadorModel.length
                         : sugestoes.length,
                     itemBuilder: (context, index) {
                       UsuarioPrestadorModel categoriaModel = sugestoes.isEmpty
-                          ? model[index]
+                          ? usuarioPrestadorModel[index]
                           : sugestoes[index];
                       return CustomContainerPrestador(
                         isDark: TemaSistema().temaSistema(context),
-                        image: Icon(Icons.person),
-                        label: categoriaModel.categoriaNome ?? "",
-                        categoria: categoriaModel.usuarioNome ?? "",
+                        image: ClipOval(
+                          child: SizedBox(
+                            width: 90,
+                            height: 50,
+                            child: Image.network(
+                              categoriaModel.foto!,
+                              // width: 56,
+                              // height: 56,
+                              fit: BoxFit.contain,
+                              headers: {
+                                "Authorization":
+                                    "Bearer ${Provider.of<AuthProvider>(context, listen: false).token}",
+                              },
+                              errorBuilder: (_, _, _) =>
+                                  const Icon(Icons.person, size: 40),
+                            ),
+                          ),
+                        ),
+                        label: categoriaModel.usuarioNome ?? "",
+                        categoria: categoriaModel.categoriaNome ?? "",
                         avaliacao: AvaliacaoClientEmployee(
-                          rating:
-                              int.tryParse(
-                                categoriaModel.avaliaca.toString(),
-                              ) ??
-                              0,
+                          rating: categoriaModel.avaliacao == null
+                              ? 0
+                              : categoriaModel.avaliacao!.floor(),
                           size: 15,
                           activeColor: ServiceColors.reformaConstrucao,
                           inactiveColor: ServiceColors.servicosAdministrativos,
                         ),
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                            Rotas.chat,
+                            arguments: {
+                              'usuarioId': categoriaModel.usuarioId,
+                              'usuarioNome': categoriaModel.usuarioNome,
+                            },
+                          );
+                        },
                       );
                     },
                   ),
@@ -151,12 +176,12 @@ class _ClientPrestadoresCategoriaScreenState
   void buscarPrestadorPorCategoria(String value) {
     String categoria = value;
     // setState(() {
-    //   sugestoes = controller.state.dentistas!
-    //       .where((p) => p.nome!.toLowerCase().contains(nome.toLowerCase()))
+    //   sugestoes = usuarioPrestadorModel
+    //       .where((p) => p.categoriaNome!.toLowerCase().contains(value.toLowerCase()))
     //       .toList();
     // });
     setState(() {
-      sugestoes = model
+      sugestoes = usuarioPrestadorModel
           .where(
             (p) => p.categoriaNome!.toLowerCase().contains(
               categoria.toLowerCase(),

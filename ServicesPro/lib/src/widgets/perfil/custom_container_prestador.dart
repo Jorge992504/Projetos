@@ -35,36 +35,39 @@ class CustomContainerPrestador extends StatelessWidget {
                   : Theme.of(context).colorScheme.onSecondary,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                image,
-                SizedBox(
-                  width: context.percentWidth(0.5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        label,
-                        style: context.cusotomFontes.black.copyWith(
-                          fontSize: 14,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(width: 50, height: 50, child: image),
+                  SizedBox(
+                    width: context.percentWidth(0.5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          label,
+                          style: context.cusotomFontes.black.copyWith(
+                            fontSize: 14,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        categoria,
-                        style: context.cusotomFontes.regular.copyWith(
-                          fontSize: 14,
+                        Text(
+                          categoria,
+                          style: context.cusotomFontes.regular.copyWith(
+                            fontSize: 14,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      avaliacao,
-                    ],
+                        avaliacao,
+                      ],
+                    ),
                   ),
-                ),
-                Icon(Icons.message_outlined),
-              ],
+                  Icon(Icons.message_outlined),
+                ],
+              ),
             ),
           ),
         ),

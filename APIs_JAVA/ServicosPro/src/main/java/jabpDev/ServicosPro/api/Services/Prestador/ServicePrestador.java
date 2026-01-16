@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -20,6 +21,18 @@ public class ServicePrestador {
         if (categoriaId == 0){
             throw new CustomException("Categoria não encontrada");
         }
-        return repositoryUsuarioPrestador.findByCategoria(categoriaId);
+
+        List<ResponseUsuarioPrestador> prestadorList = repositoryUsuarioPrestador.findByCategoria(categoriaId);
+        return prestadorList.stream()
+                .map(prestador ->{
+                    return new ResponseUsuarioPrestador(
+                            prestador.usuarioId(),
+                            prestador.usuarioNome(),
+                            prestador.categoriaId(),
+                            prestador.categoriaNome(),
+                            prestador.avaliacao(),
+                            servicosGeral.getUrlInterna() + prestador.usuarioId() + "/" +prestador.foto()
+                    );
+                }).collect(Collectors.toList());
     }
 }

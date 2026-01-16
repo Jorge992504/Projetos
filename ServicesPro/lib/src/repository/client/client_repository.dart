@@ -14,7 +14,7 @@ class ClientRepository {
     try {
       final response = await restClient.auth.get(
         '/prestador/buscar/categoria',
-        queryParameters: {'idCategoria': idCategoria},
+        queryParameters: {'categoriaId': idCategoria},
       );
       return response.data
           .map<UsuarioPrestadorModel>((e) => UsuarioPrestadorModel.fromMap(e))

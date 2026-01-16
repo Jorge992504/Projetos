@@ -6,13 +6,15 @@ class UsuarioPrestadorModel {
   String? usuarioNome;
   int? categoriaId;
   String? categoriaNome;
-  num? avaliaca;
+  num? avaliacao;
+  String? foto;
   UsuarioPrestadorModel({
     this.usuarioId,
     this.usuarioNome,
     this.categoriaId,
     this.categoriaNome,
-    this.avaliaca,
+    this.avaliacao,
+    this.foto,
   });
 
   UsuarioPrestadorModel copyWith({
@@ -20,14 +22,16 @@ class UsuarioPrestadorModel {
     String? usuarioNome,
     int? categoriaId,
     String? categoriaNome,
-    num? avaliaca,
+    num? avaliacao,
+    String? foto,
   }) {
     return UsuarioPrestadorModel(
       usuarioId: usuarioId ?? this.usuarioId,
       usuarioNome: usuarioNome ?? this.usuarioNome,
       categoriaId: categoriaId ?? this.categoriaId,
       categoriaNome: categoriaNome ?? this.categoriaNome,
-      avaliaca: avaliaca ?? this.avaliaca,
+      avaliacao: avaliacao ?? this.avaliacao,
+      foto: foto ?? this.foto,
     );
   }
 
@@ -37,7 +41,8 @@ class UsuarioPrestadorModel {
       'usuarioNome': usuarioNome,
       'categoriaId': categoriaId,
       'categoriaNome': categoriaNome,
-      'avaliaca': avaliaca,
+      'avaliacao': avaliacao,
+      'foto': foto,
     };
   }
 
@@ -53,7 +58,8 @@ class UsuarioPrestadorModel {
       categoriaNome: map['categoriaNome'] != null
           ? map['categoriaNome'] as String
           : null,
-      avaliaca: map['avaliaca'] != null ? map['avaliaca'] as num : null,
+      avaliacao: map['avaliacao'] != null ? map['avaliacao'] as num : null,
+      foto: map['foto'] != null ? map['foto'] as String : null,
     );
   }
 
@@ -66,7 +72,7 @@ class UsuarioPrestadorModel {
 
   @override
   String toString() {
-    return 'UsuarioPrestadorModel(usuarioId: $usuarioId, usuarioNome: $usuarioNome, categoriaId: $categoriaId, categoriaNome: $categoriaNome, avaliaca: $avaliaca)';
+    return 'UsuarioPrestadorModel(usuarioId: $usuarioId, usuarioNome: $usuarioNome, categoriaId: $categoriaId, categoriaNome: $categoriaNome, avaliacao: $avaliacao, foto: $foto)';
   }
 
   @override
@@ -77,7 +83,8 @@ class UsuarioPrestadorModel {
         other.usuarioNome == usuarioNome &&
         other.categoriaId == categoriaId &&
         other.categoriaNome == categoriaNome &&
-        other.avaliaca == avaliaca;
+        other.avaliacao == avaliacao &&
+        other.foto == foto;
   }
 
   @override
@@ -86,6 +93,7 @@ class UsuarioPrestadorModel {
         usuarioNome.hashCode ^
         categoriaId.hashCode ^
         categoriaNome.hashCode ^
-        avaliaca.hashCode;
+        avaliacao.hashCode ^
+        foto.hashCode;
   }
 }

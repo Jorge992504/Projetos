@@ -5,6 +5,7 @@ public record ResponseUsuarioPrestador(
         String usuarioNome,
         Long categoriaId,
         String categoriaNome,
-        Double avaliacao
+        Double avaliacao,
+        String foto
 ) {
 }

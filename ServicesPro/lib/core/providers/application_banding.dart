@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:servicespro/core/rest_client/rest_client.dart';
 import 'package:servicespro/src/controllers/register_controller.dart';
 import 'package:servicespro/src/providers/auth_provider.dart';
+import 'package:servicespro/src/providers/web_socket_provider.dart';
 import 'package:servicespro/src/repository/login_repository.dart';
 import 'package:servicespro/src/repository/register_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,6 +34,15 @@ class ApplicationBanding extends StatelessWidget {
                 loginRepository: context.read<LoginRepository>(),
               ),
             ),
+            ChangeNotifierProvider(
+              create: (context) => WebSocketProvider(
+                authProvider: AuthProvider(
+                  loginRepository: context.read<LoginRepository>(),
+                  sharedPreferences: snapshot.data!,
+                ),
+              ),
+            ),
+
             BlocProvider(
               create: (context) => RegisterController(
                 RegisterRepository(restClient: context.read<RestClient>()),
