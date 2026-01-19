@@ -9,6 +9,7 @@ import 'package:servicespro/core/ui/style/custom_colors.dart';
 import 'package:servicespro/core/ui/style/custom_images.dart';
 import 'package:servicespro/src/models/usuario_model.dart';
 import 'package:servicespro/src/providers/auth_provider.dart';
+import 'package:servicespro/src/providers/web_socket_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -119,6 +120,7 @@ class _SplashScreenState extends State<SplashScreen> {
       ).validarToken();
       if (!mounted) return;
       if (validarToken) {
+        Provider.of<WebSocketProvider>(context, listen: false).conectar();
         UsuarioModel usuarioModel = Provider.of<AuthProvider>(
           context,
           listen: false,

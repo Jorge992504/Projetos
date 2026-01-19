@@ -2,6 +2,7 @@ package jabpDev.ServicosPro.api.Controllers.WebSocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jabpDev.ServicosPro.api.Dto.Request.RequestMessage;
+import jabpDev.ServicosPro.api.Dto.Response.ResponseMessage;
 import jabpDev.ServicosPro.api.Entitys.Usuario;
 import jabpDev.ServicosPro.api.Exceptions.CustomExeception.CustomException;
 import jabpDev.ServicosPro.api.Repositorys.RepositoryUsuario;
@@ -52,12 +53,11 @@ public class WebSocketController extends TextWebSocketHandler {
             String email = servicosGeral.getTokenFromHeaders(socketSession);
             Optional<Usuario> usuarioFrom = Optional.ofNullable(repositoryUsuario.findByEmail(email).orElseThrow(() -> new CustomException("Usuário não encontrado")));
             RequestMessage payload = objectMapper.readValue(message.getPayload(), RequestMessage.class);
-            RequestMessage requestMessage = new RequestMessage(
+            ResponseMessage responseMessage = new ResponseMessage(
                     usuarioFrom.get().getId(),
-                    payload.usuarioTo(),
                     payload.message()
             );
-            webSocketService.sendMessage(requestMessage);
+            webSocketService.sendMessage(responseMessage, payload.usuarioTo());
         }catch (Exception e){
             System.out.println("Problema ao enviar message, handleTextMessage: " + e.getMessage());
             throw new CustomException("Erro ao enviar mensagem");

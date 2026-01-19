@@ -9,6 +9,7 @@ import 'package:servicespro/core/ui/widgets/tema_sistema.dart';
 import 'package:servicespro/src/controllers/login_controller.dart';
 import 'package:servicespro/src/models/usuario_model.dart';
 import 'package:servicespro/src/providers/auth_provider.dart';
+import 'package:servicespro/src/providers/web_socket_provider.dart';
 import 'package:servicespro/src/states/login_state.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -61,6 +62,8 @@ class _LoginScreenState extends BaseState<LoginScreen, LoginController> {
                 context,
                 listen: false,
               ).salvarToken(state.token);
+
+              Provider.of<WebSocketProvider>(context, listen: false).conectar();
 
               await Provider.of<AuthProvider>(
                 context,

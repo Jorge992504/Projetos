@@ -2,6 +2,7 @@ package jabpDev.ServicosPro.api.Services.WebSocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jabpDev.ServicosPro.api.Dto.Request.RequestMessage;
+import jabpDev.ServicosPro.api.Dto.Response.ResponseMessage;
 import jabpDev.ServicosPro.api.Exceptions.CustomExeception.CustomException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,10 +32,9 @@ public class WebSocketService {
             System.out.println("Conexão não encerrada: " + e.getMessage());
         }
     }
-    public void sendMessage(RequestMessage message)throws Exception{
+    public void sendMessage(ResponseMessage message, Long usuarioTo)throws Exception{
         try{
-            WebSocketSession socketSessionTo = usuarios.get(message.usuarioTo());
-            WebSocketSession socketSessionFrom = usuarios.get(message.usuarioFrom());
+            WebSocketSession socketSessionTo = usuarios.get(usuarioTo);
             ObjectMapper objectMapper = new ObjectMapper();
             String json = objectMapper.writeValueAsString(message);
             socketSessionTo.sendMessage(new TextMessage(json));

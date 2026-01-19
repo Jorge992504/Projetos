@@ -8,6 +8,7 @@ import jakarta.persistence.OneToOne;
 import java.time.LocalDate;
 
 public record ResponseUsuario(
+        Long id,
         String nome,
         String email,
         String foto,

@@ -24,6 +24,7 @@ public class ServiceUsuario {
         Usuario usuario = servicosGeral.getUsuario();
         if (usuario.getTipoUsuario().equals("Cliente")){
             return new ResponseUsuario(
+                    usuario.getId(),
                     usuario.getNome(),
                     usuario.getEmail(),
                     usuario.getFoto(),
@@ -41,6 +42,7 @@ public class ServiceUsuario {
         }else{
             Optional<Categorias> categorias = repositoryCategorias.findById(usuario.getCategoriaPrestador().getId());
             return new ResponseUsuario(
+                    usuario.getId(),
                     usuario.getNome(),
                     usuario.getEmail(),
                     usuario.getFoto(),

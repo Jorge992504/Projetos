@@ -3,7 +3,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:servicespro/core/providers/application_banding.dart';
 import 'package:servicespro/core/router/rotas.dart';
 import 'package:servicespro/core/ui/theme/config_theme.dart';
-import 'package:servicespro/src/pages/chat_screen.dart';
 import 'package:servicespro/src/pages/client_pages/client_categorias_screen.dart';
 import 'package:servicespro/src/pages/client_pages/client_perfil_screen.dart';
 import 'package:servicespro/src/pages/employee_pages/employee_detalhes_pedido_screen.dart';
@@ -16,6 +15,7 @@ import 'package:servicespro/src/pages/register_client_employee_screen.dart';
 import 'package:servicespro/src/pages/splash_screen.dart';
 import 'package:servicespro/src/pages/suporte_screen.dart';
 import 'package:servicespro/src/pages/termos_politica_screen.dart';
+import 'package:servicespro/src/routers/chat_router.dart';
 import 'package:servicespro/src/routers/client/client_home_router.dart';
 import 'package:servicespro/src/routers/login_router.dart';
 import 'package:servicespro/src/routers/register_router.dart';
@@ -48,7 +48,7 @@ class ServicesProApp extends StatelessWidget {
           Rotas.employeeHome: (context) => EmployeePrincipalScreen(),
           Rotas.employeeDetalhesServico: (context) =>
               EmployeeDetalhesPedidoScreen(),
-          Rotas.chat: (context) => ChatScreen(),
+          Rotas.chat: (context) => ChatRouter.page(),
           Rotas.login: (context) => LoginRouter.page(),
           Rotas.register: (context) => RegisterRouter.page(),
           Rotas.termosPolitica: (context) => TermosPoliticaScreen(),

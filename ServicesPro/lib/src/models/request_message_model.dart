@@ -2,38 +2,36 @@
 import 'dart:convert';
 
 class RequestMessageModel {
-  int? usuarioFrom;
   int? usuarioTo;
   String? message;
-  RequestMessageModel({this.usuarioFrom, this.usuarioTo, this.message});
+  String? foto;
+  RequestMessageModel({this.usuarioTo, this.message, this.foto});
 
   RequestMessageModel copyWith({
-    int? usuarioFrom,
     int? usuarioTo,
     String? message,
+    String? foto,
   }) {
     return RequestMessageModel(
-      usuarioFrom: usuarioFrom ?? this.usuarioFrom,
       usuarioTo: usuarioTo ?? this.usuarioTo,
       message: message ?? this.message,
+      foto: foto ?? this.foto,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'usuarioFrom': usuarioFrom,
       'usuarioTo': usuarioTo,
       'message': message,
+      'foto': foto,
     };
   }
 
   factory RequestMessageModel.fromMap(Map<String, dynamic> map) {
     return RequestMessageModel(
-      usuarioFrom: map['usuarioFrom'] != null
-          ? map['usuarioFrom'] as int
-          : null,
       usuarioTo: map['usuarioTo'] != null ? map['usuarioTo'] as int : null,
       message: map['message'] != null ? map['message'] as String : null,
+      foto: map['foto'] != null ? map['foto'] as String : null,
     );
   }
 
@@ -44,18 +42,17 @@ class RequestMessageModel {
 
   @override
   String toString() =>
-      'RequestMessageModel(usuarioFrom: $usuarioFrom, usuarioTo: $usuarioTo, message: $message)';
+      'RequestMessageModel(usuarioTo: $usuarioTo, message: $message, foto: $foto)';
 
   @override
   bool operator ==(covariant RequestMessageModel other) {
     if (identical(this, other)) return true;
 
-    return other.usuarioFrom == usuarioFrom &&
-        other.usuarioTo == usuarioTo &&
-        other.message == message;
+    return other.usuarioTo == usuarioTo &&
+        other.message == message &&
+        other.foto == foto;
   }
 
   @override
-  int get hashCode =>
-      usuarioFrom.hashCode ^ usuarioTo.hashCode ^ message.hashCode;
+  int get hashCode => usuarioTo.hashCode ^ message.hashCode ^ foto.hashCode;
 }

@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 class UsuarioModel {
+  int? id;
   String? nome;
   String? email;
   String? senha;
@@ -18,6 +19,7 @@ class UsuarioModel {
   bool? termosPolitica;
   String? cpf_cnpj;
   UsuarioModel({
+    this.id,
     this.nome,
     this.email,
     this.foto,
@@ -36,6 +38,7 @@ class UsuarioModel {
   });
 
   UsuarioModel copyWith({
+    int? id,
     String? nome,
     String? email,
     String? foto,
@@ -53,6 +56,7 @@ class UsuarioModel {
     String? cpf_cnpj,
   }) {
     return UsuarioModel(
+      id: id ?? this.id,
       nome: nome ?? this.nome,
       email: email ?? this.email,
       foto: foto ?? this.foto,
@@ -73,6 +77,7 @@ class UsuarioModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'id': id,
       'nome': nome,
       'email': email,
       'foto': foto,
@@ -98,6 +103,7 @@ class UsuarioModel {
 
   factory UsuarioModel.fromMap(Map<String, dynamic> map) {
     return UsuarioModel(
+      id: map['id'] ?? 0,
       nome: map['nome'] != null ? map['nome'] as String : null,
       email: map['email'] != null ? map['email'] as String : null,
       foto: map['foto'] != null ? map['foto'] as String : null,
@@ -135,7 +141,7 @@ class UsuarioModel {
 
   @override
   String toString() {
-    return 'UsuarioModel(nome: $nome, email: $email, foto: $foto, tipoUsuario: $tipoUsuario, tipoPessoa: $tipoPessoa, dataNascimento: $dataNascimento, telefone: $telefone, endereco: $endereco, categoriaPrestador: $categoriaPrestador, nomeCategoria: $nomeCategoria, avalicao: $avalicao, qtdeServicos: $qtdeServicos, senha: $senha, termosPolitica: $termosPolitica, cpf_cnpj: $cpf_cnpj)';
+    return 'UsuarioModel(nome: $nome, email: $email, foto: $foto, tipoUsuario: $tipoUsuario, tipoPessoa: $tipoPessoa, dataNascimento: $dataNascimento, telefone: $telefone, endereco: $endereco, categoriaPrestador: $categoriaPrestador, nomeCategoria: $nomeCategoria, avalicao: $avalicao, qtdeServicos: $qtdeServicos, senha: $senha, termosPolitica: $termosPolitica, cpf_cnpj: $cpf_cnpj, id: $id)';
   }
 
   @override
@@ -156,7 +162,8 @@ class UsuarioModel {
         other.qtdeServicos == qtdeServicos &&
         other.senha == senha &&
         other.termosPolitica == termosPolitica &&
-        other.cpf_cnpj == cpf_cnpj;
+        other.cpf_cnpj == cpf_cnpj &&
+        other.id == id;
   }
 
   @override
@@ -175,6 +182,7 @@ class UsuarioModel {
         qtdeServicos.hashCode ^
         senha.hashCode ^
         termosPolitica.hashCode ^
-        cpf_cnpj.hashCode;
+        cpf_cnpj.hashCode ^
+        id.hashCode;
   }
 }
