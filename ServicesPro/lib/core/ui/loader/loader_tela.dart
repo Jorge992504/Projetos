@@ -11,9 +11,11 @@ mixin LaoderTela<T extends StatefulWidget> on State<T> {
       showDialog(
         context: context,
         builder: (context) {
-          return LoadingAnimationWidget.discreteCircle(
-            color: ColorsConstants.azulColor,
-            size: 60,
+          return Center(
+            child: LoadingAnimationWidget.discreteCircle(
+              color: ColorsConstants.azulColor,
+              size: 60,
+            ),
           );
         },
       );

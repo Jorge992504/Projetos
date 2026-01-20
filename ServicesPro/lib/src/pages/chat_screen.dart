@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +8,7 @@ import 'package:servicespro/core/ui/style/custom_colors.dart';
 import 'package:servicespro/core/ui/style/fontes_letras.dart';
 import 'package:servicespro/core/ui/widgets/tema_sistema.dart';
 import 'package:servicespro/src/controllers/chat_controller.dart';
+import 'package:servicespro/src/controllers/chat_view_controller.dart';
 import 'package:servicespro/src/models/message_model.dart';
 import 'package:servicespro/src/providers/web_socket_provider.dart';
 import 'package:servicespro/src/states/chat_state.dart';
@@ -23,12 +26,14 @@ class _ChatScreenState extends BaseState<ChatScreen, ChatController> {
   int usuarioId = 0;
   String usuarioNome = '';
   List<MessageModel> messages = [];
+  List<MessageModel> messagesBD = [];
   final messageController = TextEditingController();
   final messageFocus = FocusNode();
 
   @override
   void initState() {
     super.initState();
+    ChatViewController.chatAberto = true;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final route = ModalRoute.of(context);
       final arguments =
@@ -37,9 +42,7 @@ class _ChatScreenState extends BaseState<ChatScreen, ChatController> {
         usuarioId = arguments['usuarioId'];
         usuarioNome = arguments['usuarioNome'];
       });
-      List<MessageModel> messagesBD = await controller.buscarMessages(
-        usuarioId,
-      );
+      messagesBD = await controller.buscarMessages(usuarioId);
       Provider.of<WebSocketProvider>(
         // ignore: use_build_context_synchronously
         context,
@@ -53,6 +56,7 @@ class _ChatScreenState extends BaseState<ChatScreen, ChatController> {
   @override
   void dispose() {
     messageController.dispose();
+    ChatViewController.chatAberto = false;
     super.dispose();
   }
 
@@ -145,7 +149,7 @@ class _ChatScreenState extends BaseState<ChatScreen, ChatController> {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: BoliaMessagem(
-                        isMe: message.isMe ?? false,
+                        isMe: message.usuarioTo == usuarioId ? true : false,
                         text: message.message ?? "",
                       ),
                     );

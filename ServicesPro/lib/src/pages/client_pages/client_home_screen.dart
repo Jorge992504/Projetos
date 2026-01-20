@@ -69,7 +69,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
           padding: const EdgeInsets.all(15.0),
           child: SizedBox(
             width: context.percentWidth(1),
-            height: 150,
+            height: 170,
             child: Card(
               child: Column(
                 children: [
@@ -84,12 +84,16 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  Text(
-                    "Conecte-se com especialistas verificados na sua região.",
-                    overflow: TextOverflow.visible,
-                    style: context.cusotomFontes.medium.copyWith(
-                      fontSize: 13,
-                      color: ColorsConstants.primaryColor,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Conecte-se com especialistas verificados na sua região.",
+                      overflow: TextOverflow.visible,
+                      style: context.cusotomFontes.medium.copyWith(
+                        fontSize: 13,
+                        color: ColorsConstants.primaryColor,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ],
@@ -98,7 +102,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 25, left: 25, bottom: 15),
+          padding: const EdgeInsets.only(top: 25, left: 40, bottom: 15),
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(

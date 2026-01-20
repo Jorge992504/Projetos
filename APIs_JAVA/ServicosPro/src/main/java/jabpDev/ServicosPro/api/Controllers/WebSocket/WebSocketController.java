@@ -55,7 +55,8 @@ public class WebSocketController extends TextWebSocketHandler {
             RequestMessage payload = objectMapper.readValue(message.getPayload(), RequestMessage.class);
             ResponseMessage responseMessage = new ResponseMessage(
                     usuarioFrom.get().getId(),
-                    payload.message()
+                    payload.message(),
+                    usuarioFrom.get().getNome()
             );
             webSocketService.sendMessage(responseMessage, payload.usuarioTo());
         }catch (Exception e){

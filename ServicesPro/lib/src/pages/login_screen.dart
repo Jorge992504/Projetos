@@ -79,228 +79,240 @@ class _LoginScreenState extends BaseState<LoginScreen, LoginController> {
         },
         builder: (context, state) {
           return SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 60),
-                  Text(
-                    'Bem-vindo de volta!',
-                    style: context.cusotomFontes.black.copyWith(
-                      color: TemaSistema().temaSistema(context)
-                          ? ColorsConstants.primaryColor
-                          : ColorsConstants.letrasColor,
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  Text(
-                    'Entre para continuar conectando-se com profissionais.',
-                    style: context.cusotomFontes.regular.copyWith(
-                      color: TemaSistema().temaSistema(context)
-                          ? ColorsConstants.primaryColor
-                          : ColorsConstants.letrasColor,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  Form(
-                    key: formKey,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'E-mail',
-                            labelStyle: context.cusotomFontes.regular.copyWith(
+            child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 60),
+                      Text(
+                        'Bem-vindo de volta!',
+                        style: context.cusotomFontes.black.copyWith(
+                          color: TemaSistema().temaSistema(context)
+                              ? ColorsConstants.primaryColor
+                              : ColorsConstants.letrasColor,
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Text(
+                        'Entre para continuar conectando-se com profissionais.',
+                        style: context.cusotomFontes.regular.copyWith(
+                          color: TemaSistema().temaSistema(context)
+                              ? ColorsConstants.primaryColor
+                              : ColorsConstants.letrasColor,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'E-mail',
+                          labelStyle: context.cusotomFontes.regular.copyWith(
+                            color: TemaSistema().temaSistema(context)
+                                ? ColorsConstants.primaryColor
+                                : ColorsConstants.letrasColor,
+                            fontSize: 16,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
                               color: TemaSistema().temaSistema(context)
-                                  ? ColorsConstants.primaryColor
+                                  ? ColorsConstants.telaColor
                                   : ColorsConstants.letrasColor,
-                              fontSize: 16,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                color: TemaSistema().temaSistema(context)
-                                    ? ColorsConstants.telaColor
-                                    : ColorsConstants.letrasColor,
-                                width: 2,
-                              ),
+                              width: 2,
                             ),
                           ),
-
-                          cursorHeight: 18,
-                          textAlign: TextAlign.left,
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          controller: emailController,
-                          focusNode: emailFocus,
-                          onFieldSubmitted: (value) {
-                            if (value.isNotEmpty) {
-                              passwordFocus.requestFocus();
-                            } else {
-                              emailFocus.requestFocus();
-                            }
-                          },
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'Senha',
-                            labelStyle: context.cusotomFontes.regular.copyWith(
+
+                        cursorHeight: 18,
+                        textAlign: TextAlign.left,
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        controller: emailController,
+                        focusNode: emailFocus,
+                        onFieldSubmitted: (value) {
+                          if (value.isNotEmpty) {
+                            passwordFocus.requestFocus();
+                          } else {
+                            emailFocus.requestFocus();
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Senha',
+                          labelStyle: context.cusotomFontes.regular.copyWith(
+                            color: TemaSistema().temaSistema(context)
+                                ? ColorsConstants.primaryColor
+                                : ColorsConstants.letrasColor,
+                            fontSize: 16,
+                          ),
+
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                oscureText = !oscureText;
+                              });
+                            },
+                            icon: Icon(
+                              Icons.visibility,
+                              color: TemaSistema().temaSistema(context)
+                                  ? ColorsConstants.primaryColor
+                                  : ColorsConstants.letrasColor,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: TemaSistema().temaSistema(context)
+                                  ? ColorsConstants.telaColor
+                                  : ColorsConstants.letrasColor,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                        obscureText: oscureText,
+
+                        cursorHeight: 18,
+                        textAlign: TextAlign.left,
+                        keyboardType: TextInputType.visiblePassword,
+                        controller: passwordController,
+                        focusNode: passwordFocus,
+                        onFieldSubmitted: (value) {
+                          if (value.isNotEmpty) {
+                            realizarLogin();
+                          } else {
+                            passwordFocus.requestFocus();
+                          }
+                        },
+                      ),
+                      // const SizedBox(height: 14),
+                      // Form(
+                      //   key: formKey,
+                      //   child: Column(
+                      //     children: [
+
+                      //     ],
+                      //   ),
+                      // ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.of(
+                              context,
+                            ).pushNamed(Rotas.receberCodigo);
+                          },
+                          child: Text(
+                            'Esqueci minha senha',
+                            style: context.cusotomFontes.medium.copyWith(
                               color: TemaSistema().temaSistema(context)
                                   ? ColorsConstants.primaryColor
                                   : ColorsConstants.letrasColor,
                               fontSize: 16,
+                              decoration: TextDecoration.underline,
                             ),
+                          ),
+                        ),
+                      ),
 
-                            border: OutlineInputBorder(
+                      // Expanded(child: const SizedBox(height: 24)),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (formKey.currentState!.validate()) {
+                              await realizarLogin();
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorsConstants.azulColor,
+                            shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  oscureText = !oscureText;
-                                });
-                              },
-                              icon: Icon(
-                                Icons.visibility,
+                          ),
+                          child: Text(
+                            'Entrar',
+                            style: context.cusotomFontes.black.copyWith(
+                              color: ColorsConstants.primaryColor,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              color: TemaSistema().temaSistema(context)
+                                  ? ColorsConstants.primaryColor
+                                  : ColorsConstants.letrasColor,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0,
+                            ),
+                            child: Text(
+                              'ou',
+                              style: context.cusotomFontes.regular.copyWith(
                                 color: TemaSistema().temaSistema(context)
                                     ? ColorsConstants.primaryColor
                                     : ColorsConstants.letrasColor,
+                                fontSize: 16,
                               ),
                             ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
+                          ),
+                          Expanded(
+                            child: Divider(
+                              color: TemaSistema().temaSistema(context)
+                                  ? ColorsConstants.primaryColor
+                                  : ColorsConstants.letrasColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+                      Row(
+                        children: [
+                          const Spacer(),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(Rotas.register);
+                            },
+                            child: Text(
+                              'Não tem uma conta? Registre-se',
+                              style: context.cusotomFontes.medium.copyWith(
                                 color: TemaSistema().temaSistema(context)
-                                    ? ColorsConstants.telaColor
+                                    ? ColorsConstants.primaryColor
                                     : ColorsConstants.letrasColor,
-                                width: 2,
+                                fontSize: 16,
+                                decoration: TextDecoration.underline,
                               ),
                             ),
                           ),
-                          obscureText: oscureText,
-
-                          cursorHeight: 18,
-                          textAlign: TextAlign.left,
-                          keyboardType: TextInputType.visiblePassword,
-                          controller: passwordController,
-                          focusNode: passwordFocus,
-                          onFieldSubmitted: (value) {
-                            if (value.isNotEmpty) {
-                              realizarLogin();
-                            } else {
-                              passwordFocus.requestFocus();
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(Rotas.receberCodigo);
-                      },
-                      child: Text(
-                        'Esqueci minha senha',
-                        style: context.cusotomFontes.medium.copyWith(
-                          color: TemaSistema().temaSistema(context)
-                              ? ColorsConstants.primaryColor
-                              : ColorsConstants.letrasColor,
-                          fontSize: 16,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(child: const SizedBox(height: 24)),
-
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if (formKey.currentState!.validate()) {
-                          await realizarLogin();
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorsConstants.azulColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                        'Entrar',
-                        style: context.cusotomFontes.black.copyWith(
-                          color: ColorsConstants.primaryColor,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          color: TemaSistema().temaSistema(context)
-                              ? ColorsConstants.primaryColor
-                              : ColorsConstants.letrasColor,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(
-                          'ou',
-                          style: context.cusotomFontes.regular.copyWith(
-                            color: TemaSistema().temaSistema(context)
-                                ? ColorsConstants.primaryColor
-                                : ColorsConstants.letrasColor,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          color: TemaSistema().temaSistema(context)
-                              ? ColorsConstants.primaryColor
-                              : ColorsConstants.letrasColor,
-                        ),
+                          const Spacer(),
+                        ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 14),
-                  Row(
-                    children: [
-                      const Spacer(),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pushNamed(Rotas.register);
-                        },
-                        child: Text(
-                          'Não tem uma conta? Registre-se',
-                          style: context.cusotomFontes.medium.copyWith(
-                            color: TemaSistema().temaSistema(context)
-                                ? ColorsConstants.primaryColor
-                                : ColorsConstants.letrasColor,
-                            fontSize: 16,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ),
-                      const Spacer(),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
           );

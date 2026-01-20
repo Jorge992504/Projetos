@@ -19,15 +19,22 @@ import 'package:servicespro/src/routers/chat_router.dart';
 import 'package:servicespro/src/routers/client/client_home_router.dart';
 import 'package:servicespro/src/routers/login_router.dart';
 import 'package:servicespro/src/routers/register_router.dart';
+import 'package:servicespro/src/services/global_context_key.dart';
+import 'package:servicespro/src/services/local_notificacao_service.dart';
 
 class ServicesProApp extends StatelessWidget {
-  const ServicesProApp({super.key});
+  final _navKey = GlobalKey<NavigatorState>();
+  ServicesProApp({super.key}) {
+    LocalNotificacaoService.navigatorKey = _navKey;
+    GlobalContextKey.instance.navigatorKey = _navKey;
+  }
 
   @override
   Widget build(BuildContext context) {
     return ApplicationBanding(
       child: MaterialApp(
         theme: ConfigTheme.lighTheme,
+        navigatorKey: _navKey,
         darkTheme: ConfigTheme.darkTheme,
         themeMode: ThemeMode.system,
         localizationsDelegates: [

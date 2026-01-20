@@ -37,7 +37,11 @@ public class WebSocketService {
             WebSocketSession socketSessionTo = usuarios.get(usuarioTo);
             ObjectMapper objectMapper = new ObjectMapper();
             String json = objectMapper.writeValueAsString(message);
-            socketSessionTo.sendMessage(new TextMessage(json));
+            if (socketSessionTo != null && socketSessionTo.isOpen()){
+                socketSessionTo.sendMessage(new TextMessage(json));
+            }else{
+                return;
+            }
         }catch (Exception e){
             System.out.println(e.getMessage());
             throw new CustomException("Não foi possível enviar a mensagem");

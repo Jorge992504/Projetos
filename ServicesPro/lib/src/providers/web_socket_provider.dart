@@ -3,7 +3,10 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:servicespro/src/controllers/chat_view_controller.dart';
 import 'package:servicespro/src/models/message_model.dart';
+import 'package:servicespro/src/models/notificacao_response.dart';
+import 'package:servicespro/src/services/local_notificacao_service.dart';
 import 'package:web_socket_channel/io.dart';
 
 import 'package:servicespro/core/env/env.dart';
@@ -13,7 +16,7 @@ import 'package:servicespro/src/providers/auth_provider.dart';
 class WebSocketProvider extends ChangeNotifier {
   IOWebSocketChannel? _channel;
 
-  final List<MessageModel> _messages = [];
+  List<MessageModel> _messages = [];
   bool _conetado = false;
   final AuthProvider authProvider;
 
@@ -52,13 +55,24 @@ class WebSocketProvider extends ChangeNotifier {
     return _conetado;
   }
 
-  void receberMessages(Map<String, dynamic> json) {
+  void receberMessages(Map<String, dynamic> json) async {
     MessageModel response = MessageModel(
       usuarioFrom: json["usuarioFrom"],
       message: json["message"],
       isMe: false,
     );
     _messages.add(response);
+    if (!ChatViewController.chatAberto) {
+      NotificacaoResponse notificacaoResponse = NotificacaoResponse(
+        usuarioId: response.usuarioFrom ?? 0,
+        usuarioNome: json['usuarioNome'],
+      );
+      await LocalNotificacaoService.show(
+        title: "De ${json['usuarioNome']}: ",
+        body: response.message ?? "",
+        payload: notificacaoResponse.toJson(),
+      );
+    }
     notifyListeners();
   }
 
@@ -85,7 +99,7 @@ class WebSocketProvider extends ChangeNotifier {
   }
 
   List<MessageModel> atualizarLista(List<MessageModel> messageBD) {
-    _messages == messageBD;
+    _messages = messageBD;
     return _messages;
   }
 
