@@ -1,5 +1,6 @@
 n//criar project
-flutter create --project-name servicespro --android-language java --platforms ios,android,windows,web --org jabp.dev@gmail.com ServicesPro
+flutter create --project-name prevenda --android-language java --platforms ios,android,windows,web --org jabp.dev@gmail.com PreVendas
+
 
 //add plataforma
 flutter create --plataforms=web .
