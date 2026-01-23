@@ -7,7 +7,7 @@ flutter create --plataforms=web .
 
 //compilar
 flutter build apk
-flutter 
+flutter  
 
 json_rest_server run
 node server.js
